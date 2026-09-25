@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dilemme du prisonnier – Outils interactifs, microéconomie LSO2</title>
+<meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --navy:#006EB8; --navy-soft:#E8F1F9; --brick:#B6321C; --brick-soft:#F9ECE9;
+  --forest:#009B55; --forest-soft:#E6F5ED; --forest-ink:#00703D;
+  --ink:#1A2130; --muted:#5B6372; --faint:#A3A9B3; --line:#E2E5EA; --soft:#F5F6F8; --paper:#fff;
+  --serif:'STIX Two Text','Cambria Math','Times New Roman',serif;
+  --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#fff}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,40px)}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.m{font-family:var(--serif);font-style:italic;font-size:1.07em;white-space:nowrap}
+.us{color:var(--navy);font-weight:600}.su{color:var(--brick);font-weight:600}
+.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:30px}
+.site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
+.site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
+.site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
+.site .home:hover b{text-decoration:underline;text-underline-offset:3px}
+.site .links{display:flex;gap:4px;flex-wrap:wrap}
+.site .links a{padding:7px 13px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.88rem;transition:background .2s,color .2s}
+.site .links a:hover{background:var(--soft);color:var(--ink)}
+.site .links a[aria-current="page"]{background:var(--ink);color:#fff}
+
+header.top{padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:34px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px 40px;align-items:end}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem);line-height:1;letter-spacing:-.015em;margin:0 0 12px}
+.sub{font-family:var(--serif);font-style:italic;font-size:1.3rem;margin:0 0 12px;color:var(--muted)}
+.lede{color:var(--muted);margin:0;max-width:62ch}
+.strats{display:grid;gap:10px}
+.strat{border-left:3px solid var(--forest);padding:2px 0 2px 14px}
+.strat.t{border-left-color:var(--ink)}
+.strat b{display:block;font-family:var(--serif);font-size:1.12rem}
+.strat span{font-size:.92rem;color:var(--muted)}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,2.8vw,2.1rem);line-height:1.15;margin:0 0 6px}
+.intro{color:var(--muted);margin:0 0 20px;max-width:66ch}
+section.block{margin-bottom:60px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+.mcard{border:1px solid var(--line);border-radius:20px;padding:10px}
+svg.mx{display:block;width:100%;height:auto;user-select:none}
+svg.mx text{font-family:var(--sans);font-size:15px}
+svg.mx .hd{font-weight:700;font-size:16px}
+svg.mx .sm{font-size:13px;fill:var(--muted)}
+svg.mx .pay{font-family:var(--serif);font-size:31px}
+svg.mx .cell{outline:none}
+svg.mx .cell.click{cursor:pointer}
+svg.mx .cell.click:hover rect.bg{fill:#F2F4F7}
+svg.mx .cell:focus-visible rect.bg{stroke:var(--navy);stroke-width:3}
+.note{font-size:.84rem;color:var(--muted);padding:6px 10px 2px}
+.stepper{border:1px solid var(--line);border-radius:20px;padding:22px}
+.sthead{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;color:var(--muted);margin-bottom:12px}
+.sdots{display:flex;gap:5px}
+.sdots i{width:22px;height:5px;border-radius:99px;background:var(--line)}
+.sdots i.on{background:var(--forest)}.sdots i.cur{background:var(--ink)}
+.qtext{font-family:var(--serif);font-size:1.35rem;line-height:1.3;margin:0 0 16px}
+.opts{display:grid;gap:8px}
+.opt{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 14px;font:inherit;font-weight:600;text-align:left;cursor:pointer;transition:border-color .2s,background .2s}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--forest);background:var(--forest-soft);color:var(--forest-ink)}
+.opt.wrong{border-color:var(--brick);background:var(--brick-soft);color:var(--brick)}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:.95rem;background:var(--soft)}
+.fb.ok{background:var(--forest-soft)}.fb.ko{background:var(--brick-soft)}
+.btn{appearance:none;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:11px;padding:9px 15px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer;transition:background .2s}
+.btn:hover{background:#2E3748}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.ghost:hover{background:var(--soft)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.concl{margin-top:16px;padding:16px 18px;border-radius:16px;background:var(--ink);color:#fff}
+.concl b{color:#fff}
+.concl p{margin:0 0 8px}.concl p:last-child{margin:0}
+/* Jeu répété */
+.game{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+.gcard{border:1px solid var(--line);border-radius:20px;padding:22px}
+.year{font-family:var(--serif);font-size:1.5rem;margin:0 0 4px}
+.play{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.pbtn{appearance:none;border:none;border-radius:16px;padding:18px 14px;font:inherit;font-weight:700;font-size:1rem;cursor:pointer;color:#fff;text-align:left;transition:transform .1s,filter .2s}
+.pbtn small{display:block;font-weight:500;font-size:.82rem;opacity:.9}
+.pbtn:active{transform:scale(.98)}
+.pbtn:hover{filter:brightness(1.08)}
+.pbtn:disabled{opacity:.4;cursor:default;filter:none}
+.pbtn.c{background:var(--forest)}.pbtn.t{background:var(--ink)}
+.last{min-height:48px;font-size:.95rem}
+.scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.sc{border-radius:14px;padding:12px 14px;border-top:3px solid var(--navy);background:var(--navy-soft)}
+.sc.su{border-top-color:var(--brick);background:var(--brick-soft)}
+.sc .h{font-size:.82rem;color:var(--muted);font-weight:600}
+.sc .v{font-family:var(--serif);font-size:1.9rem;line-height:1.1;color:var(--ink)}
+.ars{display:flex;gap:3px;margin-top:8px;height:18px;align-items:flex-end}
+.ars i{width:6px;border-radius:3px 3px 1px 1px;background:var(--ink);height:18px}
+.hist{margin-top:18px}
+.hrow{display:grid;grid-template-columns:52px 1fr;align-items:center;gap:10px;margin:6px 0;font-size:.84rem;font-weight:600}
+.cells{display:flex;gap:4px;flex-wrap:wrap}
+.cells i{width:22px;height:22px;border-radius:6px;background:var(--soft);border:1.5px dashed var(--line)}
+.cells i.c{background:var(--forest);border:none}.cells i.t{background:var(--ink);border:none}
+.hleg{display:flex;gap:16px;font-size:.8rem;color:var(--muted);margin-top:8px}
+.hleg span{display:inline-flex;align-items:center;gap:6px}
+.hleg i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.reveal{margin-top:16px;padding:16px 18px;border-radius:16px;background:var(--soft)}
+.reveal h3{font-family:var(--serif);font-weight:600;font-size:1.25rem;margin:0 0 6px}
+.reveal p{margin:0 0 8px}
+/* Explorateur */
+.sliders{display:grid;gap:12px}
+.sl label{display:flex;justify-content:space-between;gap:10px;font-size:.92rem}
+.sl label b{font-family:var(--serif);font-size:1.1rem}
+.sl small{display:block;color:var(--muted);font-size:.8rem}
+input[type=range]{width:100%;accent-color:var(--ink);margin:4px 0 0}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.chip{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.verdict{margin-top:14px;padding:16px 18px;border-radius:16px;background:var(--soft)}
+.verdict h3{font-family:var(--serif);font-weight:600;font-size:1.3rem;margin:0 0 6px}
+.verdict ul{margin:8px 0 0;padding-left:18px}
+.verdict li{margin:3px 0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.82rem;color:var(--muted);padding:6px 10px 2px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend .ring{width:18px;height:12px;border-radius:50%;border:2.5px solid var(--forest)}
+.legend .box{width:18px;height:12px;border-radius:3px;border:2px dashed var(--ink)}
+.legend .ar{width:18px;height:0;border-top:2.5px solid}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
+.pop{animation:pop .5s ease-out}
+@keyframes pop{40%{transform:scale(1.02)}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}}
+@media (max-width:880px){header.top,.grid2,.game{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="site" aria-label="Outils">
+    <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
+    <div class="links"><a href="edgeworth.html">Boîte d'Edgeworth</a><a href="pareto.html">Optimum de Pareto</a><a href="dilemme-prisonnier.html" aria-current="page">Dilemme du prisonnier</a></div>
+  </nav>
+  <header class="top">
+    <div>
+      <h1>Le dilemme du prisonnier</h1>
+      <p class="sub">La course aux armements nucléaires</p>
+      <p class="lede">Pendant la Guerre froide, les <span class="us">États-Unis</span> et l'<span class="su">Union soviétique</span> se sont lancés dans une course aux armements. Chaque pays choisissait, schématiquement, entre deux stratégies, sans connaître le choix de l'autre.</p>
+    </div>
+    <div class="strats">
+      <div class="strat"><b>Coopération</b><span>Négocier un désarmement : économies importantes et baisse des tensions.</span></div>
+      <div class="strat t"><b>Trahison</b><span>Accumuler un arsenal nucléaire : domination potentielle de l'adversaire.</span></div>
+    </div>
+  </header>
+
+  <!-- Raisonnement guidé -->
+  <section class="block">
+    <h2>Raisonner pas à pas</h2>
+    <p class="intro">Les gains sont ordinaux : seul leur classement compte (4 &gt; 3 &gt; 1 &gt; 0). Dans chaque case, le premier nombre est le gain des <span class="us">États-Unis</span>, le second celui de l'<span class="su">URSS</span>.</p>
+    <div class="grid2">
+      <div class="mcard">
+        <svg class="mx" id="mx1" aria-label="Matrice des gains"></svg>
+        <div class="legend">
+          <span><i class="ar" style="border-color:var(--navy)"></i>Déviation des États-Unis</span>
+          <span><i class="ar" style="border-color:var(--brick)"></i>Déviation de l'URSS</span>
+          <span><i class="box"></i>Équilibre de Nash</span>
+          <span><i class="ring"></i>Optimum de Pareto</span>
+        </div>
+      </div>
+      <div class="stepper" id="stepper">
+        <div class="sthead"><span id="stlab"></span><span class="sdots" id="sdots"></span></div>
+        <p class="qtext" id="qtext"></p>
+        <div class="opts" id="opts"></div>
+        <div class="btns" id="cellbtns" hidden><button class="btn" id="checkPareto">Vérifier</button></div>
+        <div class="fb" id="sfb" hidden aria-live="polite"></div>
+        <div class="btns"><button class="btn" id="snext" hidden>Question suivante</button></div>
+        <div class="concl" id="concl" hidden>
+          <p><b>Le dilemme.</b> En suivant chacun son intérêt, les deux pays aboutissent à la course aux armements (1 ; 1), alors que le désarmement mutuel (3 ; 3) serait meilleur pour les deux : l'équilibre de Nash est Pareto-dominé.</p>
+          <p>Les trois autres issues sont des optima de Pareto, y compris (4 ; 0) et (0 ; 4), pourtant très inégales. La rationalité individuelle ne conduit pas à l'efficacité collective.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jeu répété -->
+  <section class="block">
+    <h2>Jouer la Guerre froide</h2>
+    <p class="intro">Tu diriges les <span class="us">États-Unis</span>. Chaque année, tu choisis de désarmer ou de t'armer face à une URSS dont tu ignores la stratégie. La Guerre froide s'arrête à une date que personne ne connaît à l'avance.</p>
+    <div class="game">
+      <div class="gcard">
+        <p class="year" id="year"></p>
+        <div class="small" style="color:var(--muted);font-size:.9rem">Que font les États-Unis cette année ?</div>
+        <div class="play">
+          <button class="pbtn c" id="playC">Coopérer<small>Négocier le désarmement</small></button>
+          <button class="pbtn t" id="playT">Trahir<small>Accumuler des ogives</small></button>
+        </div>
+        <div class="last" id="last" aria-live="polite"></div>
+        <div class="scores">
+          <div class="sc"><div class="h">États-Unis, gains cumulés</div><div class="v" id="scUS">0</div><div class="ars" id="arUS" aria-label="Arsenal des États-Unis"></div></div>
+          <div class="sc su"><div class="h">URSS, gains cumulés</div><div class="v" id="scSU">0</div><div class="ars" id="arSU" aria-label="Arsenal de l'URSS"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="hist">
+          <div class="hrow"><span class="us">É.-U.</span><div class="cells" id="hUS"></div></div>
+          <div class="hrow"><span class="su">URSS</span><div class="cells" id="hSU"></div></div>
+          <div class="hleg"><span><i style="background:var(--forest)"></i>Coopération</span><span><i style="background:var(--ink)"></i>Trahison</span></div>
+        </div>
+        <div class="reveal" id="reveal" hidden></div>
+        <div class="btns"><button class="btn ghost" id="replay">Nouvelle partie, nouvel adversaire</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Explorateur -->
+  <section class="block">
+    <h2>Et si les gains changeaient ?</h2>
+    <p class="intro">Le dilemme tient au classement des gains. Modifie-les, ou choisis un scénario, et observe comment changent les équilibres de Nash et les optima de Pareto. Le jeu reste symétrique.</p>
+    <div class="grid2">
+      <div class="mcard">
+        <svg class="mx" id="mx2" aria-label="Matrice des gains modifiable"></svg>
+        <div class="legend">
+          <span><i class="ar" style="border-color:var(--navy)"></i>Déviation des États-Unis</span>
+          <span><i class="ar" style="border-color:var(--brick)"></i>Déviation de l'URSS</span>
+          <span><i class="box"></i>Équilibre de Nash</span>
+          <span><i class="ring"></i>Optimum de Pareto</span>
+        </div>
+      </div>
+      <div>
+        <div class="presets" id="presets">
+          <button class="chip" data-p="3,4,0,1">Course aux armements</button>
+          <button class="chip" data-p="3,4,1,0">Destruction mutuelle</button>
+          <button class="chip" data-p="4,3,0,1">Confiance mutuelle</button>
+          <button class="chip" data-p="4,3,2,1">Désarmement avantageux</button>
+        </div>
+        <div class="sliders">
+          <div class="sl"><label for="sR"><span>Désarmement mutuel<small>les deux coopèrent</small></span><b id="vR"></b></label><input type="range" id="sR" min="0" max="5" step="1"></div>
+          <div class="sl"><label for="sT"><span>Domination<small>s'armer quand l'autre désarme</small></span><b id="vT"></b></label><input type="range" id="sT" min="0" max="5" step="1"></div>
+          <div class="sl"><label for="sS"><span>Vulnérabilité<small>désarmer quand l'autre s'arme</small></span><b id="vS"></b></label><input type="range" id="sS" min="0" max="5" step="1"></div>
+          <div class="sl"><label for="sP"><span>Course aux armements<small>les deux s'arment</small></span><b id="vP"></b></label><input type="range" id="sP" min="0" max="5" step="1"></div>
+        </div>
+        <div class="verdict" id="verdict" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2.</footer>
+</div>
+
+<script>
+(() => {
+  const C = { navy:'#006EB8', brick:'#B6321C', forest:'#009B55', ink:'#1A2130', muted:'#5B6372', faint:'#A3A9B3', line:'#E2E5EA' };
+  const $ = s => document.querySelector(s);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pop = el => { if (reduce) return; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); };
+  const LAB = ['Coopération', 'Trahison'];
+  const pay = (u, s) => `(<span class="us">${u}</span> ; <span class="su">${s}</span>)`;
+
+  /* ---------- Matrice ---------- */
+  const X0 = 176, Y0 = 92, CW = 200, CH = 122;
+  const MW = X0 + 2 * CW + 14, MH = Y0 + 2 * CH + 14;
+  const ctr = (r, c) => [X0 + c * CW + CW / 2, Y0 + r * CH + CH / 2];
+  function drawMatrix(svg, M, o = {}) {
+    svg.setAttribute('viewBox', `0 0 ${MW} ${MH}`);
+    let s = `<defs>
+      <marker id="${svg.id}an" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10L3 5Z" fill="${C.navy}"/></marker>
+      <marker id="${svg.id}ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10L3 5Z" fill="${C.brick}"/></marker></defs>`;
+    s += `<text class="hd" x="${X0 + CW}" y="24" text-anchor="middle" fill="${C.brick}">URSS</text>`;
+    s += `<text class="hd" transform="translate(22 ${Y0 + CH}) rotate(-90)" text-anchor="middle" fill="${C.navy}">États-Unis</text>`;
+    const subl = ['désarmer', "s'armer"];
+    for (let i = 0; i < 2; i++) {
+      s += `<text x="${X0 + i * CW + CW / 2}" y="${Y0 - 30}" text-anchor="middle" fill="${C.brick}" font-weight="600">${LAB[i]}</text><text class="sm" x="${X0 + i * CW + CW / 2}" y="${Y0 - 12}" text-anchor="middle">${subl[i]}</text>`;
+      s += `<text x="${X0 - 16}" y="${Y0 + i * CH + CH / 2 - 2}" text-anchor="end" fill="${C.navy}" font-weight="600">${LAB[i]}</text><text class="sm" x="${X0 - 16}" y="${Y0 + i * CH + CH / 2 + 17}" text-anchor="end">${subl[i]}</text>`;
+    }
+    for (let r = 0; r < 2; r++) for (let c = 0; c < 2; c++) {
+      const x = X0 + c * CW, y = Y0 + r * CH, k = r + '' + c;
+      let bg = '#fff';
+      if (o.hlCol === c) bg = '#FBF3F1';
+      if (o.hlRow === r) bg = '#F1F6FB';
+      if (o.sel && o.sel.has(k)) bg = '#E6F5ED';
+      const clickable = !!o.click;
+      s += `<g class="cell${clickable ? ' click' : ''}" data-k="${k}" ${clickable ? `tabindex="0" role="button" aria-label="Issue ${LAB[r]} des États-Unis, ${LAB[c]} de l'URSS"` : ''}>
+        <rect class="bg" x="${x}" y="${y}" width="${CW}" height="${CH}" fill="${bg}" stroke="${C.line}" stroke-width="1.5"/>`;
+      const [cx, cy] = ctr(r, c), [u, v] = M[r][c];
+      const dimU = o.emph === 'su' ? .3 : 1, dimV = o.emph === 'us' ? .3 : 1;
+      const bw = w => o.emph === w && ((w === 'us' && o.hlCol === c) || (w === 'su' && o.hlRow === r)) ? 700 : 400;
+      s += `<text class="pay" x="${cx}" y="${cy + 10}" text-anchor="middle"><tspan fill="${C.ink}">(</tspan><tspan fill="${C.navy}" fill-opacity="${dimU}" font-weight="${bw('us')}">${u}</tspan><tspan fill="${C.ink}"> ; </tspan><tspan fill="${C.brick}" fill-opacity="${dimV}" font-weight="${bw('su')}">${v}</tspan><tspan fill="${C.ink}">)</tspan></text>`;
+      if (o.nash && o.nash.has(k)) s += `<rect x="${x + 10}" y="${y + 10}" width="${CW - 20}" height="${CH - 20}" rx="12" fill="none" stroke="${C.ink}" stroke-width="2.2" stroke-dasharray="7 5"/>`;
+      if (o.pareto && o.pareto.has(k)) s += `<ellipse cx="${cx}" cy="${cy}" rx="62" ry="28" fill="none" stroke="${C.forest}" stroke-width="3"/>`;
+      s += '</g>';
+    }
+    (o.arrows || []).forEach(a => {
+      const [r1, c1] = a.from, [r2, c2] = a.to;
+      if (c1 === c2) { // vertical, déviation des États-Unis
+        const x = X0 + c1 * CW + CW - 24, y1 = ctr(r1, c1)[1], y2 = ctr(r2, c2)[1], d = Math.sign(y2 - y1);
+        s += `<line x1="${x}" y1="${y1 + d * 18}" x2="${x}" y2="${y2 - d * 18}" stroke="${C.navy}" stroke-width="3" marker-end="url(#${svg.id}an)"/>`;
+      } else {
+        const y = Y0 + r1 * CH + CH - 20, x1 = ctr(r1, c1)[0], x2 = ctr(r2, c2)[0], d = Math.sign(x2 - x1);
+        s += `<line x1="${x1 + d * 30}" y1="${y}" x2="${x2 - d * 30}" y2="${y}" stroke="${C.brick}" stroke-width="3" marker-end="url(#${svg.id}ab)"/>`;
+      }
+    });
+    svg.innerHTML = s;
+  }
+  function analyse(M) {
+    const arrows = [], nash = new Set(), pareto = new Set();
+    for (let c = 0; c < 2; c++) { const a = M[0][c][0], b = M[1][c][0]; if (a !== b) arrows.push(a < b ? { from: [0, c], to: [1, c] } : { from: [1, c], to: [0, c] }); }
+    for (let r = 0; r < 2; r++) { const a = M[r][0][1], b = M[r][1][1]; if (a !== b) arrows.push(a < b ? { from: [r, 0], to: [r, 1] } : { from: [r, 1], to: [r, 0] }); }
+    const cells = [[0, 0], [0, 1], [1, 0], [1, 1]];
+    cells.forEach(([r, c]) => {
+      if (M[r][c][0] >= M[1 - r][c][0] && M[r][c][1] >= M[r][1 - c][1]) nash.add(r + '' + c);
+      const [u, v] = M[r][c];
+      const dominated = cells.some(([r2, c2]) => { const [u2, v2] = M[r2][c2]; return u2 >= u && v2 >= v && (u2 > u || v2 > v); });
+      if (!dominated) pareto.add(r + '' + c);
+    });
+    let domUS = null;
+    if (M[1][0][0] > M[0][0][0] && M[1][1][0] > M[0][1][0]) domUS = 1;
+    if (M[0][0][0] > M[1][0][0] && M[0][1][0] > M[1][1][0]) domUS = 0;
+    return { arrows, nash, pareto, domUS };
+  }
+
+  /* ---------- Raisonnement guidé ---------- */
+  const PD = [[[3, 3], [0, 4]], [[4, 0], [1, 1]]];
+  const steps = [
+    { q: 'Si l\'URSS coopère, les États-Unis ont-ils intérêt à coopérer ou à trahir ?', opts: ['Coopérer', 'Trahir'], ok: 1, hl: { hlCol: 0, emph: 'us' },
+      good: 'Trahir rapporte 4, coopérer 3. Face à une URSS qui désarme, s\'armer permet de dominer.',
+      bad: 'Compare les gains des États-Unis (en bleu) dans la colonne Coopération : 3 s\'ils coopèrent, 4 s\'ils trahissent.',
+      add: [{ from: [0, 0], to: [1, 0] }] },
+    { q: 'Et si l\'URSS trahit ?', opts: ['Coopérer', 'Trahir'], ok: 1, hl: { hlCol: 1, emph: 'us' },
+      good: 'Trahir rapporte 1, coopérer 0. Désarmer seul face à un adversaire armé est la pire issue.',
+      bad: 'Dans la colonne Trahison, les États-Unis obtiennent 0 s\'ils coopèrent et 1 s\'ils trahissent.',
+      add: [{ from: [0, 1], to: [1, 1] }] },
+    { q: 'Les États-Unis ont-ils une stratégie dominante ?', opts: ['Oui : coopérer', 'Oui : trahir', 'Non, cela dépend de ce que fait l\'URSS'], ok: 1, hl: {},
+      good: 'Quelle que soit la décision de l\'URSS, trahir rapporte davantage aux États-Unis : c\'est une stratégie strictement dominante.',
+      bad: 'Regarde les deux flèches bleues : elles pointent vers la même ligne, quel que soit le choix de l\'URSS.', add: [] },
+    { q: 'Le jeu est symétrique. Quelle est la meilleure stratégie de l\'URSS ?', opts: ['Coopérer', 'Trahir', 'Cela dépend des États-Unis'], ok: 1, hl: { emph: 'su' },
+      good: 'Pour l\'URSS aussi, trahir rapporte 4 &gt; 3 si les États-Unis coopèrent et 1 &gt; 0 s\'ils trahissent. Trahir est dominant.',
+      bad: 'Compare les gains de l\'URSS (en rouge) ligne par ligne : 3 contre 4, puis 0 contre 1.',
+      add: [{ from: [0, 0], to: [0, 1] }, { from: [1, 0], to: [1, 1] }] },
+    { q: 'Clique sur la case qui correspond à l\'équilibre de Nash.', cell: '11',
+      good: 'Aucune flèche ne part de (Trahison ; Trahison) : aucun pays n\'a intérêt à changer seul de stratégie. C\'est l\'équilibre de Nash, ici en stratégies dominantes.',
+      bad: 'Une flèche part de cette case : l\'un des pays a intérêt à changer de stratégie. Cherche la case d\'où ne part aucune flèche.' },
+    { q: 'Sélectionne toutes les issues qui sont des optima de Pareto, puis vérifie.', multi: new Set(['00', '01', '10']) }
+  ];
+  let si = 0, arrows = [], nash = new Set(), pareto = new Set(), sel = new Set(), solved = false;
+  function mx1() {
+    const s = steps[si], o = { arrows, nash, pareto };
+    if (!solved && s.hl) Object.assign(o, s.hl);
+    if (!solved && (s.cell || s.multi)) o.click = true;
+    if (s.multi && !solved) o.sel = sel;
+    drawMatrix($('#mx1'), PD, o);
+  }
+  function showStep() {
+    const s = steps[si]; solved = false;
+    $('#stlab').textContent = `Question ${si + 1} sur ${steps.length}`;
+    $('#sdots').innerHTML = steps.map((_, i) => `<i class="${i < si ? 'on' : i === si ? 'cur' : ''}"></i>`).join('');
+    $('#qtext').innerHTML = s.q;
+    $('#sfb').hidden = true; $('#snext').hidden = true; $('#concl').hidden = true;
+    $('#cellbtns').hidden = !s.multi;
+    $('#opts').innerHTML = (s.opts || []).map((t, i) => `<button class="opt" data-i="${i}">${t}</button>`).join('');
+    sel = new Set();
+    mx1();
+  }
+  function feedback(ok, html) {
+    const f = $('#sfb'); f.hidden = false; f.className = 'fb ' + (ok ? 'ok' : 'ko');
+    f.innerHTML = `<b>${ok ? 'Oui.' : 'Pas tout à fait.'}</b> ${html}`;
+    if (ok) pop($('#stepper'));
+  }
+  function solve() {
+    const s = steps[si]; solved = true;
+    if (s.add) arrows = arrows.concat(s.add);
+    if (s.cell) nash = new Set([s.cell]);
+    if (s.multi) pareto = new Set(s.multi);
+    $('#sdots').innerHTML = steps.map((_, i) => `<i class="${i <= si ? 'on' : ''}"></i>`).join('');
+    const n = $('#snext'); n.hidden = false;
+    n.textContent = si === steps.length - 1 ? 'Recommencer le raisonnement' : 'Question suivante';
+    if (si === steps.length - 1) { $('#concl').hidden = false; $('#cellbtns').hidden = true; }
+    mx1();
+  }
+  $('#opts').addEventListener('click', e => {
+    const b = e.target.closest('.opt'); if (!b || b.disabled) return;
+    const s = steps[si], ok = +b.dataset.i === s.ok;
+    if (ok) {
+      document.querySelectorAll('.opt').forEach(o => o.disabled = true);
+      b.classList.add('right'); feedback(true, s.good); solve();
+    } else { b.classList.add('wrong'); b.disabled = true; feedback(false, s.bad); }
+  });
+  function cellClick(k) {
+    const s = steps[si]; if (solved) return;
+    if (s.cell) { if (k === s.cell) { feedback(true, s.good); solve(); } else feedback(false, s.bad); }
+    else if (s.multi) { sel.has(k) ? sel.delete(k) : sel.add(k); mx1(); const n = $('#mx1').querySelector(`.cell[data-k="${k}"]`); n && n.focus({ preventScroll: true }); }
+  }
+  $('#mx1').addEventListener('click', e => { const g = e.target.closest('.cell.click'); if (g) cellClick(g.dataset.k); });
+  $('#mx1').addEventListener('keydown', e => { const g = e.target.closest('.cell.click'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); cellClick(g.dataset.k); } });
+  $('#checkPareto').addEventListener('click', () => {
+    const want = steps[si].multi, miss = [...want].filter(k => !sel.has(k)), extra = [...sel].filter(k => !want.has(k));
+    if (!miss.length && !extra.length) {
+      feedback(true, '(3 ; 3), (4 ; 0) et (0 ; 4) sont des optima de Pareto : depuis chacune, on ne peut améliorer le sort d\'un pays qu\'en détériorant celui de l\'autre. Seul l\'équilibre de Nash (1 ; 1) est Pareto-dominé.');
+      solve(); return;
+    }
+    const t = [];
+    if (extra.includes('11')) t.push('(1 ; 1) est Pareto-dominée par (3 ; 3) : les deux pays y gagnent.');
+    if (miss.includes('00')) t.push('(3 ; 3) est un optimum : aucune case ne donne au moins 3 aux deux pays, avec un gain strict pour l\'un.');
+    if (miss.includes('01') || miss.includes('10')) t.push('Les issues (4 ; 0) et (0 ; 4) sont aussi des optima : pour améliorer le sort du pays qui obtient 0, il faudrait réduire le gain de celui qui obtient 4. Un optimum de Pareto peut être très inégal.');
+    feedback(false, t.join(' '));
+  });
+  $('#snext').addEventListener('click', () => {
+    if (si === steps.length - 1) { si = 0; arrows = []; nash = new Set(); pareto = new Set(); }
+    else si++;
+    showStep();
+  });
+
+  /* ---------- Jeu répété ---------- */
+  const STRATS = [
+    { k: 'tft', name: 'Donnant-donnant', desc: 'L\'URSS coopérait la première année, puis reproduisait ton coup de l\'année précédente.' },
+    { k: 'alld', name: 'Toujours trahir', desc: 'L\'URSS s\'armait chaque année, quoi que tu fasses.' },
+    { k: 'grim', name: 'Rancunière', desc: 'L\'URSS coopérait tant que tu coopérais, puis trahissait pour toujours dès ta première trahison.' },
+    { k: 'allc', name: 'Toujours coopérer', desc: 'L\'URSS désarmait chaque année, quoi que tu fasses.' },
+    { k: 'rand', name: 'Imprévisible', desc: 'L\'URSS choisissait au hasard, une chance sur deux chaque année.' }
+  ];
+  let G;
+  function newGame() {
+    let s; do { s = STRATS[Math.floor(Math.random() * STRATS.length)]; } while (G && s.k === G.s.k);
+    G = { s, n: 8 + Math.floor(Math.random() * 5), h: [], us: 0, su: 0, betrayed: false, over: false };
+    renderGame();
+  }
+  function suMove() {
+    const h = G.h, k = G.s.k;
+    if (k === 'tft') return h.length ? h[h.length - 1][0] : 0;
+    if (k === 'alld') return 1;
+    if (k === 'allc') return 0;
+    if (k === 'grim') return G.betrayed ? 1 : 0;
+    return Math.random() < .5 ? 0 : 1;
+  }
+  function play(m) {
+    if (G.over) return;
+    const o = suMove();
+    if (m === 1) G.betrayed = true;
+    G.h.push([m, o]);
+    const [u, v] = PD[m][o]; G.us += u; G.su += v;
+    const txt = [
+      ['Les deux pays négocient le désarmement.', 'Tu désarmes, l\'URSS s\'arme : tu es vulnérable.'],
+      ['Tu t\'armes face à une URSS qui désarme : tu domines.', 'Les deux pays s\'arment : la course continue.']
+    ][m][o];
+    $('#last').innerHTML = `${txt} Gains de l'année : ${pay(u, v)}.`;
+    if (G.h.length >= G.n) G.over = true;
+    renderGame();
+  }
+  function renderGame() {
+    const y = G.h.length;
+    $('#year').textContent = G.over ? `Fin de la Guerre froide après ${y} ans` : `Année ${y + 1}`;
+    if (!y) $('#last').textContent = 'Aucune décision pour l\'instant.';
+    $('#playC').disabled = $('#playT').disabled = G.over;
+    $('#scUS').textContent = G.us; $('#scSU').textContent = G.su;
+    const ars = w => G.h.filter(h => h[w] === 1).map(() => '<i></i>').join('');
+    $('#arUS').innerHTML = ars(0); $('#arSU').innerHTML = ars(1);
+    const cells = w => { let s = G.h.map(h => `<i class="${h[w] ? 't' : 'c'}"></i>`).join(''); if (!G.over) s += '<i></i>'; return s; };
+    $('#hUS').innerHTML = cells(0); $('#hSU').innerHTML = cells(1);
+    const r = $('#reveal');
+    if (G.over) {
+      const coop = 3 * y, mutual = G.h.filter(h => !h[0] && !h[1]).length;
+      r.hidden = false;
+      r.innerHTML = `<h3>L'URSS jouait « ${G.s.name} »</h3><p>${G.s.desc}</p>
+        <p>Tu as obtenu <b class="us">${G.us}</b>, l'URSS <b class="su">${G.su}</b>. Un désarmement mutuel chaque année aurait donné ${coop} à chacun. Années de coopération mutuelle : ${mutual} sur ${y}.</p>
+        <p>Quand le jeu se répète sans fin connue, la menace de représailles futures peut rendre la coopération rationnelle. Si la date de fin était connue de tous, le raisonnement à rebours ramènerait à la trahison dès la dernière année, puis à chaque année.</p>`;
+      pop(r);
+    } else r.hidden = true;
+  }
+  $('#playC').addEventListener('click', () => play(0));
+  $('#playT').addEventListener('click', () => play(1));
+  $('#replay').addEventListener('click', newGame);
+
+  /* ---------- Explorateur ---------- */
+  const E = { R: 3, T: 4, S: 0, P: 1 };
+  function renderE() {
+    ['R', 'T', 'S', 'P'].forEach(k => { $('#s' + k).value = E[k]; $('#v' + k).textContent = E[k]; });
+    const { R, T, S, P } = E, M = [[[R, R], [S, T]], [[T, S], [P, P]]], A = analyse(M);
+    drawMatrix($('#mx2'), M, { arrows: A.arrows, nash: A.nash, pareto: A.pareto });
+    document.querySelectorAll('#presets .chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.p === [R, T, S, P].join(','))));
+    const name = k => k === '00' ? 'désarmement mutuel' : k === '11' ? 'course aux armements' : k === '01' ? 'États-Unis désarmés, URSS armée' : 'États-Unis armés, URSS désarmée';
+    const cellPay = k => pay(M[+k[0]][+k[1]][0], M[+k[0]][+k[1]][1]);
+    let title, text;
+    if (T > R && R > P && P > S) { title = 'Dilemme du prisonnier'; text = 'Trahir est dominant pour chacun, et l\'équilibre obtenu est Pareto-dominé par le désarmement mutuel.'; }
+    else if (T > R && S > P) { title = 'Jeu de la poule mouillée'; text = 'La pire issue est l\'escalade mutuelle. Chaque pays veut que l\'autre recule le premier : il y a deux équilibres, où un seul pays cède. Ce jeu sert souvent à décrire la dissuasion et les crises comme celle de Cuba.'; }
+    else if (R > T && P > S) { title = 'Chasse au cerf'; text = 'Le désarmement mutuel est un équilibre, mais la course aux armements aussi. Tout dépend de la confiance que chaque pays accorde à l\'autre.'; }
+    else if (R > T && S > P) { title = 'Pas de dilemme'; text = 'Coopérer est dominant pour chacun, et l\'équilibre est efficace.'; }
+    else if (T > R && P > S) { title = 'Impasse'; text = 'Trahir est dominant, et les deux pays préfèrent la course aux armements au désarmement mutuel : il n\'y a pas de dilemme, seulement un conflit d\'intérêts.'; }
+    else { title = 'Configuration avec égalités'; text = 'Certains gains sont égaux : suis les flèches pour repérer les équilibres.'; }
+    const li = [];
+    li.push(A.domUS === 1 ? 'Trahir est une stratégie strictement dominante pour chaque pays.' : A.domUS === 0 ? 'Coopérer est une stratégie strictement dominante pour chaque pays.' : 'Aucun pays n\'a de stratégie strictement dominante : sa meilleure réponse dépend du choix de l\'autre.');
+    const ne = [...A.nash];
+    li.push(ne.length ? `Équilibre${ne.length > 1 ? 's' : ''} de Nash : ${ne.map(k => `${name(k)} ${cellPay(k)}`).join(', ')}.` : 'Aucun équilibre de Nash en stratégies pures.');
+    const bad = ne.filter(k => !A.pareto.has(k));
+    li.push(bad.length ? `${bad.length > 1 ? 'Ces équilibres sont' : 'Cet équilibre est'} Pareto-dominé${bad.length > 1 ? 's' : ''} : ${bad.map(k => cellPay(k)).join(', ')}.` : 'Tous les équilibres de Nash sont des optima de Pareto.');
+    $('#verdict').innerHTML = `<h3>${title}</h3><p style="margin:0">${text}</p><ul>${li.map(t => `<li>${t}</li>`).join('')}</ul>`;
+  }
+  ['R', 'T', 'S', 'P'].forEach(k => $('#s' + k).addEventListener('input', e => { E[k] = +e.target.value; renderE(); }));
+  $('#presets').addEventListener('click', e => { const c = e.target.closest('.chip'); if (!c) return; const [R, T, S, P] = c.dataset.p.split(',').map(Number); Object.assign(E, { R, T, S, P }); renderE(); });
+
+  showStep(); newGame(); renderE();
+})();
+</script>
+</body>
+</html>

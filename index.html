@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Outils interactifs – Microéconomie LSO2</title>
+<meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --navy:#006EB8; --navy-soft:#E8F1F9; --brick:#B6321C; --brick-soft:#F9ECE9;
+  --forest:#009B55; --forest-soft:#E6F5ED;
+  --ink:#1A2130; --muted:#5B6372; --faint:#A3A9B3; --line:#E2E5EA; --soft:#F5F6F8; --paper:#fff;
+  --serif:'STIX Two Text','Cambria Math','Times New Roman',serif;
+  --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#fff}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,40px)}
+:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:30px}
+.site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
+.site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
+.site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
+.site .home:hover b{text-decoration:underline;text-underline-offset:3px}
+.site .links{display:flex;gap:4px;flex-wrap:wrap}
+.site .links a{padding:7px 13px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.88rem;transition:background .2s,color .2s}
+.site .links a:hover{background:var(--soft);color:var(--ink)}
+.site .links a[aria-current="page"]{background:var(--ink);color:#fff}
+
+.hero{padding:clamp(20px,5vw,56px) 0 clamp(28px,5vw,48px);border-bottom:1px solid var(--line);margin-bottom:12px}
+.hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.8rem,7.5vw,5.6rem);line-height:.95;letter-spacing:-.02em;margin:0}
+.hero h1 span{display:block;color:var(--muted);font-weight:400;font-style:italic;font-size:.55em;letter-spacing:-.01em;margin-top:.25em}
+.hero p{max-width:58ch;color:var(--muted);margin:22px 0 0;font-size:1.05rem}
+.tools{list-style:none;margin:0;padding:0}
+.tool a{display:grid;grid-template-columns:200px minmax(0,1fr) auto;gap:clamp(16px,3vw,40px);align-items:center;padding:28px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.tool .ill{width:200px;height:140px;border-radius:16px;background:var(--soft);display:grid;place-items:center;transition:background .25s}
+.tool .ill svg{width:170px;height:118px}
+.tool h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.1;margin:0 0 6px}
+.tool p{margin:0;color:var(--muted);max-width:60ch}
+.tool .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tool .tags span{font-size:.8rem;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--soft);color:var(--ink)}
+.tool .go{font-weight:700;font-size:.95rem;padding:10px 16px;border-radius:12px;border:1.5px solid var(--ink);white-space:nowrap;transition:background .2s,color .2s}
+.tool a:hover .go,.tool a:focus-visible .go{background:var(--ink);color:#fff}
+.tool a:hover .ill{background:#EEF1F5}
+.tool a:hover h2{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+footer{margin-top:40px;padding-top:16px;font-size:.82rem;color:var(--muted)}
+@media (max-width:760px){
+  .tool a{grid-template-columns:1fr;gap:14px}
+  .tool .ill{width:100%}
+  .tool .go{justify-self:start}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="site" aria-label="Outils">
+    <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
+    <div class="links"><a href="edgeworth.html">Boîte d'Edgeworth</a><a href="pareto.html">Optimum de Pareto</a><a href="dilemme-prisonnier.html">Dilemme du prisonnier</a></div>
+  </nav>
+  <section class="hero">
+    <h1>Outils interactifs<span>Microéconomie LSO2</span></h1>
+    <p>Trois ateliers à manipuler pour comprendre l'échange, l'efficacité et les interactions stratégiques. Chacun propose des défis à relever directement dans la page.</p>
+  </section>
+
+  <ul class="tools">
+    <li class="tool"><a href="edgeworth.html">
+      <div class="ill" aria-hidden="true"><svg viewBox="0 0 170 118">
+        <rect x="14" y="10" width="142" height="98" fill="#fff" stroke="#1A2130" stroke-width="1.6"/>
+        <path d="M44 10 C 50 60, 80 88, 156 96" fill="none" stroke="#006EB8" stroke-width="2.4"/>
+        <path d="M14 30 C 70 32, 118 50, 134 108" fill="none" stroke="#B6321C" stroke-width="2.4"/>
+        <path d="M46 31 C 90 36, 120 56, 128 88 C 96 84, 62 62, 46 31Z" fill="#009B55" fill-opacity=".18"/>
+        <path d="M14 108 C 60 90, 110 60, 156 10" fill="none" stroke="#1A2130" stroke-width="1.4" stroke-dasharray="4 4"/>
+        <circle cx="46" cy="31" r="4.5" fill="#1A2130" stroke="#fff" stroke-width="1.5"/>
+      </svg></div>
+      <div>
+        <h2>La boîte d'Edgeworth</h2>
+        <p>Économie d'échange à deux agents et deux biens. Des gains à l'échange jusqu'aux deux théorèmes du bien-être.</p>
+        <div class="tags"><span>Courbe des contrats</span><span>Équilibre général</span><span>Théorèmes du bien-être</span></div>
+      </div>
+      <span class="go">Ouvrir</span>
+    </a></li>
+
+    <li class="tool"><a href="pareto.html">
+      <div class="ill" aria-hidden="true"><svg viewBox="0 0 170 118">
+        <path d="M22 100 V20" stroke="#B6321C" stroke-width="1.6"/><path d="M22 100 H156" stroke="#006EB8" stroke-width="1.6"/>
+        <path d="M22 26 H44 V46 H84 V64 H118 V88 H146 V100" fill="none" stroke="#009B55" stroke-width="2.2" stroke-dasharray="5 4"/>
+        <g fill="#009B55" stroke="#fff" stroke-width="1.5"><circle cx="44" cy="26" r="6"/><circle cx="84" cy="46" r="6"/><circle cx="118" cy="64" r="6"/><circle cx="146" cy="88" r="6"/></g>
+        <g fill="#E1E4E9" stroke="#A3A9B3" stroke-width="1.5"><circle cx="62" cy="70" r="6"/><circle cx="96" cy="82" r="6"/><circle cx="36" cy="58" r="6"/></g>
+      </svg></div>
+      <div>
+        <h2>Optimum de Pareto</h2>
+        <p>Comparer des issues, repérer celles qui en Pareto-dominent d'autres, puis identifier tous les optima.</p>
+        <div class="tags"><span>Pareto-dominance</span><span>Frontière</span><span>Efficacité et équité</span></div>
+      </div>
+      <span class="go">Ouvrir</span>
+    </a></li>
+
+    <li class="tool"><a href="dilemme-prisonnier.html">
+      <div class="ill" aria-hidden="true"><svg viewBox="0 0 170 118">
+        <rect x="18" y="12" width="134" height="94" rx="6" fill="#fff" stroke="#E2E5EA" stroke-width="1.5"/>
+        <path d="M85 12 V106 M18 59 H152" stroke="#E2E5EA" stroke-width="1.5"/>
+        <ellipse cx="51" cy="35" rx="26" ry="13" fill="none" stroke="#009B55" stroke-width="2.4"/>
+        <rect x="92" y="65" width="54" height="35" rx="7" fill="none" stroke="#1A2130" stroke-width="1.8" stroke-dasharray="5 4"/>
+        <g style="font-family:'STIX Two Text',serif" font-size="15" text-anchor="middle">
+          <text x="51" y="40"><tspan fill="#006EB8">3</tspan> ; <tspan fill="#B6321C">3</tspan></text>
+          <text x="118" y="40"><tspan fill="#006EB8">0</tspan> ; <tspan fill="#B6321C">4</tspan></text>
+          <text x="51" y="87"><tspan fill="#006EB8">4</tspan> ; <tspan fill="#B6321C">0</tspan></text>
+          <text x="119" y="87"><tspan fill="#006EB8">1</tspan> ; <tspan fill="#B6321C">1</tspan></text>
+        </g>
+      </svg></div>
+      <div>
+        <h2>Le dilemme du prisonnier</h2>
+        <p>La course aux armements nucléaires entre les États-Unis et l'URSS : stratégies dominantes, équilibre de Nash, et une partie répétée à jouer.</p>
+        <div class="tags"><span>Équilibre de Nash</span><span>Stratégie dominante</span><span>Jeu répété</span></div>
+      </div>
+      <span class="go">Ouvrir</span>
+    </a></li>
+  </ul>
+
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2.</footer>
+</div>
+</body>
+</html>

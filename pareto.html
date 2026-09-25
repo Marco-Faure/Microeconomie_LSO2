@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Optimum de Pareto – Outils interactifs, microéconomie LSO2</title>
+<meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --navy:#006EB8; --navy-soft:#E8F1F9; --brick:#B6321C; --brick-soft:#F9ECE9;
+  --forest:#009B55; --forest-soft:#E6F5ED; --forest-ink:#00703D;
+  --ink:#1A2130; --muted:#5B6372; --faint:#A3A9B3; --line:#E2E5EA; --soft:#F5F6F8; --paper:#fff;
+  --serif:'STIX Two Text','Cambria Math','Times New Roman',serif;
+  --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#fff}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,40px)}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.m{font-family:var(--serif);font-style:italic;font-size:1.07em;white-space:nowrap}
+.m sub,.m sup{font-size:.72em}
+.p1{color:var(--navy);font-weight:600}.p2{color:var(--brick);font-weight:600}
+.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:30px}
+.site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
+.site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
+.site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
+.site .home:hover b{text-decoration:underline;text-underline-offset:3px}
+.site .links{display:flex;gap:4px;flex-wrap:wrap}
+.site .links a{padding:7px 13px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.88rem;transition:background .2s,color .2s}
+.site .links a:hover{background:var(--soft);color:var(--ink)}
+.site .links a[aria-current="page"]{background:var(--ink);color:#fff}
+
+header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 32px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:28px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem);line-height:1;letter-spacing:-.015em;margin:0 0 12px}
+.lede{max-width:62ch;color:var(--muted);margin:0;font-size:1.03rem}
+.players{display:flex;gap:10px;flex-wrap:wrap}
+.pl{display:flex;align-items:center;gap:9px;padding:7px 14px 7px 7px;border-radius:99px;background:var(--navy-soft);font-weight:600;font-size:.92rem}
+.pl.b{background:var(--brick-soft)}
+.pl i{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-style:normal;font-family:var(--serif);font-weight:600}
+.pl.b i{background:var(--brick)}
+.defs{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:44px}
+.def{padding:4px 0 4px 18px;border-left:3px solid var(--ink)}
+.def.g{border-left-color:var(--forest)}
+.def h3{font-family:var(--serif);font-weight:600;font-size:1.25rem;margin:0 0 6px}
+.def p{margin:0;max-width:60ch}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,2.8vw,2.1rem);line-height:1.15;margin:0 0 6px}
+.intro{color:var(--muted);margin:0 0 20px;max-width:66ch}
+section.block{margin-bottom:56px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+.qcard{border:1px solid var(--line);border-radius:20px;padding:22px}
+.qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:.9rem;color:var(--muted)}
+.qdots{display:flex;gap:5px}
+.qdots i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+.qdots i.ok{background:var(--forest)}.qdots i.ko{background:var(--brick)}.qdots i.cur{background:#fff;border:2px solid var(--ink)}
+.duel{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:18px}
+.iss{border-radius:16px;background:var(--soft);padding:16px;text-align:center}
+.iss .n{font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.5rem}
+.iss .v{font-family:var(--serif);font-size:2rem;line-height:1.2}
+.vs{font-family:var(--serif);font-style:italic;color:var(--muted)}
+.choices{display:grid;gap:8px}
+.choice{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 14px;font:inherit;font-weight:600;text-align:left;cursor:pointer;transition:border-color .2s,background .2s}
+.choice:hover:not(:disabled){border-color:var(--ink)}
+.choice:disabled{cursor:default}
+.choice.right{border-color:var(--forest);background:var(--forest-soft);color:var(--forest-ink)}
+.choice.wrong{border-color:var(--brick);background:var(--brick-soft);color:var(--brick)}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--soft);font-size:.95rem}
+.fb.ok{background:var(--forest-soft)}.fb.ko{background:var(--brick-soft)}
+.btn{appearance:none;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:11px;padding:9px 15px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer;transition:background .2s}
+.btn:hover{background:#2E3748}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.ghost:hover{background:var(--soft)}
+.btn.ghost[aria-pressed="true"]{background:var(--forest-soft);border-color:var(--forest);color:var(--forest-ink)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.planecard{border:1px solid var(--line);border-radius:20px;padding:10px}
+svg.plane{display:block;width:100%;height:auto;user-select:none}
+svg text{font-family:var(--sans);font-size:13px}
+svg .at{font-weight:600;font-size:13.5px}
+svg .gl{stroke:#EEF0F3}
+svg .pt{cursor:pointer}
+svg .pt text.l{font-family:var(--serif);font-style:italic;font-weight:600;font-size:15px;pointer-events:none}
+svg .pt text.c{font-size:11.5px;fill:var(--muted);pointer-events:none}
+.caption{font-size:.84rem;color:var(--muted);padding:6px 10px 2px}
+.list{display:grid;gap:7px}
+.issue{appearance:none;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:12px;border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:8px 12px;font:inherit;text-align:left;cursor:pointer;transition:border-color .2s,background .2s}
+.issue:hover{border-color:var(--faint)}
+.issue .lt{width:32px;height:32px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-family:var(--serif);font-style:italic;font-weight:600}
+.issue.sel .lt{background:var(--ink);color:#fff}
+.issue .v{font-family:var(--serif);font-size:1.15rem}
+.issue .s{font-size:.8rem;color:var(--muted);text-align:right}
+.issue.good{border-color:#A9DCC0;background:var(--forest-soft)}
+.issue.good .lt{background:var(--forest);border-color:var(--forest);color:#fff}
+.issue.bad{border-color:#E6B3AA;background:var(--brick-soft)}
+.issue.bad .lt{border-color:var(--brick);color:var(--brick);background:#fff}
+.issue.bad.sel .lt{background:var(--brick);color:#fff}
+.issue.dim .lt{border-color:var(--faint);color:var(--muted)}
+.issue.dim{color:var(--muted)}
+.result{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:.95rem;background:var(--soft)}
+.result.ok{background:var(--forest-soft)}.result.ko{background:var(--brick-soft)}
+.keep{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.keep div{border-top:2px solid var(--ink);padding-top:12px}
+.keep h3{font-family:var(--serif);font-weight:600;font-size:1.15rem;margin:0 0 6px}
+.keep p{margin:0;color:var(--ink)}
+.small{font-size:.84rem;color:var(--muted)}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
+.pop{animation:pop .5s ease-out}
+@keyframes pop{40%{transform:scale(1.02)}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}}
+@media (max-width:880px){.grid2,.defs,.keep{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="site" aria-label="Outils">
+    <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
+    <div class="links"><a href="edgeworth.html">Boîte d'Edgeworth</a><a href="pareto.html" aria-current="page">Optimum de Pareto</a><a href="dilemme-prisonnier.html">Dilemme du prisonnier</a></div>
+  </nav>
+  <header class="top">
+    <div>
+      <h1>Optimum de Pareto</h1>
+      <p class="lede">Une issue est efficace au sens de Pareto quand on ne peut plus améliorer le sort de quelqu'un sans détériorer celui d'un autre. Compare des issues, puis repère celles qui sont des optima.</p>
+    </div>
+    <div class="players">
+      <span class="pl"><i>1</i>Joueur 1</span>
+      <span class="pl b"><i>2</i>Joueur 2</span>
+    </div>
+  </header>
+
+  <div class="defs">
+    <div class="def">
+      <h3>Pareto-dominer</h3>
+      <p>Une issue <span class="m">X</span> Pareto-domine une issue <span class="m">Y</span> si <b>personne</b> n'est moins bien en <span class="m">X</span> qu'en <span class="m">Y</span>, et si <b>au moins un</b> joueur y est strictement mieux.</p>
+    </div>
+    <div class="def g">
+      <h3>Optimum de Pareto</h3>
+      <p>Une issue est un optimum de Pareto si <b>aucune</b> autre issue possible ne la Pareto-domine. Les gains sont notés <span class="m">(<span class="p1">u<sub>1</sub></span> ; <span class="p2">u<sub>2</sub></span>)</span>.</p>
+    </div>
+  </div>
+
+  <!-- Bloc 1 -->
+  <section class="block" id="b1">
+    <h2>Qui domine qui ?</h2>
+    <p class="intro">Huit duels entre deux issues. Pour chacun, dis si l'une Pareto-domine l'autre. Attention aux égalités.</p>
+    <div class="grid2">
+      <div class="qcard" id="qcard">
+        <div class="qhead"><span id="qnum"></span><span class="qdots" id="qdots"></span></div>
+        <div class="duel">
+          <div class="iss"><div class="n">X</div><div class="v" id="qx"></div></div>
+          <div class="vs">ou</div>
+          <div class="iss"><div class="n">Y</div><div class="v" id="qy"></div></div>
+        </div>
+        <div class="choices">
+          <button class="choice" data-a="X"><span class="m">X</span> Pareto-domine <span class="m">Y</span></button>
+          <button class="choice" data-a="Y"><span class="m">Y</span> Pareto-domine <span class="m">X</span></button>
+          <button class="choice" data-a="none">Aucune ne Pareto-domine l'autre</button>
+        </div>
+        <div class="fb" id="qfb" hidden aria-live="polite"></div>
+        <div class="btns"><button class="btn" id="qnext" hidden>Duel suivant</button></div>
+      </div>
+      <div class="planecard">
+        <svg class="plane" id="mini" aria-label="Position des deux issues"></svg>
+        <div class="caption" id="minicap">Chaque issue est un point : gain du joueur 1 en abscisse, gain du joueur 2 en ordonnée.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bloc 2 -->
+  <section class="block" id="b2">
+    <h2>Trouver tous les optima</h2>
+    <p class="intro">Voici sept issues possibles. Sélectionne toutes celles qui sont des optima de Pareto, dans la liste ou directement sur le graphique, puis vérifie.</p>
+    <div class="grid2">
+      <div class="planecard">
+        <svg class="plane" id="plane" aria-label="Issues possibles dans le plan des gains"></svg>
+        <div class="caption" id="planecap">Survole une issue avec les zones activées : en vert, les issues qui la Pareto-domineraient ; en gris, celles qu'elle Pareto-domine.</div>
+      </div>
+      <div>
+        <div class="list" id="list"></div>
+        <div class="btns">
+          <button class="btn" id="verify">Vérifier</button>
+          <button class="btn ghost" id="zones" aria-pressed="false">Montrer les zones de dominance</button>
+          <button class="btn ghost" id="newset">Nouvelle série</button>
+        </div>
+        <div class="result" id="result" hidden aria-live="polite"></div>
+        <p class="small" id="streak" style="margin-top:12px"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>À retenir</h2>
+    <div class="keep" style="margin-top:18px">
+      <div><h3>Pas d'optimum unique</h3><p>Il existe en général plusieurs optima de Pareto. Ils forment la frontière des issues possibles, et aucun n'est « meilleur » que les autres au sens de Pareto.</p></div>
+      <div><h3>Efficace n'est pas juste</h3><p>Une issue très inégale, où un joueur reçoit presque tout, peut être un optimum de Pareto. Le critère ne dit rien de la répartition.</p></div>
+      <div><h3>Un ordre partiel</h3><p>Deux issues peuvent n'être comparables dans aucun sens : chacune est meilleure pour l'un des joueurs. Une issue non dominée n'est pas pour autant préférée par tous à toutes les autres.</p></div>
+    </div>
+  </section>
+
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2.</footer>
+</div>
+
+<script>
+(() => {
+  const C = { navy:'#006EB8', brick:'#B6321C', forest:'#009B55', ink:'#1A2130', muted:'#5B6372', faint:'#A3A9B3' };
+  const $ = s => document.querySelector(s);
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const pay = (a, b) => `(<span class="p1">${a}</span> ; <span class="p2">${b}</span>)`;
+  const dom = (x, y) => x.a >= y.a && x.b >= y.b && (x.a > y.a || x.b > y.b);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pop = el => { if (reduce) return; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); };
+
+  /* ---------- Plan des gains ---------- */
+  function planeFrame(size, ml, mt, unit) {
+    const W = ml + unit * 10 + 16, H = mt + unit * 10 + ml;
+    const X = a => ml + a * unit, Y = b => mt + (10 - b) * unit;
+    let s = '';
+    for (let i = 1; i < 10; i++) s += `<line class="gl" x1="${X(i)}" y1="${Y(10)}" x2="${X(i)}" y2="${Y(0)}"/><line class="gl" x1="${X(0)}" y1="${Y(i)}" x2="${X(10)}" y2="${Y(i)}"/>`;
+    s += `<rect x="${X(0)}" y="${Y(10)}" width="${unit * 10}" height="${unit * 10}" fill="none" stroke="${C.ink}" stroke-width="1.4"/>`;
+    for (let i = 0; i <= 10; i += (size === 'mini' ? 2 : 1)) {
+      s += `<text x="${X(i)}" y="${Y(0) + 18}" text-anchor="middle" fill="${C.navy}">${i}</text>`;
+      s += `<text x="${X(0) - 9}" y="${Y(i) + 4.5}" text-anchor="end" fill="${C.brick}">${i}</text>`;
+    }
+    s += `<text class="at" x="${X(5)}" y="${H - 8}" text-anchor="middle" fill="${C.navy}">Gain du joueur 1</text>`;
+    s += `<text class="at" transform="translate(14 ${Y(5)}) rotate(-90)" text-anchor="middle" fill="${C.brick}">Gain du joueur 2</text>`;
+    return { W, H, X, Y, s };
+  }
+
+  /* ---------- Bloc 1 : duels ---------- */
+  function genQ(type) {
+    const y = { a: rnd(1, 7), b: rnd(1, 7) };
+    let x;
+    if (type === 'strict') x = { a: y.a + rnd(1, 3), b: y.b + rnd(1, 3) };
+    else if (type === 'weak') x = Math.random() < .5 ? { a: y.a, b: y.b + rnd(1, 3) } : { a: y.a + rnd(1, 3), b: y.b };
+    else if (type === 'incomp') x = Math.random() < .5 ? { a: y.a + rnd(1, 3), b: y.b - rnd(1, Math.min(3, y.b)) } : { a: y.a - rnd(1, Math.min(3, y.a)), b: y.b + rnd(1, 3) };
+    else x = { ...y };
+    let X = x, Y = y, ans = (type === 'strict' || type === 'weak') ? 'X' : 'none';
+    if (Math.random() < .5) { X = y; Y = x; if (ans === 'X') ans = 'Y'; }
+    return { X, Y, ans, type };
+  }
+  let Q, qi, qAns;
+  function newQuiz() {
+    Q = shuffle(['strict', 'strict', 'weak', 'weak', 'incomp', 'incomp', 'incomp', 'same']).map(genQ);
+    qi = 0; qAns = [];
+    showQ();
+  }
+  function showQ() {
+    const q = Q[qi];
+    $('#qnum').textContent = `Duel ${qi + 1} sur ${Q.length}`;
+    $('#qdots').innerHTML = Q.map((_, i) => `<i class="${i < qAns.length ? (qAns[i] ? 'ok' : 'ko') : i === qi ? 'cur' : ''}"></i>`).join('');
+    $('#qx').innerHTML = pay(q.X.a, q.X.b); $('#qy').innerHTML = pay(q.Y.a, q.Y.b);
+    document.querySelectorAll('.choice').forEach(b => { b.disabled = false; b.className = 'choice'; });
+    $('#qfb').hidden = true; $('#qnext').hidden = true;
+    drawMini(false);
+  }
+  function explain(q) {
+    const { X, Y } = q, c = (u, v) => u > v ? '&gt;' : u < v ? '&lt;' : '=';
+    const cmp = `Joueur 1 : <span class="p1">${X.a} ${c(X.a, Y.a)} ${Y.a}</span> ; joueur 2 : <span class="p2">${X.b} ${c(X.b, Y.b)} ${Y.b}</span>.`;
+    if (q.type === 'same') return `Les deux issues donnent exactement les mêmes gains. Aucune n'améliore le sort de quiconque, donc aucune ne Pareto-domine l'autre.`;
+    if (q.ans === 'none') return `${cmp} Chaque issue est meilleure pour l'un des joueurs : elles ne sont pas comparables au sens de Pareto.`;
+    const D = q.ans, O = D === 'X' ? 'Y' : 'X';
+    return `${cmp} En ${D}, personne n'est moins bien et au moins un joueur est strictement mieux : <b>${D} Pareto-domine ${O}</b>.` + (q.type === 'weak' ? ' L\'égalité pour l\'un des joueurs ne gêne pas.' : '');
+  }
+  document.querySelectorAll('.choice').forEach(b => b.addEventListener('click', () => {
+    const q = Q[qi], ok = b.dataset.a === q.ans;
+    qAns.push(ok);
+    document.querySelectorAll('.choice').forEach(o => { o.disabled = true; if (o.dataset.a === q.ans) o.classList.add('right'); });
+    if (!ok) b.classList.add('wrong');
+    const fb = $('#qfb'); fb.hidden = false; fb.className = 'fb ' + (ok ? 'ok' : 'ko');
+    fb.innerHTML = `<b>${ok ? 'Exact.' : 'Pas tout à fait.'}</b> ${explain(q)}`;
+    if (ok) pop($('#qcard'));
+    $('#qdots').innerHTML = Q.map((_, i) => `<i class="${i < qAns.length ? (qAns[i] ? 'ok' : 'ko') : ''}"></i>`).join('');
+    const nx = $('#qnext'); nx.hidden = false;
+    if (qi === Q.length - 1) {
+      const n = qAns.filter(Boolean).length;
+      fb.innerHTML += `<div style="margin-top:8px"><b>Score : ${n} sur ${Q.length}.</b> ${n === Q.length ? 'Sans faute.' : n >= 6 ? 'Très bien.' : 'Relis la définition et retente une série.'}</div>`;
+      nx.textContent = 'Nouvelle série de duels';
+    } else nx.textContent = 'Duel suivant';
+    drawMini(true);
+  }));
+  $('#qnext').addEventListener('click', () => { if (qi === Q.length - 1) newQuiz(); else { qi++; showQ(); } });
+
+  function drawMini(reveal) {
+    const q = Q[qi], f = planeFrame('mini', 44, 16, 26), svg = $('#mini');
+    svg.setAttribute('viewBox', `0 0 ${f.W} ${f.H}`);
+    let sh = '';
+    const ne = (p, op) => `<rect x="${f.X(p.a)}" y="${f.Y(10)}" width="${f.X(10) - f.X(p.a)}" height="${f.Y(p.b) - f.Y(10)}" fill="${C.forest}" fill-opacity="${op}" stroke="${C.forest}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+    let cap = 'Chaque issue est un point : gain du joueur 1 en abscisse, gain du joueur 2 en ordonnée.';
+    if (reveal) {
+      if (q.ans === 'X') { sh = ne(q.Y, .14); cap = 'La zone verte contient les issues qui Pareto-dominent Y, bord compris : X s\'y trouve.'; }
+      else if (q.ans === 'Y') { sh = ne(q.X, .14); cap = 'La zone verte contient les issues qui Pareto-dominent X, bord compris : Y s\'y trouve.'; }
+      else if (q.type === 'same') { sh = ne(q.X, .1); cap = 'Les deux points sont confondus : aucun n\'est strictement mieux pour qui que ce soit.'; }
+      else { sh = ne(q.X, .08) + ne(q.Y, .08); cap = 'Aucun point n\'est dans la zone de dominance de l\'autre : les issues ne sont pas comparables.'; }
+    }
+    const pt = (p, n, dx) => `<circle cx="${f.X(p.a)}" cy="${f.Y(p.b)}" r="7" fill="${C.ink}" stroke="#fff" stroke-width="2"/><text x="${f.X(p.a) + dx}" y="${f.Y(p.b) - 10}" text-anchor="${dx < 0 ? 'end' : 'start'}" style="font-family:var(--serif);font-style:italic;font-weight:600;font-size:17px;paint-order:stroke;stroke:#fff;stroke-width:4px" fill="${C.ink}">${n}</text>`;
+    const same = q.X.a === q.Y.a && q.X.b === q.Y.b;
+    svg.innerHTML = f.s + sh + pt(q.X, same ? 'X = Y' : 'X', 9) + (same ? '' : pt(q.Y, 'Y', q.Y.a >= q.X.a ? 9 : -9));
+    $('#minicap').textContent = cap;
+  }
+
+  /* ---------- Bloc 2 : trouver les optima ---------- */
+  const LET = 'ABCDEFG';
+  let set, sel, verified = false, zonesOn = false, hover = null, wins = 0;
+  const first = [[2, 8], [5, 6], [4, 4], [7, 3], [5, 3], [9, 1], [1, 7]];
+  function makeSet(pairs) { return pairs.map((p, i) => ({ id: LET[i], a: p[0], b: p[1] })); }
+  function genSet() {
+    for (let t = 0; t < 2000; t++) {
+      const used = new Set(), pts = [];
+      while (pts.length < 7) {
+        const a = rnd(0, 10), b = rnd(0, 10), k = a + ',' + b;
+        if (used.has(k) || a + b < 5 || a + b > 14) continue;
+        used.add(k); pts.push([a, b]);
+      }
+      const s = makeSet(shuffle(pts)), opt = s.filter(p => !s.some(q => dom(q, p)));
+      const weak = s.some(p => s.some(q => dom(q, p) && (q.a === p.a || q.b === p.b)));
+      if (opt.length >= 2 && opt.length <= 4 && weak) return s;
+    }
+    return makeSet(first);
+  }
+  const isOpt = p => !set.some(q => dom(q, p));
+  const dominators = p => set.filter(q => dom(q, p)).sort((u, v) => (v.a + v.b) - (u.a + u.b));
+
+  function newSet(s) { set = s || genSet(); sel = new Set(); verified = false; hover = null; $('#result').hidden = true; renderSet(); }
+
+  function renderSet() {
+    const f = planeFrame('big', 52, 18, 40), svg = $('#plane');
+    svg.setAttribute('viewBox', `0 0 ${f.W} ${f.H}`);
+    let s = f.s;
+    if (verified) {
+      const opt = set.filter(isOpt).sort((u, v) => u.a - v.a);
+      let d = `M${f.X(0)} ${f.Y(0)}L${f.X(0)} ${f.Y(opt[0].b)}`, e = `M${f.X(0)} ${f.Y(opt[0].b)}`;
+      opt.forEach((p, i) => {
+        d += `L${f.X(p.a)} ${f.Y(p.b)}`; e += `L${f.X(p.a)} ${f.Y(p.b)}`;
+        const nb = i < opt.length - 1 ? opt[i + 1].b : 0;
+        d += `L${f.X(p.a)} ${f.Y(nb)}`; e += `L${f.X(p.a)} ${f.Y(nb)}`;
+      });
+      s += `<path d="${d}Z" fill="${C.ink}" fill-opacity=".05"/><path d="${e}" fill="none" stroke="${C.forest}" stroke-width="2.5" stroke-dasharray="6 5"/>`;
+    }
+    if (hover && (zonesOn || verified)) {
+      const p = set.find(q => q.id === hover), x = f.X(p.a), y = f.Y(p.b);
+      s += `<rect x="${x}" y="${f.Y(10)}" width="${f.X(10) - x}" height="${y - f.Y(10)}" fill="${C.forest}" fill-opacity=".14" stroke="${C.forest}" stroke-dasharray="4 3"/>`;
+      s += `<rect x="${f.X(0)}" y="${y}" width="${x - f.X(0)}" height="${f.Y(0) - y}" fill="${C.ink}" fill-opacity=".08" stroke="${C.faint}" stroke-dasharray="4 3"/>`;
+    }
+    set.forEach(p => {
+      const x = f.X(p.a), y = f.Y(p.b), on = sel.has(p.id), o = isOpt(p);
+      let fill = '#fff', stroke = C.ink, tc = C.ink, dash = '';
+      if (on) { fill = C.ink; tc = '#fff'; }
+      if (verified) {
+        if (o && on) { fill = C.forest; stroke = C.forest; tc = '#fff'; }
+        else if (o && !on) { fill = '#fff'; stroke = C.forest; tc = C.forest; dash = 'stroke-dasharray="4 3"'; }
+        else if (!o && on) { fill = C.brick; stroke = C.brick; tc = '#fff'; }
+        else { fill = '#E7E9ED'; stroke = C.faint; tc = C.muted; }
+      }
+      const cy = y + (p.b <= 0 ? -24 : 26);
+      s += `<g class="pt" data-id="${p.id}" tabindex="0" role="checkbox" aria-checked="${on}" aria-label="Issue ${p.id}, gains ${p.a} et ${p.b}">
+        <circle cx="${x}" cy="${y}" r="22" fill="transparent"/>
+        <circle cx="${x}" cy="${y}" r="13" fill="${fill}" stroke="${stroke}" stroke-width="2" ${dash}/>
+        <text class="l" x="${x}" y="${y + 5}" text-anchor="middle" fill="${tc}">${p.id}</text>
+        <text class="c" x="${x}" y="${cy}" text-anchor="middle">(${p.a} ; ${p.b})</text></g>`;
+    });
+    svg.innerHTML = s;
+    // Liste
+    $('#list').innerHTML = [...set].sort((u, v) => u.id.localeCompare(v.id)).map(p => {
+      const on = sel.has(p.id), o = isOpt(p);
+      let cls = 'issue' + (on ? ' sel' : ''), st = on ? 'Sélectionnée' : '';
+      if (verified) {
+        if (o) { cls += on ? ' good' : ' bad'; st = on ? 'Optimum de Pareto' : 'Optimum oublié'; }
+        else {
+          const d = dominators(p)[0];
+          cls += on ? ' bad' : ' dim';
+          st = `Dominée par ${d.id} ${d.a === p.a || d.b === p.b ? '(avec égalité)' : ''}`;
+        }
+      }
+      return `<button class="${cls}" data-id="${p.id}" aria-pressed="${on}"><span class="lt">${p.id}</span><span class="v">${pay(p.a, p.b)}</span><span class="s">${st}</span></button>`;
+    }).join('');
+  }
+  function toggle(id) {
+    if (verified) { verified = false; $('#result').hidden = true; }
+    sel.has(id) ? sel.delete(id) : sel.add(id);
+    renderSet();
+  }
+  $('#list').addEventListener('click', e => { const b = e.target.closest('.issue'); if (b) toggle(b.dataset.id); });
+  const plane = $('#plane');
+  plane.addEventListener('click', e => { const g = e.target.closest('.pt'); if (g) toggle(g.dataset.id); });
+  plane.addEventListener('keydown', e => { const g = e.target.closest('.pt'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggle(g.dataset.id); requestAnimationFrame(() => { const n = plane.querySelector(`.pt[data-id="${g.dataset.id}"]`); n && n.focus(); }); } });
+  plane.addEventListener('pointerover', e => { const g = e.target.closest('.pt'); const id = g ? g.dataset.id : null; if (id !== hover) { hover = id; renderSet(); } });
+  plane.addEventListener('pointerleave', () => { if (hover) { hover = null; renderSet(); } });
+  plane.addEventListener('focusin', e => { const g = e.target.closest('.pt'); if (g && g.dataset.id !== hover) { hover = g.dataset.id; renderSet(); plane.querySelector(`.pt[data-id="${hover}"]`).focus(); } });
+
+  $('#zones').addEventListener('click', e => { zonesOn = !zonesOn; e.currentTarget.setAttribute('aria-pressed', String(zonesOn)); e.currentTarget.textContent = zonesOn ? 'Masquer les zones de dominance' : 'Montrer les zones de dominance'; renderSet(); });
+  $('#newset').addEventListener('click', () => newSet());
+  $('#verify').addEventListener('click', () => {
+    verified = true; renderSet();
+    const opt = set.filter(isOpt), missed = opt.filter(p => !sel.has(p.id)), wrong = set.filter(p => !isOpt(p) && sel.has(p.id));
+    const r = $('#result'); r.hidden = false;
+    if (!missed.length && !wrong.length) {
+      wins++; r.className = 'result ok';
+      r.innerHTML = `<b>Parfait.</b> Les ${opt.length} optima de Pareto sont ${opt.map(p => p.id).join(', ')}. Ils forment la frontière en pointillés verts ; toutes les autres issues sont dominées.`;
+      pop(r);
+    } else {
+      r.className = 'result ko';
+      let t = [];
+      wrong.forEach(p => { const d = dominators(p)[0]; t.push(`${p.id} ${pay(p.a, p.b)} est Pareto-dominée par ${d.id} ${pay(d.a, d.b)}.`); });
+      missed.forEach(p => t.push(`${p.id} ${pay(p.a, p.b)} est un optimum : aucune autre issue n\'améliore le sort d\'un joueur sans réduire celui de l\'autre.`));
+      r.innerHTML = `<b>${wrong.length + missed.length} erreur${wrong.length + missed.length > 1 ? 's' : ''}.</b> ${t.join(' ')} Clique sur une issue pour corriger ta sélection.`;
+    }
+    $('#streak').textContent = wins ? `Séries réussies sans faute : ${wins}` : '';
+  });
+
+  newQuiz();
+  newSet(makeSet(first));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La boîte d'Edgeworth – Outils interactifs, microéconomie LSO2</title>
+<meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --navy:#006EB8; --navy-soft:#E8F1F9;
+  --brick:#B6321C; --brick-soft:#F9ECE9;
+  --forest:#009B55; --forest-soft:#E6F5ED; --forest-ink:#00703D;
+  --ink:#1A2130; --muted:#5B6372; --faint:#A3A9B3; --line:#E2E5EA; --soft:#F5F6F8; --paper:#FFFFFF;
+  --serif:'STIX Two Text','Cambria Math','Times New Roman',serif;
+  --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#fff}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1260px;margin:0 auto;padding:clamp(16px,3vw,40px)}
+.m{font-family:var(--serif);font-style:italic;font-size:1.07em;white-space:nowrap}
+.m sub,.m sup{font-size:.72em}
+b{font-weight:600}
+
+/* En-tête */
+header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 32px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:30px}
+.site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
+.site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
+.site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
+.site .home:hover b{text-decoration:underline;text-underline-offset:3px}
+.site .links{display:flex;gap:4px;flex-wrap:wrap}
+.site .links a{padding:7px 13px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.88rem;transition:background .2s,color .2s}
+.site .links a:hover{background:var(--soft);color:var(--ink)}
+.site .links a[aria-current="page"]{background:var(--ink);color:#fff}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem);line-height:1;letter-spacing:-.015em;margin:0 0 12px}
+.lede{max-width:60ch;color:var(--muted);margin:0;font-size:1.03rem}
+.side{display:flex;flex-direction:column;gap:12px;align-items:flex-end}
+.agents{display:flex;gap:10px;flex-wrap:wrap}
+.agent{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:999px;background:var(--navy-soft)}
+.agent.b{background:var(--brick-soft)}
+.agent .tag{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.15rem}
+.agent.b .tag{background:var(--brick)}
+.agent .fx{font-family:var(--serif);font-size:1.05rem}
+.score{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--muted)}
+.dots{display:flex;gap:5px}
+.dots i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--faint);transition:background .3s,border-color .3s}
+.dots i.on{background:var(--forest);border-color:var(--forest)}
+
+/* Scène */
+.stage{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(320px,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+.boxcol{position:sticky;top:20px}
+.boxcard{border:1px solid var(--line);border-radius:20px;padding:8px 8px 12px;background:#fff}
+#box{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+#box text{font-family:var(--sans);font-size:14px}
+#box .at{font-size:14px;font-weight:600}
+#box .gl{stroke:#EEF0F3;stroke-width:1}
+#box .lbl{font-family:var(--serif);font-style:italic;font-weight:600;font-size:23px;paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}
+#box .chip text{font-size:13px;font-weight:700}
+.handle{cursor:grab;outline:none}
+.handle:active{cursor:grabbing}
+.handle .hit{fill:transparent}
+.handle .dot{stroke:#fff;stroke-width:2.5;transition:fill .25s}
+.handle .ring{fill:none;stroke:var(--navy);stroke-width:3;opacity:0}
+.handle:focus-visible .ring{opacity:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:8px 14px 0;font-size:.83rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend .ln{width:22px;height:0;border-top:2.5px solid}
+.legend .dash{border-top-style:dashed}
+.legend .fill{width:16px;height:12px;border-radius:3px;background:rgba(0,155,85,.2)}
+.legend .pt{width:10px;height:10px;border-radius:50%;background:var(--ink)}
+.legend .st{color:var(--forest);font-size:1rem;line-height:1}
+
+/* Panneau */
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:20px}
+.tab{appearance:none;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 9px;font:inherit;font-size:.86rem;font-weight:600;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:left;transition:border-color .2s,color .2s}
+.tab:hover{border-color:var(--faint);color:var(--ink)}
+.tab .n{width:25px;height:25px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;font-size:.78rem;transition:background .3s,border-color .3s,color .3s}
+.tab[aria-selected="true"]{border-color:var(--ink);color:var(--ink);box-shadow:inset 0 -3px 0 var(--ink)}
+.tab.done .n{background:var(--forest);border-color:var(--forest);color:#fff}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.step h2{font-family:var(--serif);font-weight:600;font-size:1.7rem;line-height:1.15;margin:0 0 12px;letter-spacing:-.005em}
+.step p{margin:0 0 11px;max-width:62ch}
+.defi{border-radius:16px;padding:14px 16px;background:var(--soft);margin:16px 0;border:1px solid var(--line);transition:background .35s,border-color .35s}
+.defi .lab{font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.defi .ic{width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--faint);display:grid;place-items:center;font-size:.72rem;color:#fff;flex:none}
+.defi .status{margin-top:8px;font-size:.92rem;color:var(--muted)}
+.defi .fb{display:none;margin-top:10px;font-size:.94rem;padding-top:10px;border-top:1px solid #BfE3CF}
+.defi.ok{background:var(--forest-soft);border-color:#A9DCC0}
+.defi.ok .ic{border:none;background:var(--forest)}
+.defi.ok .ic::after{content:"✓"}
+.defi.ok .fb{display:block}
+.defi.pop{animation:pop .5s ease-out}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.025)}100%{transform:scale(1)}}
+.read{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.card{border:1px solid var(--line);border-radius:14px;padding:10px 12px;min-width:0}
+.card.a{border-top:3px solid var(--navy)}
+.card.b{border-top:3px solid var(--brick)}
+.card .h{font-size:.8rem;color:var(--muted)}
+.card .v{font-family:var(--serif);font-size:1.15rem;margin:1px 0 4px}
+.card .u{font-size:.86rem}
+.card .was{color:var(--muted)}
+.badge{display:inline-block;padding:1px 9px;border-radius:99px;font-size:.78rem;font-weight:700;margin-top:4px}
+.badge.up{background:var(--forest-soft);color:var(--forest-ink)}
+.badge.down{background:#FBE7E3;color:var(--brick)}
+.badge.eq{background:var(--soft);color:var(--muted)}
+.meter{margin:14px 0;display:grid;gap:9px}
+.meter .row{display:grid;grid-template-columns:62px 1fr 52px;align-items:center;gap:10px}
+.meter .bar{height:12px;border-radius:99px;background:var(--soft);overflow:hidden}
+.meter .bar i{display:block;height:100%;border-radius:99px;transition:width .12s}
+.meter .val{font-family:var(--serif);text-align:right}
+.price{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:14px 0 4px}
+.price .big{font-family:var(--serif);font-size:1.6rem}
+input[type=range]{width:100%;accent-color:var(--ink);margin:6px 0 2px}
+.scale{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+.z{display:grid;grid-template-columns:52px 1fr 64px;align-items:center;gap:10px;margin:8px 0;font-size:.88rem}
+.z .track{position:relative;height:12px;background:var(--soft);border-radius:99px}
+.z .track::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1.5px;background:var(--faint)}
+.z .track i{position:absolute;top:0;bottom:0;background:var(--ink);border-radius:99px;transition:background .2s}
+.z .track i.zero{background:var(--forest)}
+.z .zv{font-family:var(--serif);text-align:right}
+.small{font-size:.84rem;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.btn{appearance:none;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:11px;padding:8px 14px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s}
+.btn:hover{background:#2E3748}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.ghost:hover{background:var(--soft)}
+.btn.ghost[aria-pressed="true"]{background:var(--forest-soft);border-color:var(--forest);color:var(--forest-ink)}
+.btn:disabled{opacity:.5;cursor:default}
+details.settings{margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
+details.settings summary{cursor:pointer;font-weight:600;font-size:.92rem}
+.sl{margin:12px 0}
+.sl label{display:flex;justify-content:space-between;gap:8px;font-size:.88rem}
+.sl label .m{font-size:1rem}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
+
+/* Effets */
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 1s ease-out forwards}
+@keyframes pulse{from{opacity:.8;transform:scale(1)}to{opacity:0;transform:scale(5)}}
+.spark{transform-box:fill-box;transform-origin:center;animation:spark .9s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes spark{from{transform:translate(0,0);opacity:1}to{transform:translate(var(--dx),var(--dy));opacity:0}}
+@media (prefers-reduced-motion:reduce){.pulse,.spark,.defi.pop{animation:none;opacity:0}.defi.pop{opacity:1}}
+
+@media (max-width:920px){
+  .stage{grid-template-columns:1fr}
+  .boxcol{top:env(safe-area-inset-top,0px);z-index:5;background:#fff;padding-bottom:6px}
+  .legend{display:none}
+  .side{align-items:flex-start}
+}
+@media (max-width:420px){
+  .tab{font-size:.76rem;padding:8px 6px}
+  .read{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="site" aria-label="Outils">
+    <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
+    <div class="links"><a href="edgeworth.html" aria-current="page">Boîte d'Edgeworth</a><a href="pareto.html">Optimum de Pareto</a><a href="dilemme-prisonnier.html">Dilemme du prisonnier</a></div>
+  </nav>
+  <header class="top">
+    <div>
+      <h1>La boîte d'Edgeworth</h1>
+      <p class="lede">Deux consommateurs se partagent deux biens disponibles en quantités fixes. Déplace les points dans la boîte, observe qui gagne à l'échange et découvre où les échanges s'arrêtent.</p>
+    </div>
+    <div class="side">
+      <div class="agents">
+        <div class="agent"><span class="tag">A</span><span class="fx">U<sub>A</sub> = x<sup id="fa1">0,6</sup> y<sup id="fa2">0,4</sup></span></div>
+        <div class="agent b"><span class="tag">B</span><span class="fx">U<sub>B</sub> = x<sup id="fb1">0,4</sup> y<sup id="fb2">0,6</sup></span></div>
+      </div>
+      <div class="score"><span id="scoreTxt">0 défi réussi sur 4</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="boxcol">
+      <div class="boxcard">
+        <svg id="box" role="img" aria-label="Boîte d'Edgeworth interactive"></svg>
+        <div class="legend" id="legend">
+          <span data-s="012"><i class="pt"></i>Dotation initiale ω</span>
+          <span data-s="3"><i class="pt"></i>Dotations ω (avant) et ω′ (après redistribution)</span>
+          <span data-s="0123"><i class="ln" style="border-color:var(--navy)"></i>Courbe d'indifférence de A</span>
+          <span data-s="0123"><i class="ln" style="border-color:var(--brick)"></i>Courbe d'indifférence de B</span>
+          <span data-s="01" id="lgLens"><i class="fill"></i>Échanges avantageux pour les deux</span>
+          <span data-s="123"><i class="ln dash" style="border-color:var(--ink)"></i>Courbe des contrats</span>
+          <span data-s="1"><i class="ln" style="border-color:var(--forest);border-top-width:4px"></i>Noyau</span>
+          <span data-s="23"><i class="ln" style="border-color:#3B4252"></i>Droite de budget</span>
+          <span data-s="3"><i class="st">★</i>Optimum visé</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="tabs" role="tablist" aria-label="Étapes">
+        <button class="tab" role="tab" data-i="0" aria-selected="true"><span class="n">1</span>Échanger</button>
+        <button class="tab" role="tab" data-i="1" aria-selected="false"><span class="n">2</span>Pareto</button>
+        <button class="tab" role="tab" data-i="2" aria-selected="false"><span class="n">3</span>Marché</button>
+        <button class="tab" role="tab" data-i="3" aria-selected="false"><span class="n">4</span>Redistribuer</button>
+      </div>
+
+      <!-- Étape 1 -->
+      <section class="step" data-step="0" role="tabpanel">
+        <h2>Qui gagne à l'échange ?</h2>
+        <p>Chaque point de la boîte répartit les <b>10 unités de bien 1</b> et les <b>8 unités de bien 2</b> entre A et B. La part de A se lit depuis <span class="m">O<sub>A</sub></span>, en bas à gauche ; celle de B depuis <span class="m">O<sub>B</sub></span>, en haut à droite.</p>
+        <p>Le point <span class="m">ω</span> est la dotation initiale. Les deux courbes pleines qui le traversent sont les courbes d'indifférence de départ ; les pointillés passent par <span class="m">P</span>.</p>
+        <div class="read">
+          <div class="card a"><div class="h">A détient (bien 1 ; bien 2)</div><div class="v" id="s0a"></div><div class="u" id="s0ua"></div></div>
+          <div class="card b"><div class="h">B détient (bien 1 ; bien 2)</div><div class="v" id="s0b"></div><div class="u" id="s0ub"></div></div>
+        </div>
+        <div class="defi" id="d0">
+          <div class="lab"><span class="ic"></span>Défi 1</div>
+          <div>Déplace le point <span class="m">P</span> vers une répartition qui améliore la situation <b>des deux</b> agents par rapport à <span class="m">ω</span>.</div>
+          <div class="status" id="st0" aria-live="polite"></div>
+          <div class="fb"><b>Bien vu.</b> <span class="m">P</span> est au-dessus de la courbe d'indifférence de A et au-dessous de celle de B, vue depuis <span class="m">O<sub>B</sub></span>. Toutes les répartitions de la lentille verte sont des <b>améliorations de Pareto</b> par rapport à <span class="m">ω</span>.</div>
+        </div>
+        <div class="btns"><button class="btn ghost" id="lensBtn" aria-pressed="false">Montrer la zone avantageuse</button></div>
+        <p class="small">Tu peux aussi déplacer <span class="m">ω</span>, ou cliquer n'importe où dans la boîte pour y poser <span class="m">P</span>.</p>
+      </section>
+
+      <!-- Étape 2 -->
+      <section class="step" data-step="1" role="tabpanel" hidden>
+        <h2>Jusqu'où échanger ?</h2>
+        <p>Le taux marginal de substitution mesure ce que chacun est prêt à céder : c'est la quantité de bien 2 qu'un agent accepte d'abandonner pour une unité de bien 1 supplémentaire, <span class="m">TMS = Um<sub>1</sub> / Um<sub>2</sub></span>.</p>
+        <p>Tant que A et B n'évaluent pas le bien 1 de la même façon, un nouvel échange peut profiter aux deux. Les deux petits segments posés sur <span class="m">P</span> sont les tangentes à leurs courbes d'indifférence.</p>
+        <div class="meter">
+          <div class="row"><span class="m">TMS<sub>A</sub></span><div class="bar"><i id="tA" style="background:var(--navy)"></i></div><span class="val" id="tAv"></span></div>
+          <div class="row"><span class="m">TMS<sub>B</sub></span><div class="bar"><i id="tB" style="background:var(--brick)"></i></div><span class="val" id="tBv"></span></div>
+        </div>
+        <div class="defi" id="d1">
+          <div class="lab"><span class="ic"></span>Défi 2</div>
+          <div>Place <span class="m">P</span> sur un <b>optimum de Pareto</b> que A et B préfèrent tous les deux à <span class="m">ω</span>.</div>
+          <div class="status" id="st1" aria-live="polite"></div>
+          <div class="fb"><b>Optimum atteint.</b> Les courbes d'indifférence sont tangentes : <span class="m">TMS<sub>A</sub> = TMS<sub>B</sub></span>. On ne peut plus améliorer la situation de l'un sans dégrader celle de l'autre. Ces points forment la <b>courbe des contrats</b> ; sa portion en vert épais, dans la lentille, est le <b>noyau</b>.</div>
+        </div>
+        <p class="small">Près de la courbe des contrats, <span class="m">P</span> s'y aimante.</p>
+      </section>
+
+      <!-- Étape 3 -->
+      <section class="step" data-step="2" role="tabpanel" hidden>
+        <h2>Laisser les prix faire le travail</h2>
+        <p>Un commissaire-priseur annonce un prix relatif <span class="m">p = p<sub>1</sub> / p<sub>2</sub></span>, le bien 2 servant de numéraire. Chaque agent évalue sa dotation à ce prix et choisit son panier préféré sur la droite de budget qui passe par <span class="m">ω</span>.</p>
+        <p>Si les deux paniers demandés <span class="m">D<sub>A</sub></span> et <span class="m">D<sub>B</sub></span> ne coïncident pas, les marchés ne sont pas équilibrés.</p>
+        <div class="price"><span>Prix relatif du bien 1</span><span class="big"><span class="m">p</span> = <span id="pv"></span></span></div>
+        <input type="range" id="pSlider" min="0" max="1000" step="1" aria-label="Prix relatif p1/p2">
+        <div class="scale"><span>bien 1 bon marché</span><span>bien 1 cher</span></div>
+        <div style="margin-top:14px">
+          <div class="z"><span>Bien 1</span><div class="track"><i id="z1f"></i></div><span class="zv" id="z1v"></span></div>
+          <div class="z"><span>Bien 2</span><div class="track"><i id="z2f"></i></div><span class="zv" id="z2v"></span></div>
+          <div class="small">Barre à droite : demande excédentaire. Barre à gauche : offre excédentaire.</div>
+        </div>
+        <div class="defi" id="d2">
+          <div class="lab"><span class="ic"></span>Défi 3</div>
+          <div>Trouve <b>à la main</b> le prix qui équilibre les deux marchés à la fois.</div>
+          <div class="status" id="st2" aria-live="polite"></div>
+          <div class="fb"><b>Équilibre général.</b> Les deux paniers coïncident en <span class="m">x<sup>M</sup></span>, qui se trouve sur la courbe des contrats : <span class="m">TMS<sub>A</sub> = TMS<sub>B</sub> = p<sub>1</sub>/p<sub>2</sub></span>. C'est le <b>premier théorème du bien-être</b> : l'équilibre concurrentiel est un optimum de Pareto.</div>
+        </div>
+        <div class="btns"><button class="btn ghost" id="tatoBtn">Voir le tâtonnement</button></div>
+        <p class="small" id="walras">Loi de Walras : <span class="m">p·z<sub>1</sub> + z<sub>2</sub> = 0</span>. Quand un marché est équilibré, l'autre l'est aussi.</p>
+      </section>
+
+      <!-- Étape 4 -->
+      <section class="step" data-step="3" role="tabpanel" hidden>
+        <h2>Atteindre l'optimum de son choix</h2>
+        <p>Le marché atteint un optimum, mais celui qui dépend de la dotation de départ. Un planificateur vise l'optimum <span style="color:var(--forest)">★</span>. Il ne fixe ni les prix ni les quantités : il <b>redistribue les dotations</b>, puis laisse le marché fonctionner.</p>
+        <div class="read">
+          <div class="card"><div class="h">Transfert de bien 1</div><div class="u" id="tr1"></div></div>
+          <div class="card"><div class="h">Transfert de bien 2</div><div class="u" id="tr2"></div></div>
+        </div>
+        <div class="defi" id="d3">
+          <div class="lab"><span class="ic"></span>Défi 4</div>
+          <div>Déplace la dotation <span class="m">ω′</span> pour que l'équilibre de marché <span class="m">x<sup>M</sup></span> tombe sur la cible <span style="color:var(--forest)">★</span>.</div>
+          <div class="status" id="st3" aria-live="polite"></div>
+          <div class="fb"><b>Second théorème du bien-être.</b> Tout optimum de Pareto peut être atteint comme équilibre concurrentiel, pourvu qu'on redistribue au préalable les dotations par des transferts forfaitaires. La condition : la droite de budget qui soutient <span style="color:var(--forest)">★</span> doit passer par la nouvelle dotation.</div>
+        </div>
+        <div class="btns">
+          <button class="btn ghost" id="hintBtn" aria-pressed="false">Afficher l'indice</button>
+          <button class="btn ghost" id="newTarget">Nouvelle cible</button>
+          <button class="btn ghost" id="resetW2">Revenir à ω</button>
+        </div>
+        <p class="small" id="hintTxt" hidden>La droite verte passe par <span style="color:var(--forest)">★</span> avec la pente de la tangente commune. Toute dotation placée sur cette droite mène à la cible : il existe une infinité de redistributions possibles.</p>
+      </section>
+
+      <details class="settings">
+        <summary>Changer les préférences</summary>
+        <p class="small" style="margin-top:10px">Les deux agents ont des préférences Cobb-Douglas <span class="m">U = x<sup>α</sup> y<sup>1−α</sup></span>. Plus <span class="m">α</span> est élevé, plus l'agent tient au bien 1.</p>
+        <div class="sl"><label for="aSl"><span>Goût de A pour le bien 1, <span class="m">α<sub>A</sub></span></span><span id="aV"></span></label><input type="range" id="aSl" min="0.2" max="0.8" step="0.05" value="0.6"></div>
+        <div class="sl"><label for="bSl"><span>Goût de B pour le bien 1, <span class="m">α<sub>B</sub></span></span><span id="bV"></span></label><input type="range" id="bSl" min="0.2" max="0.8" step="0.05" value="0.4"></div>
+        <button class="btn" id="resetAll">Tout réinitialiser</button>
+      </details>
+    </aside>
+  </main>
+
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Microéconomie, deuxième année de licence. Économie d'échange à deux agents et deux biens, préférences Cobb-Douglas.</footer>
+</div>
+
+<script>
+(() => {
+  const XB = 10, YB = 8, S = 56, ML = 70, MT = 58;
+  const W = ML * 2 + XB * S, H = MT * 2 + YB * S;
+  const C = { navy:'#006EB8', brick:'#B6321C', forest:'#009B55', ink:'#1A2130', muted:'#5B6372', faint:'#A3A9B3', budget:'#3B4252' };
+  const $ = s => document.querySelector(s);
+  const svg = $('#box');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const px = (x, y) => [ML + x * S, MT + (YB - y) * S];
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const fr = (n, d = 2) => {
+    if (!isFinite(n)) return '—';
+    let s = n.toFixed(d);
+    if (/^-0\.?0*$/.test(s)) s = s.slice(1);
+    return s.replace('.', ',');
+  };
+
+  const init = () => ({ a:.6, b:.4, w:{x:2,y:6}, P:{x:6.5,y:6.5}, p:1.6, w2:null, t:.3,
+    hint:false, lensOn:false, step:0, done:[false,false,false,false] });
+  let st = init();
+
+  /* ---------- Modèle ---------- */
+  const kA = () => st.a / (1 - st.a), kB = () => st.b / (1 - st.b);
+  const UA = (x, y) => Math.pow(Math.max(x, 1e-9), st.a) * Math.pow(Math.max(y, 1e-9), 1 - st.a);
+  const UB = (x, y) => Math.pow(Math.max(XB - x, 1e-9), st.b) * Math.pow(Math.max(YB - y, 1e-9), 1 - st.b); // en repère de A
+  const tmsA = (x, y) => kA() * y / x;
+  const tmsB = (x, y) => kB() * (YB - y) / (XB - x);
+  const ccY = x => kB() * YB * x / (kA() * XB + (kB() - kA()) * x);
+  const yA = (u, x) => Math.pow(u / Math.pow(x, st.a), 1 / (1 - st.a));
+  const yBa = (v, x) => YB - Math.pow(v / Math.pow(XB - x, st.b), 1 / (1 - st.b));
+  const pStar = w => (st.b * YB + (st.a - st.b) * w.y) / ((1 - st.a) * w.x + (1 - st.b) * (XB - w.x));
+  function dem(w, p) {
+    const IA = p * w.x + w.y, IB = p * (XB - w.x) + (YB - w.y);
+    return {
+      A: { x: st.a * IA / p, y: (1 - st.a) * IA },
+      B: { x: XB - st.b * IB / p, y: YB - (1 - st.b) * IB },
+      z1: (st.a * IA + st.b * IB) / p - XB,
+      z2: (1 - st.a) * IA + (1 - st.b) * IB - YB
+    };
+  }
+  const target = () => { const x = st.t * XB; return { x, y: ccY(x) }; };
+
+  /* ---------- Tracés ---------- */
+  const toD = pts => pts.length ? pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('') : '';
+  function icA(u) {
+    const a = st.a, xmin = Math.pow(u / Math.pow(YB * 1.2, 1 - a), 1 / a);
+    if (!(xmin < XB)) return '';
+    const pts = [];
+    for (let i = 0; i <= 160; i++) { const t = i / 160, x = xmin + (XB * 1.05 - xmin) * t * t; pts.push(px(x, yA(u, x))); }
+    return toD(pts);
+  }
+  function icB(v) {
+    const b = st.b, xmin = Math.pow(v / Math.pow(YB * 1.2, 1 - b), 1 / b);
+    if (!(xmin < XB)) return '';
+    const pts = [];
+    for (let i = 0; i <= 160; i++) {
+      const t = i / 160, xb = xmin + (XB * 1.05 - xmin) * t * t;
+      const yb = Math.pow(v / Math.pow(xb, b), 1 / (1 - b));
+      pts.push(px(XB - xb, YB - yb));
+    }
+    return toD(pts);
+  }
+  function lens(u, v) {
+    const up = [], lo = [], N = 500;
+    for (let i = 1; i < N; i++) {
+      const x = XB * i / N, l = Math.max(yA(u, x), 0), h = Math.min(yBa(v, x), YB);
+      if (h > l) { up.push(px(x, h)); lo.push(px(x, l)); }
+    }
+    return up.length < 2 ? '' : toD(up.concat(lo.reverse())) + 'Z';
+  }
+  function cc() { const p = []; for (let i = 0; i <= 160; i++) { const x = XB * i / 160; p.push(px(x, ccY(x))); } return toD(p); }
+  function core(u, v) {
+    const p = [];
+    for (let i = 1; i < 500; i++) { const x = XB * i / 500, y = ccY(x); if (UA(x, y) >= u && UB(x, y) >= v) p.push(px(x, y)); }
+    return toD(p);
+  }
+  const lineThrough = (pt, m) => `M${px(-20, pt.y + m * (20 + pt.x))}L${px(30, pt.y - m * (30 - pt.x))}`;
+  function tan(pt, m, len = 1.3) {
+    const dx = 1 / Math.sqrt(1 + m * m), dy = -m * dx;
+    return `M${px(pt.x - dx * len, pt.y - dy * len)}L${px(pt.x + dx * len, pt.y + dy * len)}`;
+  }
+  const path = (d, stroke, w = 2, extra = '') => d ? `<path d="${d}" fill="none" stroke="${stroke}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" ${extra}/>` : '';
+  function dot(p, fill, r = 6, extra = '') { const [x, y] = px(p.x, p.y); return `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="#fff" stroke-width="2.5" ${extra}/>`; }
+  function lbl(p, html, color, dx = 12, dy = -12, anchor = 'start') {
+    let [x, y] = px(p.x, p.y);
+    if (anchor === 'start' && x > ML + XB * S - 50) { anchor = 'end'; dx = -Math.abs(dx); }
+    if (anchor === 'end' && x < ML + 50) { anchor = 'start'; dx = Math.abs(dx); }
+    if (y < MT + 34) dy = 28;
+    return `<text class="lbl" x="${x + dx}" y="${y + dy}" fill="${color}" text-anchor="${anchor}">${html}</text>`;
+  }
+  const subL = (b, s) => `${b}<tspan dy="6" font-size="15">${s}</tspan>`;
+  const supL = (b, s) => `${b}<tspan dy="-9" font-size="15">${s}</tspan>`;
+  function chip(x, y, text, color) {
+    return `<g class="chip"><rect x="${x - 22}" y="${y - 11}" width="44" height="22" rx="11" fill="${color}"/><text x="${x}" y="${y + 4.5}" text-anchor="middle" fill="#fff">${text}</text></g>`;
+  }
+  function star(cx, cy, r) {
+    let d = '';
+    for (let i = 0; i < 10; i++) { const rr = i % 2 ? r * .45 : r, a = -Math.PI / 2 + i * Math.PI / 5; d += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(1) + ' ' + (cy + rr * Math.sin(a)).toFixed(1); }
+    return d + 'Z';
+  }
+
+  /* ---------- Structure fixe du SVG ---------- */
+  (function buildStatic() {
+    const x0 = ML, x1 = ML + XB * S, y0 = MT, y1 = MT + YB * S;
+    let g = '', a = '';
+    for (let i = 1; i < XB; i++) { const x = ML + i * S; g += `<line class="gl" x1="${x}" y1="${y0}" x2="${x}" y2="${y1}"/>`; }
+    for (let j = 1; j < YB; j++) { const y = MT + j * S; g += `<line class="gl" x1="${x0}" y1="${y}" x2="${x1}" y2="${y}"/>`; }
+    for (let i = 1; i < XB; i++) {
+      const x = ML + i * S;
+      a += `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y1 + 5}" stroke="${C.navy}"/><text x="${x}" y="${y1 + 21}" text-anchor="middle" fill="${C.navy}">${i}</text>`;
+      a += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0 - 5}" stroke="${C.brick}"/><text x="${x}" y="${y0 - 11}" text-anchor="middle" fill="${C.brick}">${XB - i}</text>`;
+    }
+    for (let j = 1; j < YB; j++) {
+      const y = MT + (YB - j) * S;
+      a += `<line x1="${x0}" y1="${y}" x2="${x0 - 5}" y2="${y}" stroke="${C.navy}"/><text x="${x0 - 10}" y="${y + 5}" text-anchor="end" fill="${C.navy}">${j}</text>`;
+      a += `<line x1="${x1}" y1="${y}" x2="${x1 + 5}" y2="${y}" stroke="${C.brick}"/><text x="${x1 + 10}" y="${y + 5}" fill="${C.brick}">${YB - j}</text>`;
+    }
+    const mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+    a += `<text class="at" x="${mx}" y="${H - 12}" text-anchor="middle" fill="${C.navy}">Bien 1 détenu par A</text>`;
+    a += `<text class="at" x="${mx}" y="20" text-anchor="middle" fill="${C.brick}">Bien 1 détenu par B</text>`;
+    a += `<text class="at" transform="translate(22 ${my}) rotate(-90)" text-anchor="middle" fill="${C.navy}">Bien 2 détenu par A</text>`;
+    a += `<text class="at" transform="translate(${W - 22} ${my}) rotate(90)" text-anchor="middle" fill="${C.brick}">Bien 2 détenu par B</text>`;
+    a += `<text class="lbl" x="${x0 - 12}" y="${y1 + 24}" text-anchor="end" fill="${C.ink}">${subL('O', 'A')}</text>`;
+    a += `<text class="lbl" x="${x1 + 12}" y="${y0 - 8}" fill="${C.ink}">${subL('O', 'B')}</text>`;
+    svg.innerHTML = `
+      <defs>
+        <clipPath id="clip"><rect x="${x0}" y="${y0}" width="${XB * S}" height="${YB * S}"/></clipPath>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10L3 5Z" fill="${C.forest}"/></marker>
+      </defs>
+      <rect x="${x0}" y="${y0}" width="${XB * S}" height="${YB * S}" fill="#fff"/>
+      <g>${g}</g>
+      <g id="L" clip-path="url(#clip)"></g>
+      <rect x="${x0}" y="${y0}" width="${XB * S}" height="${YB * S}" fill="none" stroke="${C.ink}" stroke-width="1.8"/>
+      <g>${a}</g>
+      <g id="T"></g>
+      <g id="Hd"></g>
+      <g id="fx"></g>`;
+  })();
+  const gL = $('#L'), gT = $('#T'), gH = $('#Hd'), gFx = $('#fx');
+  const NS = 'http://www.w3.org/2000/svg';
+  function mkHandle(id, label) {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'handle'); g.id = id; g.setAttribute('tabindex', '0');
+    g.setAttribute('role', 'slider'); g.setAttribute('aria-label', label);
+    g.innerHTML = '<circle class="hit" r="24"/><circle class="ring" r="13"/><circle class="dot" r="8"/>';
+    gH.appendChild(g); return g;
+  }
+  const hW = mkHandle('hW', 'Dotation initiale ω'), hP = mkHandle('hP', 'Répartition proposée P'), hW2 = mkHandle('hW2', 'Dotation redistribuée ω′');
+
+  function place(h, p, show, fill) {
+    h.style.display = show ? '' : 'none';
+    h.setAttribute('tabindex', show ? '0' : '-1');
+    if (!show) return;
+    const [x, y] = px(p.x, p.y);
+    h.setAttribute('transform', `translate(${x} ${y})`);
+    h.querySelector('.dot').setAttribute('fill', fill);
+    h.setAttribute('aria-valuetext', `A : ${fr(p.x)} de bien 1, ${fr(p.y)} de bien 2`);
+  }
+
+  /* ---------- Rendu ---------- */
+  function render() {
+    const s = st.step, w = st.w, P = st.P, uw = UA(w.x, w.y), vw = UB(w.x, w.y);
+    let L = '', T = '';
+    const x1 = ML + XB * S, y1 = MT + YB * S;
+
+    if (s === 0) {
+      const ua = UA(P.x, P.y), ub = UB(P.x, P.y), good = ua > uw * 1.002 && ub > vw * 1.002;
+      if (st.lensOn || st.done[0]) L += `<path d="${lens(uw, vw)}" fill="${C.forest}" fill-opacity=".15"/>`;
+      L += path(icA(ua), C.navy, 1.6, 'stroke-dasharray="5 5" opacity=".55"');
+      L += path(icB(ub), C.brick, 1.6, 'stroke-dasharray="5 5" opacity=".55"');
+      L += path(icA(uw), C.navy, 2.5) + path(icB(vw), C.brick, 2.5);
+      const [Px, Py] = px(P.x, P.y);
+      L += `<g stroke-dasharray="4 5" stroke-width="1.4" opacity=".75">
+        <line x1="${Px}" y1="${Py}" x2="${Px}" y2="${y1}" stroke="${C.navy}"/><line x1="${Px}" y1="${Py}" x2="${ML}" y2="${Py}" stroke="${C.navy}"/>
+        <line x1="${Px}" y1="${Py}" x2="${Px}" y2="${MT}" stroke="${C.brick}"/><line x1="${Px}" y1="${Py}" x2="${x1}" y2="${Py}" stroke="${C.brick}"/></g>`;
+      T += chip(Px, y1 + 17, fr(P.x, 1), C.navy) + chip(ML - 26, Py, fr(P.y, 1), C.navy);
+      T += chip(Px, MT - 16, fr(XB - P.x, 1), C.brick) + chip(x1 + 26, Py, fr(YB - P.y, 1), C.brick);
+      T += lbl(w, 'ω', C.ink) + lbl(P, 'P', good ? C.forest : C.ink);
+      place(hW, w, true, C.ink); place(hP, P, true, good ? C.forest : '#7A818D'); place(hW2, w, false);
+    }
+
+    if (s === 1) {
+      const tA = tmsA(P.x, P.y), tB = tmsB(P.x, P.y), ua = UA(P.x, P.y), ub = UB(P.x, P.y);
+      const ok = Math.abs(Math.log(tA / tB)) < 0.02 && ua > uw * 1.001 && ub > vw * 1.001;
+      L += `<path d="${lens(uw, vw)}" fill="${C.forest}" fill-opacity=".12"/>`;
+      L += path(icA(uw), C.navy, 1.5, 'opacity=".45"') + path(icB(vw), C.brick, 1.5, 'opacity=".45"');
+      L += path(cc(), C.ink, 1.6, 'stroke-dasharray="7 6" opacity=".75"');
+      L += path(core(uw, vw), C.forest, 5);
+      L += path(icA(ua), C.navy, 2.5) + path(icB(ub), C.brick, 2.5);
+      L += path(tan(P, tA), C.navy, 4, 'opacity=".9"') + path(tan(P, tB), C.brick, 4, 'stroke-dasharray="6 5" opacity=".9"');
+      T += lbl(w, 'ω', C.ink) + lbl(P, 'P', ok ? C.forest : C.ink, 14, 24);
+      place(hW, w, true, C.ink); place(hP, P, true, ok ? C.forest : C.ink); place(hW2, w, false);
+    }
+
+    if (s === 2) {
+      const d = dem(w, st.p), eq = Math.abs(d.z1) < 0.03;
+      L += `<path d="${lens(uw, vw)}" fill="${C.forest}" fill-opacity=".06"/>`;
+      L += path(cc(), C.ink, 1.4, 'stroke-dasharray="7 6" opacity=".4"');
+      L += path(lineThrough(w, st.p), C.budget, 2.2);
+      L += path(icA(UA(d.A.x, d.A.y)), C.navy, 2.4) + path(icB(UB(d.B.x, d.B.y)), C.brick, 2.4);
+      const inBox = q => q.x >= 0 && q.x <= XB && q.y >= 0 && q.y <= YB;
+      const cl = q => ({ x: clamp(q.x, 0, XB), y: clamp(q.y, 0, YB) });
+      if (!eq) {
+        const [ax, ay] = px(cl(d.A).x, cl(d.A).y), [bx, by] = px(cl(d.B).x, cl(d.B).y);
+        T += `<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="${C.faint}" stroke-width="1.5" stroke-dasharray="3 4"/>`;
+        T += inBox(d.A) ? dot(d.A, C.navy) : dot(cl(d.A), '#fff', 6, `style="stroke:${C.navy}"`);
+        T += inBox(d.B) ? dot(d.B, C.brick) : dot(cl(d.B), '#fff', 6, `style="stroke:${C.brick}"`);
+        T += lbl(cl(d.A), subL('D', 'A'), C.navy, 12, 26) + lbl(cl(d.B), subL('D', 'B'), C.brick, 12, -12);
+      } else {
+        T += dot(d.A, C.ink, 7);
+        T += lbl(d.A, supL('x', 'M'), C.forest, -14, -14, 'end');
+      }
+      T += lbl(w, 'ω', C.ink);
+      place(hW, w, true, C.ink); place(hP, P, false); place(hW2, w, false);
+    }
+
+    if (s === 3) {
+      const w2 = st.w2, Tg = target(), m = tmsA(Tg.x, Tg.y), p = pStar(w2), xm = dem(w2, p).A;
+      L += path(cc(), C.ink, 1.6, 'stroke-dasharray="7 6" opacity=".7"');
+      if (st.hint) L += path(lineThrough(Tg, m), C.forest, 2.2, 'stroke-dasharray="8 6"');
+      L += path(lineThrough(w2, p), C.budget, 2.2);
+      L += path(icA(UA(xm.x, xm.y)), C.navy, 2.4) + path(icB(UB(xm.x, xm.y)), C.brick, 2.4);
+      const [sx, sy] = px(Tg.x, Tg.y);
+      T += `<path d="${star(sx, sy, 13)}" fill="${C.forest}" stroke="#fff" stroke-width="2"/>`;
+      const [ax, ay] = px(w.x, w.y), [bx, by] = px(w2.x, w2.y), dd = Math.hypot(bx - ax, by - ay);
+      if (dd > 22) {
+        const k = (dd - 14) / dd;
+        T += `<line x1="${ax}" y1="${ay}" x2="${ax + (bx - ax) * k}" y2="${ay + (by - ay) * k}" stroke="${C.forest}" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arr)"/>`;
+      }
+      T += `<circle cx="${ax}" cy="${ay}" r="7" fill="#fff" stroke="${C.faint}" stroke-width="2"/>` + lbl(w, 'ω', C.faint, -14, -12, 'end');
+      T += dot(xm, C.ink, 6.5) + lbl(xm, supL('x', 'M'), C.ink, -14, -14, 'end');
+      T += lbl(w2, 'ω′', C.ink);
+      place(hW, w, false); place(hP, P, false); place(hW2, w2, true, C.ink);
+    }
+
+    gL.innerHTML = L; gT.innerHTML = T;
+    panel();
+    document.querySelectorAll('#legend span').forEach(e => {
+      let show = e.dataset.s.includes(String(s));
+      if (e.id === 'lgLens' && s === 0) show = st.lensOn || st.done[0];
+      e.hidden = !show;
+    });
+  }
+
+  /* ---------- Panneau ---------- */
+  const verdict = (u, u0) => { const r = u / u0 - 1; return r > 0.002 ? 'up' : r < -0.002 ? 'down' : 'eq'; };
+  const vTxt = { up:'gagne', down:'perd', eq:'indifférent' };
+  const vPhrase = (who, v) => v === 'eq' ? `${who} est indifférent` : `${who} ${vTxt[v]}`;
+  const badge = v => `<span class="badge ${v}">${v === 'up' ? 'Gagne' : v === 'down' ? 'Perd' : 'Indifférent'}</span>`;
+
+  function panel() {
+    const s = st.step, w = st.w, P = st.P, uw = UA(w.x, w.y), vw = UB(w.x, w.y);
+    if (s === 0) {
+      const ua = UA(P.x, P.y), ub = UB(P.x, P.y), va = verdict(ua, uw), vb = verdict(ub, vw);
+      $('#s0a').textContent = `(${fr(P.x)} ; ${fr(P.y)})`;
+      $('#s0b').textContent = `(${fr(XB - P.x)} ; ${fr(YB - P.y)})`;
+      $('#s0ua').innerHTML = `Utilité ${fr(ua)} <span class="was">contre ${fr(uw)} en ω</span><br>${badge(va)}`;
+      $('#s0ub').innerHTML = `Utilité ${fr(ub)} <span class="was">contre ${fr(vw)} en ω</span><br>${badge(vb)}`;
+      $('#st0').textContent = (va === 'up' && vb === 'up') ? 'A et B gagnent tous les deux.' : `Pour l'instant : ${vPhrase('A', va)}, ${vPhrase('B', vb)}.`;
+    }
+    if (s === 1) {
+      const tA = tmsA(P.x, P.y), tB = tmsB(P.x, P.y), mx = Math.max(tA, tB) * 1.15;
+      $('#tA').style.width = (tA / mx * 100) + '%'; $('#tB').style.width = (tB / mx * 100) + '%';
+      $('#tAv').textContent = fr(tA); $('#tBv').textContent = fr(tB);
+      const r = Math.log(tA / tB), ua = UA(P.x, P.y), ub = UB(P.x, P.y);
+      let msg;
+      if (Math.abs(r) < 0.02) {
+        msg = (ua > uw * 1.001 && ub > vw * 1.001)
+          ? 'TMS égaux : les courbes d\'indifférence sont tangentes en P.'
+          : 'TMS égaux : P est un optimum de Pareto, mais l\'un des agents y est moins bien qu\'en ω. Il refuserait l\'échange.';
+      } else if (r > 0) {
+        msg = 'A accepte de céder plus de bien 2 pour une unité de bien 1 que B n\'en exige. Les deux gagnent si A achète du bien 1 à B contre du bien 2 : déplace P vers la droite et vers le bas.';
+      } else {
+        msg = 'B valorise davantage le bien 1 que A. Les deux gagnent si A vend du bien 1 à B contre du bien 2 : déplace P vers la gauche et vers le haut.';
+      }
+      $('#st1').textContent = msg;
+    }
+    if (s === 2) {
+      const d = dem(w, st.p);
+      $('#pv').textContent = fr(st.p);
+      setBar('#z1f', d.z1, 6); setBar('#z2f', d.z2, 5);
+      $('#z1v').textContent = (d.z1 > 0.005 ? '+' : '') + fr(d.z1);
+      $('#z2v').textContent = (d.z2 > 0.005 ? '+' : '') + fr(d.z2);
+      let msg;
+      if (Math.abs(d.z1) < 0.03) msg = 'Les deux marchés sont équilibrés : les paniers demandés coïncident.';
+      else if (d.z1 > 0) msg = 'Demande excédentaire de bien 1 : ensemble, A et B en veulent plus qu\'il n\'en existe. Le prix relatif du bien 1 doit monter.';
+      else msg = 'Offre excédentaire de bien 1 : il en reste d\'invendu. Le prix relatif du bien 1 doit baisser.';
+      if (!taton) $('#st2').textContent = msg;
+      if (!taton) syncSlider();
+    }
+    if (s === 3) {
+      const w2 = st.w2, d1 = w2.x - w.x, d2 = w2.y - w.y;
+      const tr = d => Math.abs(d) < 0.01 ? 'Aucun transfert' : d > 0 ? `A reçoit ${fr(d)} de B` : `A cède ${fr(-d)} à B`;
+      $('#tr1').textContent = tr(d1); $('#tr2').textContent = tr(d2);
+      const Tg = target(), xm = dem(w2, pStar(w2)).A, gap = Math.hypot(xm.x - Tg.x, xm.y - Tg.y);
+      $('#st3').textContent = gap < 0.15 ? 'L\'équilibre de marché coïncide avec la cible.' : `Écart entre l'équilibre et la cible : ${fr(gap)}.`;
+    }
+  }
+  function setBar(sel, z, zmax) {
+    const el = $(sel), wd = Math.min(Math.abs(z) / zmax, 1) * 50;
+    el.style.width = Math.max(wd, 0.8) + '%';
+    if (z >= 0) { el.style.left = '50%'; el.style.right = 'auto'; } else { el.style.right = '50%'; el.style.left = 'auto'; }
+    el.classList.toggle('zero', Math.abs(z) < 0.03);
+  }
+
+  /* ---------- Défis ---------- */
+  function evalStep(s) {
+    const w = st.w, P = st.P, uw = UA(w.x, w.y), vw = UB(w.x, w.y);
+    if (s === 0) return UA(P.x, P.y) > uw * 1.002 && UB(P.x, P.y) > vw * 1.002;
+    if (s === 1) return Math.abs(Math.log(tmsA(P.x, P.y) / tmsB(P.x, P.y))) < 0.02 && UA(P.x, P.y) > uw * 1.001 && UB(P.x, P.y) > vw * 1.001;
+    if (s === 2) return Math.abs(st.p / pStar(w) - 1) < 0.015;
+    if (s === 3) { const Tg = target(), xm = dem(st.w2, pStar(st.w2)).A; return Math.hypot(xm.x - Tg.x, xm.y - Tg.y) < 0.15; }
+    return false;
+  }
+  function check() {
+    const s = st.step;
+    if (!st.done[s] && evalStep(s)) {
+      st.done[s] = true; syncDone(); render();
+      const d = $('#d' + s); d.classList.remove('pop'); void d.offsetWidth; d.classList.add('pop');
+      let at = st.P;
+      if (s === 2) at = dem(st.w, st.p).A;
+      if (s === 3) at = dem(st.w2, pStar(st.w2)).A;
+      celebrate(at);
+    }
+  }
+  function celebrate(p) {
+    if (reduce) return;
+    const [x, y] = px(p.x, p.y), cols = [C.navy, C.brick, C.forest];
+    let h = `<circle class="pulse" cx="${x}" cy="${y}" r="9" fill="none" stroke="${C.forest}" stroke-width="3"/>`;
+    for (let i = 0; i < 14; i++) {
+      const a = i / 14 * Math.PI * 2 + Math.random() * .3, r = 38 + Math.random() * 30;
+      h += `<circle class="spark" cx="${x}" cy="${y}" r="${3 + Math.random() * 2.5}" fill="${cols[i % 3]}" style="--dx:${(Math.cos(a) * r).toFixed(1)}px;--dy:${(Math.sin(a) * r).toFixed(1)}px"/>`;
+    }
+    const g = document.createElementNS(NS, 'g'); g.innerHTML = h; gFx.appendChild(g);
+    setTimeout(() => g.remove(), 1100);
+  }
+  function syncDone() {
+    const n = st.done.filter(Boolean).length;
+    st.done.forEach((d, i) => {
+      $('#d' + i).classList.toggle('ok', d);
+      document.querySelector(`.tab[data-i="${i}"]`).classList.toggle('done', d);
+    });
+    document.querySelectorAll('.dots i').forEach((e, i) => e.classList.toggle('on', i < n));
+    $('#scoreTxt').textContent = n === 4 ? 'Les 4 défis sont réussis' : `${n} défi${n > 1 ? 's' : ''} réussi${n > 1 ? 's' : ''} sur 4`;
+  }
+
+  /* ---------- Interaction ---------- */
+  const objs = {
+    P: { get: () => st.P, set: v => st.P = v, lim: .1 },
+    w: { get: () => st.w, set: v => st.w = v, lim: .25 },
+    w2: { get: () => st.w2, set: v => st.w2 = v, lim: .25 }
+  };
+  const draggables = () => st.step <= 1 ? [objs.P, objs.w] : st.step === 2 ? [objs.w] : [objs.w2];
+  function snapCC(d) {
+    let best = null, bd = 13;
+    for (let i = 1; i < 600; i++) {
+      const x = XB * i / 600, y = ccY(x), [a, b] = px(x, y), [c, e] = px(d.x, d.y), dist = Math.hypot(a - c, b - e);
+      if (dist < bd) { bd = dist; best = { x, y }; }
+    }
+    return best || d;
+  }
+  function snapHint(d) {
+    const Tg = target(), m = tmsA(Tg.x, Tg.y), n = Math.sqrt(1 + m * m), ux = 1 / n, uy = -m / n;
+    const k = (d.x - Tg.x) * ux + (d.y - Tg.y) * uy, q = { x: Tg.x + k * ux, y: Tg.y + k * uy };
+    return Math.hypot(q.x - d.x, q.y - d.y) * S < 12 ? q : d;
+  }
+  function moveTo(o, d, kb = false) {
+    let v = { x: clamp(d.x, o.lim, XB - o.lim), y: clamp(d.y, o.lim, YB - o.lim) };
+    if (!kb && o === objs.P && st.step === 1) v = snapCC(v);
+    if (!kb && o === objs.w2 && st.hint) v = snapHint(v);
+    v = { x: clamp(v.x, o.lim, XB - o.lim), y: clamp(v.y, o.lim, YB - o.lim) };
+    o.set(v); render(); check();
+  }
+  function svgPt(e) { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()); }
+  const toData = q => ({ x: (q.x - ML) / S, y: YB - (q.y - MT) / S });
+  let drag = null;
+  svg.addEventListener('pointerdown', e => {
+    const q = svgPt(e), c = draggables();
+    let best = null, bd = 30;
+    for (const o of c) { const g = o.get(), [hx, hy] = px(g.x, g.y), d = Math.hypot(hx - q.x, hy - q.y); if (d < bd) { bd = d; best = o; } }
+    const inside = q.x >= ML && q.x <= ML + XB * S && q.y >= MT && q.y <= MT + YB * S;
+    if (!best && inside) best = c[0];
+    if (!best) return;
+    stopTaton();
+    drag = best; svg.setPointerCapture(e.pointerId); e.preventDefault();
+    moveTo(best, toData(q));
+  });
+  svg.addEventListener('pointermove', e => { if (drag) moveTo(drag, toData(svgPt(e))); });
+  const end = () => { drag = null; };
+  svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
+  [[hW, objs.w], [hP, objs.P], [hW2, objs.w2]].forEach(([h, o]) => h.addEventListener('keydown', e => {
+    const step = e.shiftKey ? .5 : .1, v = { ...o.get() };
+    if (e.key === 'ArrowLeft') v.x -= step; else if (e.key === 'ArrowRight') v.x += step;
+    else if (e.key === 'ArrowUp') v.y += step; else if (e.key === 'ArrowDown') v.y -= step; else return;
+    e.preventDefault(); stopTaton(); moveTo(o, v, true);
+  }));
+
+  // Onglets
+  function setStep(i) {
+    stopTaton();
+    st.step = i;
+    if (i === 3 && !st.w2) st.w2 = { ...st.w };
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(+t.dataset.i === i)));
+    document.querySelectorAll('.step').forEach(sec => sec.hidden = +sec.dataset.step !== i);
+    render();
+  }
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => setStep(+t.dataset.i));
+    t.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const n = (st.step + (e.key === 'ArrowRight' ? 1 : 3)) % 4; setStep(n);
+      document.querySelector(`.tab[data-i="${n}"]`).focus();
+    });
+  });
+
+  // Prix
+  const PMIN = .1, PMAX = 5, slider = $('#pSlider');
+  const fromSl = v => PMIN * Math.pow(PMAX / PMIN, v / 1000);
+  const toSl = p => Math.round(Math.log(p / PMIN) / Math.log(PMAX / PMIN) * 1000);
+  function syncSlider() { slider.value = toSl(st.p); }
+  slider.addEventListener('input', () => { stopTaton(); st.p = fromSl(+slider.value); render(); check(); });
+
+  // Tâtonnement
+  let taton = null;
+  function stopTaton() {
+    if (!taton) return;
+    cancelAnimationFrame(taton); taton = null;
+    $('#tatoBtn').disabled = false; render();
+  }
+  $('#tatoBtn').addEventListener('click', () => {
+    if (taton) return;
+    const btn = $('#tatoBtn'); btn.disabled = true;
+    if (reduce) { st.p = pStar(st.w); btn.disabled = false; render(); afterTaton(); return; }
+    let n = 0;
+    $('#st2').textContent = 'Le commissaire-priseur ajuste le prix dans le sens de la demande excédentaire…';
+    const f = () => {
+      const z = dem(st.w, st.p).z1;
+      if (Math.abs(z) < 0.004 || n++ > 500) { taton = null; btn.disabled = false; render(); afterTaton(); return; }
+      st.p = clamp(st.p * Math.exp(0.06 * z), PMIN, PMAX); syncSlider(); render();
+      taton = requestAnimationFrame(f);
+    };
+    taton = requestAnimationFrame(f);
+  });
+  function afterTaton() {
+    if (!st.done[2]) $('#st2').textContent = `Le tâtonnement converge vers p = ${fr(pStar(st.w))}. À toi : déplace le curseur, puis retrouve ce prix à la main.`;
+  }
+
+  // Étape 1 : zone
+  $('#lensBtn').addEventListener('click', e => {
+    st.lensOn = !st.lensOn; e.currentTarget.setAttribute('aria-pressed', String(st.lensOn));
+    e.currentTarget.textContent = st.lensOn ? 'Masquer la zone avantageuse' : 'Montrer la zone avantageuse';
+    render();
+  });
+
+  // Étape 4
+  $('#hintBtn').addEventListener('click', e => {
+    st.hint = !st.hint; e.currentTarget.setAttribute('aria-pressed', String(st.hint));
+    e.currentTarget.textContent = st.hint ? 'Masquer l\'indice' : 'Afficher l\'indice';
+    $('#hintTxt').hidden = !st.hint; render();
+  });
+  $('#newTarget').addEventListener('click', () => {
+    let t; do { t = .15 + Math.random() * .7; } while (Math.abs(t - st.t) < .12);
+    st.t = t; st.done[3] = false; syncDone(); render();
+  });
+  $('#resetW2').addEventListener('click', () => { st.w2 = { ...st.w }; render(); });
+
+  // Préférences
+  function syncPrefs() {
+    const f = v => fr(v, 2).replace(/0$/, '').replace(/,$/, '');
+    $('#aV').textContent = fr(st.a); $('#bV').textContent = fr(st.b);
+    $('#fa1').textContent = f(st.a); $('#fa2').textContent = f(1 - st.a);
+    $('#fb1').textContent = f(st.b); $('#fb2').textContent = f(1 - st.b);
+    $('#aSl').value = st.a; $('#bSl').value = st.b;
+  }
+  $('#aSl').addEventListener('input', e => { stopTaton(); st.a = +e.target.value; syncPrefs(); render(); });
+  $('#bSl').addEventListener('input', e => { stopTaton(); st.b = +e.target.value; syncPrefs(); render(); });
+  $('#resetAll').addEventListener('click', () => {
+    stopTaton(); const step = st.step; st = init();
+    $('#lensBtn').setAttribute('aria-pressed', 'false'); $('#lensBtn').textContent = 'Montrer la zone avantageuse';
+    $('#hintBtn').setAttribute('aria-pressed', 'false'); $('#hintBtn').textContent = 'Afficher l\'indice'; $('#hintTxt').hidden = true;
+    syncPrefs(); syncDone(); setStep(step);
+  });
+
+  syncPrefs(); syncDone(); syncSlider(); setStep(0);
+})();
+</script>
+</body>
+</html>
