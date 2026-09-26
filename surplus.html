@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Surplus et perte sèche – Outils interactifs, microéconomie LSO2</title>
+<meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<style>
+@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-BoldItalic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBoldItalic.ttf') format('truetype');font-weight:600;font-style:italic;font-display:swap}
+:root{
+  color-scheme:light;
+  --navy:#006EB8; --navy-soft:#E8F1F9; --brick:#B6321C; --brick-soft:#F9ECE9;
+  --forest:#009B55; --forest-soft:#E6F5ED; --forest-ink:#00703D;
+  --ink:#1A2130; --muted:#5B6372; --faint:#A3A9B3; --line:#E2E5EA; --soft:#F5F6F8; --paper:#fff;
+  --serif:'STIX Two Text','Cambria Math','Times New Roman',serif;
+  --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#fff}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,40px)}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.m{font-family:var(--serif);font-style:italic;font-size:1.07em;white-space:nowrap}
+.m sub,.m sup{font-size:.72em}
+.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:30px}
+.site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
+.site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
+.site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
+.site .home:hover b{text-decoration:underline;text-underline-offset:3px}
+.site .links{display:flex;gap:4px;flex-wrap:wrap}
+.site .links a{padding:7px 13px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.88rem;transition:background .2s,color .2s}
+.site .links a:hover{background:var(--soft);color:var(--ink)}
+.site .links a[aria-current="page"]{background:var(--ink);color:#fff}
+header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 32px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:28px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem);line-height:1;letter-spacing:-.015em;margin:0 0 12px}
+.lede{max-width:62ch;color:var(--muted);margin:0;font-size:1.03rem}
+.fx{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.fn{font-family:var(--serif);font-size:1.12rem;padding:6px 14px;border-radius:99px}
+.fn.d{background:var(--brick-soft)}.fn.o{background:var(--navy-soft)}
+.score{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--muted);margin-top:4px}
+.dots{display:flex;gap:5px}
+.dots i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--faint)}
+.dots i.on{background:var(--forest);border-color:var(--forest)}
+.stage{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+.chartcol{position:sticky;top:20px}
+.card{border:1px solid var(--line);border-radius:20px;padding:8px 8px 12px;background:#fff}
+svg.ch{display:block;width:100%;height:auto;touch-action:none;user-select:none}
+svg.ch text{font-family:var(--sans);font-size:13px}
+svg.ch .gl{stroke:#EEF0F3}
+svg.ch .lbl{font-family:var(--serif);font-style:italic;font-weight:600;font-size:18px;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+svg.ch .tag{font-weight:700;font-size:12.5px;paint-order:stroke;stroke:#fff;stroke-width:4px}
+.insp{padding:10px 14px 2px;font-size:.93rem;min-height:66px}
+.insp .k{font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-bottom:2px}
+.inspsl{padding:0 14px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:8px 14px 0;font-size:.82rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:16px;height:12px;border-radius:3px;display:inline-block}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;background:var(--soft);border-radius:14px;margin-bottom:16px}
+.seg button{appearance:none;border:none;background:transparent;border-radius:10px;padding:9px 6px;font:inherit;font-size:.86rem;font-weight:700;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(26,33,48,.12)}
+.panel h2{font-family:var(--serif);font-weight:600;font-size:1.6rem;line-height:1.15;margin:0 0 8px}
+.panel p{margin:0 0 10px}
+.ctl{margin:14px 0}
+.ctl label{display:flex;justify-content:space-between;gap:10px;font-size:.92rem}
+.ctl label b{font-family:var(--serif);font-size:1.25rem}
+input[type=range]{width:100%;accent-color:var(--ink);margin:6px 0 0}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.num{border-radius:14px;padding:10px 12px;background:var(--soft);border-left:4px solid var(--faint)}
+.num .h{font-size:.8rem;font-weight:700;color:var(--muted)}
+.num .v{font-family:var(--serif);font-size:1.45rem;line-height:1.15}
+.num .d{font-size:.8rem;color:var(--muted)}
+.num.sc{border-left-color:var(--navy)}.num.sp{border-left-color:var(--forest)}.num.ps{border-left-color:var(--brick)}.num.st{border-left-color:var(--ink)}
+.small{font-size:.84rem;color:var(--muted)}
+.defis{margin-top:22px;display:grid;gap:10px}
+.defi{border-radius:16px;padding:14px 16px;background:var(--soft);border:1px solid var(--line);transition:background .35s,border-color .35s}
+.defi .lab{font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.defi .ic{width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--faint);display:grid;place-items:center;font-size:.72rem;color:#fff;flex:none}
+.defi .fb{display:none;margin-top:8px;font-size:.93rem}
+.defi.ok{background:var(--forest-soft);border-color:#A9DCC0}
+.defi.ok .ic{border:none;background:var(--forest)}
+.defi.ok .ic::after{content:"✓"}
+.defi.ok .fb{display:block}
+.defi .st{font-size:.88rem;color:var(--muted);margin-top:6px}
+.row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.row input{font:inherit;font-family:var(--serif);font-size:1.1rem;width:130px;padding:7px 10px;border:1.5px solid var(--line);border-radius:10px}
+.btn{appearance:none;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:11px;padding:8px 14px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--ink)}
+.pop{animation:pop .5s ease-out}
+@keyframes pop{40%{transform:scale(1.02)}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
+@media (max-width:920px){.stage{grid-template-columns:1fr}.chartcol{position:static}.fx{align-items:flex-start}}
+@media (max-width:420px){.seg button{font-size:.76rem}.nums{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="site" aria-label="Outils">
+    <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
+    <div class="links"><a href="surplus.html" aria-current="page">Surplus et perte sèche</a><a href="edgeworth.html">Boîte d'Edgeworth</a><a href="pareto.html">Optimum de Pareto</a><a href="fiscalite.html">Incidence fiscale</a><a href="dilemme-prisonnier.html">Dilemme du prisonnier</a></div>
+  </nav>
+  <header class="top">
+    <div>
+      <h1>Surplus et perte sèche</h1>
+      <p class="lede">Le surplus mesure ce que chacun gagne à l'échange. Observe comment il se répartit entre acheteurs et vendeurs, puis ce qu'on en perd quand l'État fixe un prix ou une quantité.</p>
+    </div>
+    <div class="fx">
+      <span class="fn d">Demande : <i>D</i>(<i>p</i>) = 180 − 2<i>p</i></span>
+      <span class="fn o">Offre : <i>O</i>(<i>p</i>) = 3<i>p</i> − 30</span>
+      <div class="score"><span id="scoreTxt"></span><span class="dots" id="dots"><i></i><i></i><i></i></span></div>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="chartcol">
+      <div class="card">
+        <svg class="ch" id="ch" aria-label="Graphique offre et demande"></svg>
+        <div class="legend">
+          <span><i style="background:rgba(0,110,184,.22)"></i>Surplus du consommateur</span>
+          <span><i style="background:rgba(0,155,85,.24)"></i>Surplus du producteur</span>
+          <span><i style="background:rgba(182,50,28,.3)"></i>Perte sèche</span>
+        </div>
+        <div class="insp" id="insp" aria-live="polite"></div>
+        <div class="inspsl"><input type="range" id="qi" min="1" max="180" step="1" aria-label="Unité inspectée"></div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div class="seg" role="group" aria-label="Situation de marché">
+        <button data-m="libre" aria-pressed="true">Marché libre</button>
+        <button data-m="plafond" aria-pressed="false">Prix plafond</button>
+        <button data-m="plancher" aria-pressed="false">Prix plancher</button>
+        <button data-m="quota" aria-pressed="false">Quota</button>
+      </div>
+      <h2 id="mt"></h2>
+      <p id="mx"></p>
+      <div class="ctl" id="ctl" hidden>
+        <label for="lv"><span id="lvl"></span><b id="lvv"></b></label>
+        <input type="range" id="lv">
+      </div>
+      <div class="nums">
+        <div class="num sc"><div class="h">Surplus du consommateur</div><div class="v" id="nSC"></div><div class="d" id="dSC"></div></div>
+        <div class="num sp"><div class="h">Surplus du producteur</div><div class="v" id="nSP"></div><div class="d" id="dSP"></div></div>
+        <div class="num st"><div class="h">Surplus total</div><div class="v" id="nST"></div><div class="d" id="dST"></div></div>
+        <div class="num ps"><div class="h">Perte sèche</div><div class="v" id="nPS"></div><div class="d" id="dPS"></div></div>
+      </div>
+      <p class="small" id="assume"></p>
+
+      <div class="defis">
+        <div class="defi" id="d0">
+          <div class="lab"><span class="ic"></span>Défi 1</div>
+          <div>Calcule le surplus du consommateur à l'équilibre du marché libre.</div>
+          <div class="row"><input id="ans" inputmode="decimal" aria-label="Ta réponse" placeholder="Ta réponse"><button class="btn" id="chk">Vérifier</button><button class="btn ghost" id="hint">Indice</button></div>
+          <div class="st" id="s0" aria-live="polite"></div>
+          <div class="fb"><b>Exact.</b> <span class="m">SC = ½ × (p<sub>max</sub> − p*) × q* = ½ × (90 − 42) × 96 = 2 304</span>. Avec <span class="m">SP = ½ × (42 − 10) × 96 = 1 536</span>, le surplus total vaut 3 840.</div>
+        </div>
+        <div class="defi" id="d1">
+          <div class="lab"><span class="ic"></span>Défi 2</div>
+          <div>Trouve le prix plafond qui provoque une perte sèche de 240.</div>
+          <div class="st" id="s1" aria-live="polite"></div>
+          <div class="fb"><b>Bien vu.</b> À <span class="m">p̄ = 34</span>, les producteurs n'offrent plus que 72 unités. Les 24 unités entre 72 et 96 ne sont plus échangées : leur gain, <span class="m">½ × 20 × 24 = 240</span>, est perdu.</div>
+        </div>
+        <div class="defi" id="d2">
+          <div class="lab"><span class="ic"></span>Défi 3</div>
+          <div>Trouve un prix plafond qui fait <b>perdre les consommateurs eux-mêmes</b> par rapport au marché libre.</div>
+          <div class="st" id="s2" aria-live="polite"></div>
+          <div class="fb"><b>Paradoxe résolu.</b> Les consommateurs paient moins cher, mais la pénurie est si forte que ce gain sur le prix ne compense plus les unités qu'ils ne peuvent plus acheter. Un prix plafond peut nuire à ceux qu'il veut protéger.</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2.</footer>
+</div>
+
+<script>
+(() => {
+  const C = { navy:'#006EB8', brick:'#B6321C', forest:'#009B55', ink:'#1A2130', muted:'#5B6372', faint:'#A3A9B3' };
+  const $ = s => document.querySelector(s);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fr = (n, d = 1) => { const r = Math.round(n * 10 ** d) / 10 ** d, v = Object.is(r, -0) ? 0 : r; let [i, f] = Math.abs(v).toFixed(d).split('.'); f = f ? f.replace(/0+$/, '') : ''; i = i.replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f'); return (v < 0 ? '−' : '') + i + (f ? ',' + f : ''); };
+  const sgn = n => (n > 0.05 ? '+' : '') + fr(n);
+
+  /* Modèle du cours */
+  const pD = q => 90 - q / 2, pO = q => 10 + q / 3, Dq = p => 180 - 2 * p, Oq = p => 3 * p - 30;
+  const QS = 96, PS = 42, SC0 = 2304, SP0 = 1536, W0 = 3840;
+
+  /* Graphique */
+  const QM = 200, PM = 100, L = 56, R = 20, T = 16, B = 44, W = 640, H = 470, PW = W - L - R, PH = H - T - B;
+  const X = q => L + q / QM * PW, Y = p => T + (1 - p / PM) * PH;
+  const svg = $('#ch'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  let base = `<defs><clipPath id="cl"><rect x="${L}" y="${T}" width="${PW}" height="${PH}"/></clipPath>
+    <marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="${C.ink}"/></marker></defs>`;
+  for (let q = 20; q <= QM; q += 20) base += `<line class="gl" x1="${X(q)}" y1="${T}" x2="${X(q)}" y2="${T + PH}"/><text x="${X(q)}" y="${T + PH + 18}" text-anchor="middle" fill="${C.muted}">${q}</text>`;
+  for (let p = 10; p < PM; p += 10) base += `<line class="gl" x1="${L}" y1="${Y(p)}" x2="${L + PW}" y2="${Y(p)}"/><text x="${L - 8}" y="${Y(p) + 4.5}" text-anchor="end" fill="${C.muted}">${p}</text>`;
+  base += `<line x1="${L}" y1="${T + PH}" x2="${L + PW}" y2="${T + PH}" stroke="${C.ink}" stroke-width="1.5"/><line x1="${L}" y1="${T}" x2="${L}" y2="${T + PH}" stroke="${C.ink}" stroke-width="1.5"/>`;
+  base += `<text class="lbl" x="${L + PW}" y="${T + PH + 38}" text-anchor="end" fill="${C.ink}">q</text><text class="lbl" x="${L - 30}" y="${T + 12}" fill="${C.ink}">p</text>`;
+  svg.innerHTML = base + '<g id="G" clip-path="url(#cl)"></g><g id="Tx"></g><g id="Fx"></g>';
+  const gG = $('#G'), gT = $('#Tx'), gF = $('#Fx');
+  const poly = pts => 'M' + pts.map(([q, p]) => `${X(q).toFixed(1)} ${Y(p).toFixed(1)}`).join('L') + 'Z';
+  const seg = (q1, p1, q2, p2, col, w = 2.5, ex = '') => `<line x1="${X(q1)}" y1="${Y(p1)}" x2="${X(q2)}" y2="${Y(p2)}" stroke="${col}" stroke-width="${w}" stroke-linecap="round" ${ex}/>`;
+  const dot = (q, p, col, r = 5.5) => `<circle cx="${X(q)}" cy="${Y(p)}" r="${r}" fill="${col}" stroke="#fff" stroke-width="2"/>`;
+  const axq = (q, txt, col = C.ink) => `<text class="tag" x="${X(q)}" y="${T + PH + 32}" text-anchor="middle" fill="${col}">${txt}</text>`;
+  const axp = (p, txt, col = C.ink) => `<text class="tag" x="${L + 6}" y="${Y(p) - 6}" fill="${col}">${txt}</text>`;
+
+  /* État */
+  const MODES = {
+    libre: { t: 'Marché libre', x: 'Chaque unité est échangée tant que l\'acheteur est prêt à payer plus que ce qu\'elle coûte au vendeur. À l\'équilibre, tous ces échanges ont lieu : le surplus total est maximal.' },
+    plafond: { t: 'Prix plafond', x: 'L\'État interdit de vendre au-dessus d\'un prix maximum. S\'il est inférieur à <span class="m">p* = 42</span>, les producteurs réduisent leur offre : la quantité échangée est <span class="m">O(p̄)</span>, et une pénurie apparaît.', lab: 'Prix plafond <span class="m">p̄</span>', min: 10, max: 60 },
+    plancher: { t: 'Prix plancher', x: 'L\'État interdit de vendre en dessous d\'un prix minimum. S\'il dépasse <span class="m">p* = 42</span>, les consommateurs achètent moins : la quantité échangée est <span class="m">D(p̲)</span>, et un excédent apparaît.', lab: 'Prix plancher <span class="m">p̲</span>', min: 20, max: 90 },
+    quota: { t: 'Quota', x: 'L\'État limite la quantité vendue. S\'il est inférieur à <span class="m">q* = 96</span>, le prix monte jusqu\'à ce que la demande égale le quota : <span class="m">p = p<sub>D</sub>(q̄)</span>. Le gain lié à ce prix plus élevé revient aux producteurs autorisés à vendre.', lab: 'Quota <span class="m">q̄</span>', min: 0, max: 140 }
+  };
+  const st = { mode: 'libre', plafond: 30, plancher: 54, quota: 60, qi: 40, done: [false, false, false] };
+
+  function outcome() {
+    let q = QS, p = PS;
+    if (st.mode === 'plafond' && st.plafond < PS) { p = st.plafond; q = Oq(p); }
+    if (st.mode === 'plancher' && st.plancher > PS) { p = st.plancher; q = Dq(p); }
+    if (st.mode === 'quota' && st.quota < QS) { q = st.quota; p = pD(q); }
+    q = Math.max(q, 0);
+    const SC = q * (90 - p) - q * q / 4, SP = q * (p - 10) - q * q / 6;
+    return { q, p, SC, SP, DW: W0 - SC - SP, bind: q < QS - 1e-9 };
+  }
+
+  function render() {
+    const o = outcome(), q = o.q, p = o.p;
+    let g = '', t = '';
+    if (q > 0) {
+      g += `<path d="${poly([[0, 90], [q, pD(q)], [q, p], [0, p]])}" fill="${C.navy}" fill-opacity=".2"/>`;
+      g += `<path d="${poly([[0, p], [q, p], [q, pO(q)], [0, 10]])}" fill="${C.forest}" fill-opacity=".22"/>`;
+    }
+    if (o.bind) g += `<path d="${poly([[q, pD(q)], [QS, PS], [q, pO(q)]])}" fill="${C.brick}" fill-opacity=".3"/>`;
+    g += seg(0, 90, 180, 0, C.brick, 2.8) + seg(0, 10, 200, 10 + 200 / 3, C.navy, 2.8);
+    // Intervention
+    const m = st.mode;
+    if (m === 'plafond' || m === 'plancher') {
+      const lv = st[m];
+      g += seg(0, lv, QM, lv, C.ink, 2, 'stroke-dasharray="7 5"');
+      t += `<text class="tag" x="${X(QM) - 4}" y="${Y(lv) - 7}" text-anchor="end" fill="${C.ink}">${m === 'plafond' ? 'Prix plafond' : 'Prix plancher'}</text>`;
+      const a = Oq(lv), b = Dq(lv);
+      if ((m === 'plafond' && lv < PS) || (m === 'plancher' && lv > PS)) {
+        const lo = Math.min(a, b), hi = Math.max(a, b), yy = Y(lv) + 16;
+        if (hi - lo > 6) t += `<line x1="${X(Math.max(lo, 0))}" y1="${yy}" x2="${X(hi)}" y2="${yy}" stroke="${C.ink}" stroke-width="1.5" marker-start="url(#ar)" marker-end="url(#ar)"/><text class="tag" x="${X((Math.max(lo, 0) + hi) / 2)}" y="${yy + 16}" text-anchor="middle" fill="${C.ink}">${m === 'plafond' ? 'Pénurie' : 'Excédent'} : ${fr(hi - Math.max(lo, 0), 0)}</text>`;
+      }
+    }
+    if (m === 'quota') {
+      g += seg(st.quota, 0, st.quota, PM, C.ink, 2, 'stroke-dasharray="7 5"');
+      t += `<text class="tag" x="${X(st.quota) + 6}" y="${T + 14}" fill="${C.ink}">Quota</text>`;
+    }
+    // Repères
+    g += seg(0, p, q, p, C.faint, 1.3, 'stroke-dasharray="3 4"') + seg(q, 0, q, Math.max(p, pD(q)), C.faint, 1.3, 'stroke-dasharray="3 4"');
+    if (o.bind) t += dot(QS, PS, '#fff', 5).replace('stroke="#fff"', `stroke="${C.faint}"`) + axq(QS, 'q*', C.muted);
+    t += axq(q, o.bind ? fr(q, 0) : 'q* = 96') + axp(p, o.bind ? `p = ${fr(p)}` : 'p* = 42');
+    t += `<text class="lbl" x="${X(8)}" y="${Y(pD(8)) - 10}" fill="${C.brick}">D</text><text class="lbl" x="${X(186)}" y="${Y(pO(186)) - 10}" fill="${C.navy}">O</text>`;
+    if (q > 0) t += dot(q, p, C.ink);
+    // Inspecteur d'unité
+    const qi = st.qi, a = pD(qi), c = pO(qi), traded = qi <= q + 1e-9;
+    let msg;
+    g += seg(qi, 0, qi, PM, C.ink, 1, 'opacity=".25"');
+    if (traded) {
+      g += seg(qi, p, qi, a, C.navy, 6) + seg(qi, c, qi, p, C.forest, 6);
+      msg = `L'acheteur de cette unité est prêt à payer <b>${fr(a)}</b> ; le vendeur accepte de la céder dès <b>${fr(c)}</b>. Au prix ${fr(p)}, l'acheteur gagne <b style="color:var(--navy)">${fr(a - p)}</b> et le vendeur <b style="color:var(--forest-ink)">${fr(p - c)}</b>.`;
+    } else if (qi < QS) {
+      g += seg(qi, c, qi, a, C.brick, 6);
+      msg = `L'acheteur est prêt à payer <b>${fr(a)}</b> et le vendeur accepterait <b>${fr(c)}</b> : l'échange serait avantageux, mais il n'a pas lieu. Le gain de <b style="color:var(--brick)">${fr(a - c)}</b> est perdu, c'est un morceau de la perte sèche.`;
+    } else {
+      g += seg(qi, a, qi, c, C.faint, 4, 'stroke-dasharray="4 3"');
+      msg = `L'acheteur ne paierait que <b>${fr(a)}</b>, alors que le vendeur demande au moins <b>${fr(c)}</b>. Personne ne gagne à échanger cette unité.`;
+    }
+    t += dot(qi, a, C.brick, 4.5) + dot(qi, c, C.navy, 4.5);
+    gG.innerHTML = g; gT.innerHTML = t;
+    $('#insp').innerHTML = `<span class="k">Unité n° ${qi}</span>${msg}`;
+    // Panneau
+    $('#nSC').textContent = fr(o.SC); $('#nSP').textContent = fr(o.SP); $('#nST').textContent = fr(o.SC + o.SP); $('#nPS').textContent = fr(o.DW);
+    const dv = (v, v0) => Math.abs(v - v0) < .05 ? 'comme au marché libre' : `${sgn(v - v0)} par rapport au marché libre`;
+    $('#dSC').textContent = dv(o.SC, SC0); $('#dSP').textContent = dv(o.SP, SP0); $('#dST').textContent = dv(o.SC + o.SP, W0);
+    $('#dPS').textContent = o.bind ? 'surplus détruit' : 'aucune';
+    const as = { libre: '', plafond: 'On suppose que les unités disponibles vont aux acheteurs qui les valorisent le plus.', plancher: 'On suppose que ce sont les producteurs les plus efficaces qui vendent.', quota: 'On suppose que les droits de vendre vont aux producteurs les plus efficaces.' };
+    let extra = '';
+    if (m !== 'libre' && !o.bind) extra = 'À ce niveau, la mesure n\'est pas contraignante : le marché reste à l\'équilibre. ';
+    $('#assume').textContent = extra + as[m];
+    // Statuts des défis
+    $('#s1').textContent = st.done[1] ? '' : m === 'plafond' ? `Perte sèche actuelle : ${fr(o.DW)}.` : 'Passe en mode « Prix plafond ».';
+    $('#s2').textContent = st.done[2] ? '' : m === 'plafond' ? (o.bind ? `Surplus du consommateur : ${fr(o.SC)}, contre 2 304 au marché libre.` : 'Le plafond doit être contraignant, donc inférieur à 42.') : 'Passe en mode « Prix plafond ».';
+  }
+
+  /* Défis */
+  function win(i) {
+    if (st.done[i]) return;
+    st.done[i] = true; syncDone(); render();
+    const d = $('#d' + i); if (!reduce) { d.classList.remove('pop'); void d.offsetWidth; d.classList.add('pop'); }
+  }
+  function syncDone() {
+    st.done.forEach((v, i) => $('#d' + i).classList.toggle('ok', v));
+    const n = st.done.filter(Boolean).length;
+    document.querySelectorAll('#dots i').forEach((e, i) => e.classList.toggle('on', i < n));
+    $('#scoreTxt').textContent = n === 3 ? 'Les 3 défis sont réussis' : `${n} défi${n > 1 ? 's' : ''} réussi${n > 1 ? 's' : ''} sur 3`;
+  }
+  function check() {
+    const o = outcome();
+    if (st.mode === 'plafond' && Math.abs(o.DW - 240) < .5) win(1);
+    if (st.mode === 'plafond' && o.bind && o.SC < SC0 - 1) win(2);
+  }
+  $('#chk').addEventListener('click', () => {
+    const v = parseFloat($('#ans').value.replace(/\s/g, '').replace(',', '.'));
+    const s = $('#s0');
+    if (isNaN(v)) { s.textContent = 'Entre un nombre.'; return; }
+    if (Math.abs(v - 2304) < .5) { s.textContent = ''; win(0); return; }
+    if (Math.abs(v - 1536) < .5) s.textContent = 'C\'est le surplus du producteur. Le surplus du consommateur est le triangle au-dessus du prix.';
+    else if (Math.abs(v - 4608) < .5) s.textContent = 'Presque : c\'est l\'aire du rectangle. Un triangle, c\'est la moitié.';
+    else if (Math.abs(v - 3840) < .5) s.textContent = 'C\'est le surplus total. On demande seulement la part des consommateurs.';
+    else s.textContent = 'Pas encore. Repère le prix maximal que quelqu\'un accepte de payer, là où la demande coupe l\'axe des prix.';
+  });
+  $('#ans').addEventListener('keydown', e => { if (e.key === 'Enter') $('#chk').click(); });
+  $('#hint').addEventListener('click', () => { $('#s0').innerHTML = 'Le surplus du consommateur est le triangle bleu : ½ × (p<sub>max</sub> − p*) × q*, avec p<sub>max</sub> = 90, là où la demande coupe l\'axe des prix.'; });
+
+  /* Commandes */
+  function setMode(m) {
+    st.mode = m;
+    document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
+    $('#mt').textContent = MODES[m].t; $('#mx').innerHTML = MODES[m].x;
+    const ctl = $('#ctl'), lv = $('#lv');
+    ctl.hidden = m === 'libre';
+    if (m !== 'libre') { lv.min = MODES[m].min; lv.max = MODES[m].max; lv.step = 1; lv.value = st[m]; $('#lvl').innerHTML = MODES[m].lab; $('#lvv').textContent = st[m]; }
+    render(); check();
+  }
+  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.m)));
+  $('#lv').addEventListener('input', e => { st[st.mode] = +e.target.value; $('#lvv').textContent = st[st.mode]; render(); check(); });
+  const qiS = $('#qi'); qiS.value = st.qi;
+  qiS.addEventListener('input', () => { st.qi = +qiS.value; render(); });
+  let dragging = false;
+  const fromEvt = e => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const s = pt.matrixTransform(svg.getScreenCTM().inverse()); return Math.round(Math.max(1, Math.min(180, (s.x - L) / PW * QM))); };
+  svg.addEventListener('pointerdown', e => { dragging = true; svg.setPointerCapture(e.pointerId); st.qi = fromEvt(e); qiS.value = st.qi; render(); });
+  svg.addEventListener('pointermove', e => { if (!dragging && e.pointerType !== 'mouse') return; const v = fromEvt(e); if (v !== st.qi) { st.qi = v; qiS.value = v; render(); } });
+  const up = () => dragging = false; svg.addEventListener('pointerup', up); svg.addEventListener('pointercancel', up);
+
+  syncDone(); setMode('libre');
+})();
+</script>
+</body>
+</html>
