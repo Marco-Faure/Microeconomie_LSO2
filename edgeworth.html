@@ -37,15 +37,26 @@ b{font-weight:600}
 
 /* En-tête */
 header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 32px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:26px}
-.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:30px}
+.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:12px}
 .site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
 .site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
 .site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
 .site .home:hover b{text-decoration:underline;text-underline-offset:3px}
-.site .links{display:flex;gap:4px;flex-wrap:wrap}
-.site .links a{padding:7px 13px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.88rem;transition:background .2s,color .2s}
-.site .links a:hover{background:var(--soft);color:var(--ink)}
-.site .links a[aria-current="page"]{background:var(--ink);color:#fff}
+.site .chs{display:flex;gap:4px;padding:4px;background:var(--soft);border-radius:99px}
+.site .chs a{padding:6px 14px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:700;font-size:.86rem;white-space:nowrap}
+.site .chs a:hover{color:var(--ink)}
+.site .chs a[aria-current="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(26,33,48,.12)}
+.sub{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:26px}
+.sub .chl{font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:8px}
+.sub a{padding:6px 12px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.86rem;transition:background .2s,color .2s}
+.sub a:hover{background:var(--soft);color:var(--ink)}
+.sub a[aria-current="page"]{background:var(--ink);color:#fff}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:44px}
+.pager a{display:block;border:1px solid var(--line);border-radius:16px;padding:12px 16px;text-decoration:none;color:var(--ink);transition:border-color .2s}
+.pager a:hover{border-color:var(--ink)}
+.pager a small{display:block;font-size:.78rem;font-weight:700;color:var(--muted)}
+.pager a b{font-family:var(--serif);font-weight:600;font-size:1.08rem}
+.pager a.next{text-align:right;grid-column:2}
 h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem);line-height:1;letter-spacing:-.015em;margin:0 0 12px}
 .lede{max-width:60ch;color:var(--muted);margin:0;font-size:1.03rem}
 .side{display:flex;flex-direction:column;gap:12px;align-items:flex-end}
@@ -168,10 +179,11 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 </head>
 <body>
 <div class="wrap">
-  <nav class="site" aria-label="Outils">
+  <nav class="site" aria-label="Site">
     <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
-    <div class="links"><a href="surplus.html">Surplus et perte sèche</a><a href="edgeworth.html" aria-current="page">Boîte d'Edgeworth</a><a href="pareto.html">Optimum de Pareto</a><a href="fiscalite.html">Incidence fiscale</a><a href="dilemme-prisonnier.html">Dilemme du prisonnier</a></div>
+    <div class="chs"><a href="index.html#ch1" aria-current="true">Chapitre 1</a><a href="index.html#ch2">Chapitre 2</a></div>
   </nav>
+  <nav class="sub" aria-label="Outils du chapitre 1"><span class="chl">Chapitre 1 · Équilibres et optimalités</span><a href="surplus.html">Surplus et perte sèche</a><a href="edgeworth.html" aria-current="page">Boîte d'Edgeworth</a><a href="pareto.html">Optimum de Pareto</a><a href="fiscalite.html">Incidence fiscale</a><a href="dilemme-prisonnier.html">Dilemme du prisonnier</a></nav>
   <header class="top">
     <div>
       <h1>La boîte d'Edgeworth</h1>
@@ -304,7 +316,8 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     </aside>
   </main>
 
-  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Microéconomie, deuxième année de licence. Économie d'échange à deux agents et deux biens, préférences Cobb-Douglas.</footer>
+  <nav class="pager" aria-label="Outil précédent ou suivant"><a class="prev" href="surplus.html"><small>← Précédent</small><b>Surplus et perte sèche</b></a><a class="next" href="pareto.html"><small>Suivant →</small><b>Optimum de Pareto</b></a></nav>
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Microéconomie, deuxième année de licence. Économie d'échange à deux agents et deux biens, préférences Cobb-Douglas. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
 </div>
 
 <script>
@@ -795,5 +808,6 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
   syncPrefs(); syncDone(); syncSlider(); setStep(0);
 })();
 </script>
+<script data-goatcounter="https://micro-lso2.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

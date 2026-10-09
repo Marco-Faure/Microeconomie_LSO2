@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Droits de propriété et théorème de Coase – Outils interactifs, microéconomie LSO2</title>
+<meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<style>
+@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-BoldItalic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBoldItalic.ttf') format('truetype');font-weight:600;font-style:italic;font-display:swap}
+:root{
+  color-scheme:light;
+  --navy:#006EB8; --navy-soft:#E8F1F9; --brick:#B6321C; --brick-soft:#F9ECE9;
+  --forest:#009B55; --forest-soft:#E6F5ED; --forest-ink:#00703D;
+  --ink:#1A2130; --muted:#5B6372; --faint:#A3A9B3; --line:#E2E5EA; --soft:#F5F6F8; --paper:#fff;
+  --serif:'STIX Two Text','Cambria Math','Times New Roman',serif;
+  --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#fff}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,40px)}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.m{font-family:var(--serif);font-style:italic;font-size:1.07em;white-space:nowrap}
+.m sub,.m sup{font-size:.72em}
+.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:12px}
+.site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
+.site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
+.site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
+.site .home:hover b{text-decoration:underline;text-underline-offset:3px}
+.site .chs{display:flex;gap:4px;padding:4px;background:var(--soft);border-radius:99px}
+.site .chs a{padding:6px 14px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:700;font-size:.86rem;white-space:nowrap}
+.site .chs a:hover{color:var(--ink)}
+.site .chs a[aria-current="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(26,33,48,.12)}
+.sub{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:26px}
+.sub .chl{font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:8px}
+.sub a{padding:6px 12px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.86rem;transition:background .2s,color .2s}
+.sub a:hover{background:var(--soft);color:var(--ink)}
+.sub a[aria-current="page"]{background:var(--ink);color:#fff}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:44px}
+.pager a{display:block;border:1px solid var(--line);border-radius:16px;padding:12px 16px;text-decoration:none;color:var(--ink);transition:border-color .2s}
+.pager a:hover{border-color:var(--ink)}
+.pager a small{display:block;font-size:.78rem;font-weight:700;color:var(--muted)}
+.pager a b{font-family:var(--serif);font-weight:600;font-size:1.08rem}
+.pager a.next{text-align:right;grid-column:2}
+header.top>div:first-child{flex:1 1 440px;min-width:0}
+header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 32px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:28px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.2rem,4.6vw,3.4rem);line-height:1.02;letter-spacing:-.015em;margin:0 0 12px}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,2.6vw,2rem);line-height:1.15;margin:0 0 6px}
+h3{font-family:var(--serif);font-weight:600;font-size:1.2rem;margin:18px 0 6px}
+.lede{max-width:64ch;color:var(--muted);margin:0;font-size:1.03rem}
+.intro{color:var(--muted);margin:0 0 20px;max-width:68ch}
+.side{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.fn{font-family:var(--serif);font-size:1.05rem;padding:5px 13px;border-radius:99px;background:var(--soft)}
+.fn.d{background:var(--brick-soft)}.fn.o{background:var(--navy-soft)}
+.score{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--muted)}
+.dots{display:flex;gap:5px}
+.dots i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--faint)}
+.dots i.on{background:var(--forest);border-color:var(--forest)}
+section.block{margin-bottom:56px}
+.stage{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(320px,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+.stick{position:sticky;top:20px;display:grid;gap:12px}
+.card{border:1px solid var(--line);border-radius:20px;padding:8px 8px 12px;background:#fff}
+.card.pad{padding:20px}
+svg.ch{display:block;width:100%;height:auto;user-select:none;touch-action:none}
+svg.ch text{font-family:var(--sans);font-size:13px}
+svg.ch .gl{stroke:#EEF0F3}
+svg.ch .lbl{font-family:var(--serif);font-style:italic;font-weight:600;font-size:17px;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+svg.ch .tag{font-weight:700;font-size:12.5px;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:8px 14px 0;font-size:.82rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:16px;height:12px;border-radius:3px;display:inline-block}
+.legend i.ln{height:0;border-top:2.5px solid;border-radius:0;width:20px}
+.legend i.dash{border-top-style:dashed}
+.cap{font-size:.86rem;color:var(--muted);padding:6px 14px 0;margin:0}
+.insp{padding:10px 14px 2px;font-size:.93rem;min-height:70px}
+.insp .k{font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-bottom:2px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:4px;background:var(--soft);border-radius:14px;margin-bottom:12px}
+.seg button{appearance:none;border:none;background:transparent;border-radius:10px;padding:9px 6px;font:inherit;font-size:.87rem;font-weight:700;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(26,33,48,.12)}
+.ctl{margin:12px 0}
+.ctl label{display:flex;justify-content:space-between;gap:10px;font-size:.92rem}
+.ctl label b{font-family:var(--serif);font-size:1.2rem}
+.ctl small{display:block;color:var(--muted);font-size:.8rem}
+input[type=range]{width:100%;accent-color:var(--ink);margin:4px 0 0}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin:12px 0}
+.num{border-radius:12px;padding:8px 11px;background:var(--soft);border-left:4px solid var(--faint)}
+.num .h{font-size:.77rem;font-weight:700;color:var(--muted)}
+.num .v{font-family:var(--serif);font-size:1.3rem;line-height:1.15}
+.num.navy{border-left-color:var(--navy)}.num.brick{border-left-color:var(--brick)}.num.forest{border-left-color:var(--forest)}.num.ink{border-left-color:var(--ink)}
+.note{font-size:.92rem;padding:11px 13px;border-radius:12px;background:var(--soft);margin:10px 0}
+.small{font-size:.84rem;color:var(--muted)}
+.defis{margin-top:20px;display:grid;gap:10px}
+.defi{border-radius:16px;padding:14px 16px;background:var(--soft);border:1px solid var(--line);transition:background .35s,border-color .35s}
+.defi .lab{font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.defi .ic{width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--faint);display:grid;place-items:center;font-size:.72rem;color:#fff;flex:none}
+.defi .st{font-size:.88rem;color:var(--muted);margin-top:6px}
+.defi .fb{display:none;margin-top:8px;font-size:.93rem}
+.defi.ok{background:var(--forest-soft);border-color:#A9DCC0}
+.defi.ok .ic{border:none;background:var(--forest)}
+.defi.ok .ic::after{content:"✓"}
+.defi.ok .fb{display:block}
+.defi.ok .st{display:none}
+.row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
+.row input{font:inherit;font-family:var(--serif);font-size:1.05rem;width:120px;padding:6px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.btn{appearance:none;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:11px;padding:8px 14px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
+.btn:hover{background:#2E3748}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.ghost:hover{background:var(--soft)}
+.opts{display:grid;gap:8px}
+.opt{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;font:inherit;font-weight:600;text-align:left;cursor:pointer;transition:border-color .2s,background .2s}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--forest);background:var(--forest-soft);color:var(--forest-ink)}
+.opt.wrong{border-color:var(--brick);background:var(--brick-soft);color:var(--brick)}
+.fbk{margin-top:12px;padding:12px 14px;border-radius:12px;font-size:.94rem;background:var(--soft)}
+.fbk.ok{background:var(--forest-soft)}.fbk.ko{background:var(--brick-soft)}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem;margin:10px 0}
+table.t th,table.t td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right}
+table.t th:first-child,table.t td:first-child{text-align:left}
+table.t th{font-size:.78rem;color:var(--muted);font-weight:700}
+table.t td.v{font-family:var(--serif);font-size:1.02rem}
+table.t tr.tot td{font-weight:700;border-top:2px solid var(--ink);border-bottom:none}
+.tw{overflow-x:auto}
+footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
+.pop{animation:pop .5s ease-out}
+@keyframes pop{40%{transform:scale(1.02)}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}}
+@media (max-width:920px){.stage{grid-template-columns:1fr}.stick{position:static}.side{align-items:flex-start}}
+.mk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.mk .c{border-radius:14px;padding:10px 12px;background:var(--soft)}
+.mk .h{font-size:.8rem;font-weight:700;color:var(--muted)}
+.mk .v{font-family:var(--serif);font-size:1.35rem}
+table.t td.hid{color:var(--faint)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="site" aria-label="Site">
+    <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
+    <div class="chs"><a href="index.html#ch1">Chapitre 1</a><a href="index.html#ch2" aria-current="true">Chapitre 2</a></div>
+  </nav>
+  <nav class="sub" aria-label="Outils du chapitre 2"><span class="chl">Chapitre 2 · Les effets externes</span><a href="ch2-externalites.html">Coût privé, coût social</a><a href="ch2-pigou.html">Taxe et subvention</a><a href="ch2-fusion.html">Fusion et profit joint</a><a href="ch2-coase.html" aria-current="page">Droits de propriété</a></nav>
+  <header class="top">
+    <div>
+      <h1>Droits de propriété et théorème de Coase</h1>
+      <p class="lede">Personne n'est propriétaire de l'eau de la rivière : le pollueur n'a rien à payer. Créons des droits à polluer, échangeables, et laissons les firmes négocier. Que change le choix du propriétaire ?</p>
+    </div>
+    <div class="side">
+      <span class="fn o"><i>CT</i><sub>1</sub> = 0,5<i>q</i><sub>1</sub><sup>2</sup></span>
+      <span class="fn d"><i>CT</i><sub>2</sub> = 0,5<i>q</i><sub>2</sub><sup>2</sup> + 0,25<i>q</i><sub>1</sub><sup>2</sup></span>
+      <span class="fn"><i>q</i><sup>max</sup> = 80 droits</span>
+      <div class="score"><span id="scoreTxt"></span><span class="dots" id="dots"></span></div>
+    </div>
+  </header>
+
+  <section class="block">
+    <h2>Le marché des droits à polluer</h2>
+    <p class="intro">Chaque unité produite par la firme 1 nécessite un droit, échangé au prix <span class="m">p<sub>E</sub></span>. La firme 1 valorise un droit de plus à <span class="m">p̄ − Cm<sub>1</sub><sup>p</sup> = 90 − q<sub>1</sub></span> : c'est ce que lui rapporte l'unité qu'il lui permet de produire. La firme 2 valorise un droit de moins à <span class="m">Cm<sup>e</sup> = 0,5q<sub>1</sub></span> : c'est le dommage qu'elle évite. On raisonne au prix du bien <span class="m">p̄ = 90</span>.</p>
+    <div class="stage">
+      <div class="stick">
+        <div class="card">
+          <svg class="ch" id="ch" aria-label="Marché des droits à polluer"></svg>
+          <div class="legend">
+            <span><i class="ln" style="border-color:var(--navy)"></i>Gain marginal de la firme 1</span>
+            <span><i class="ln" style="border-color:var(--brick)"></i>Dommage marginal de la firme 2</span>
+            <span><i style="background:rgba(0,155,85,.22)"></i>Paiement pour les droits</span>
+          </div>
+          <p class="cap" id="cap"></p>
+        </div>
+      </div>
+      <div>
+        <div class="seg" role="group" aria-label="Attribution des droits">
+          <button data-a="1" aria-pressed="true">Droits à la firme 1</button>
+          <button data-a="2" aria-pressed="false">Droits à la firme 2</button>
+        </div>
+        <p id="atxt"></p>
+        <div class="ctl"><label for="spe"><span>Prix d'un droit, <span class="m">p<sub>E</sub></span></span><b id="pev"></b></label><input type="range" id="spe" min="0" max="60" step="0.5"></div>
+        <div class="mk">
+          <div class="c"><div class="h" id="oh"></div><div class="v" id="ov"></div></div>
+          <div class="c"><div class="h" id="dh"></div><div class="v" id="dv"></div></div>
+        </div>
+        <div class="note" id="mtxt"></div>
+        <div class="tw"><table class="t">
+          <thead><tr><th>Profit</th><th>Équilibre privé</th><th>Droits à la firme 1</th><th>Droits à la firme 2</th></tr></thead>
+          <tbody id="tb"></tbody>
+        </table></div>
+        <div class="defis">
+          <div class="defi" id="d0">
+            <div class="lab"><span class="ic"></span>Défi 1</div>
+            <div>Trouve le prix du droit qui équilibre le marché.</div>
+            <div class="st" id="s0"></div>
+            <div class="fb"><b>Exact : p<sub>E</sub> = 30.</b> À ce prix, la firme 1 utilise 60 droits, et la firme 2 accepte de lui en laisser 60 : <span class="m">p<sub>E</sub> = Cm<sup>e</sup>(q̄<sub>1</sub>) = 0,5 × 60</span>. La firme 1 égalise alors <span class="m">p̄ = Cm<sub>1</sub><sup>p</sup> + p<sub>E</sub> = Cm<sub>1</sub><sup>s</sup></span> : c'est l'optimum de Pareto.</div>
+          </div>
+          <div class="defi" id="d1">
+            <div class="lab"><span class="ic"></span>Défi 2</div>
+            <div>Change l'attribution des droits et retrouve l'équilibre. Qu'est-ce qui change ?</div>
+            <div class="st" id="s1"></div>
+            <div class="fb"><b>C'est le théorème de Coase.</b> Quel que soit le propriétaire, la firme 1 produit 60 : le niveau de pollution est le même. Seul le sens du paiement change : la firme 2 verse 600 à la firme 1 dans un cas, la firme 1 verse 1 800 à la firme 2 dans l'autre. L'attribution modifie la <b>répartition</b> du profit total, 6 750, pas l'allocation.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Quand la négociation coûte cher</h2>
+    <p class="intro">Le théorème suppose des coûts de transaction négligeables. Supposons que chaque droit échangé coûte <span class="m">c</span> en négociation, en contrats et en contrôle. Un échange n'a lieu que si le gain qu'il procure dépasse ce coût.</p>
+    <div class="stage">
+      <div class="card">
+        <svg class="ch" id="ch2" aria-label="Effet des coûts de transaction"></svg>
+        <div class="legend">
+          <span><i class="ln" style="border-color:var(--navy)"></i>Gain marginal de la firme 1</span>
+          <span><i class="ln" style="border-color:var(--brick)"></i>Dommage marginal de la firme 2</span>
+          <span><i style="background:rgba(182,50,28,.28)"></i>Échanges avantageux qui n'ont pas lieu</span>
+        </div>
+      </div>
+      <div>
+        <div class="ctl"><label for="stc"><span>Coût de transaction par droit échangé, <span class="m">c</span></span><b id="tcv"></b></label><input type="range" id="stc" min="0" max="50" step="0.5"></div>
+        <div class="mk">
+          <div class="c"><div class="h">Droits à la firme 1 : production de la firme 1</div><div class="v" id="t1"></div></div>
+          <div class="c"><div class="h">Droits à la firme 2 : production de la firme 1</div><div class="v" id="t2"></div></div>
+        </div>
+        <div class="note" id="ttxt"></div>
+        <div class="defi" id="d2">
+          <div class="lab"><span class="ic"></span>Défi 3</div>
+          <div>Les droits appartiennent à la firme 1. À partir de quel coût de transaction <b>plus aucun droit</b> n'est-il échangé ?</div>
+          <div class="st" id="s2"></div>
+          <div class="fb"><b>Exact : c = 30.</b> Le premier droit que la firme 2 voudrait racheter, le 80<sup>e</sup>, lui évite un dommage de 40 et ne rapporte que 10 à la firme 1 : le gain de l'échange est de 30. Au-delà, la négociation coûte plus qu'elle ne rapporte. Avec des coûts de transaction, l'attribution des droits détermine l'allocation finale : le théorème de Coase ne s'applique plus.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="note"><b>Application : Vittel.</b> Dans les années 1980, les nitrates issus de l'agriculture menacent l'eau minérale de Vittel. À partir de 1992, Nestlé et sa filiale Agrivair négocient directement avec une quarantaine d'exploitations : aides financières, matériel et terres rachetées, contre un cahier des charges environnemental. Les agriculteurs détiennent de fait le droit de polluer, et c'est la victime qui paie. Le petit nombre de parties maintient des coûts de transaction faibles, condition du théorème.</div>
+  </section>
+
+  <nav class="pager" aria-label="Outil précédent ou suivant"><a class="prev" href="ch2-fusion.html"><small>← Précédent</small><b>Fusion et profit joint</b></a></nav>
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
+</div>
+
+<script>
+(() => {
+  const C = { navy:'#006EB8', brick:'#B6321C', forest:'#009B55', ink:'#1A2130', muted:'#5B6372', faint:'#A3A9B3', gray:'#8A909B' };
+  const $ = s => document.querySelector(s);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pop = el => { if (!el || reduce) return; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); };
+  const fr = (n, d = 2) => { const r = Math.round(n * 10 ** d) / 10 ** d, v = Object.is(r, -0) ? 0 : r; let [i, f] = Math.abs(v).toFixed(d).split('.'); f = f ? f.replace(/0+$/, '') : ''; i = i.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); return (v < 0 ? '−' : '') + i + (f ? ',' + f : ''); };
+  const NS = 'http://www.w3.org/2000/svg';
+  function Defis(n) {
+    const done = Array(n).fill(false);
+    const sync = () => {
+      done.forEach((v, i) => { const d = $('#d' + i); if (d) d.classList.toggle('ok', v); });
+      const k = done.filter(Boolean).length, dots = $('#dots');
+      if (dots) dots.innerHTML = done.map((_, i) => `<i class="${i < k ? 'on' : ''}"></i>`).join('');
+      const t = $('#scoreTxt'); if (t) t.textContent = k === n ? `Les ${n} défis sont réussis` : `${k} défi${k > 1 ? 's' : ''} réussi${k > 1 ? 's' : ''} sur ${n}`;
+    };
+    sync();
+    return { done, sync, win(i, html) { if (done[i]) return false; done[i] = true; if (html != null) { const f = $('#f' + i); if (f) f.innerHTML = html; } sync(); pop($('#d' + i)); return true; } };
+  }
+  // Repère cartésien : X(q), Y(p), cadre et grille
+  function Frame(svg, o) {
+    const W = o.W || 640, H = o.H || 440, L = o.L || 56, R = o.R || 22, T = o.T || 16, B = o.B || 44, PW = W - L - R, PH = H - T - B;
+    const X = x => L + (x - (o.x0 || 0)) / (o.x1 - (o.x0 || 0)) * PW, Y = y => T + (1 - (y - (o.y0 || 0)) / (o.y1 - (o.y0 || 0))) * PH;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    let s = `<defs><clipPath id="${svg.id}cl"><rect x="${L}" y="${T}" width="${PW}" height="${PH}"/></clipPath>
+      <marker id="${svg.id}ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="${C.ink}"/></marker></defs>`;
+    const fx = o.fx || (v => fr(v, 1)), fy = o.fy || (v => fr(v, 1));
+    for (let v = (o.x0 || 0) + o.dx; v <= o.x1 + 1e-9; v += o.dx) s += `<line class="gl" x1="${X(v)}" y1="${T}" x2="${X(v)}" y2="${T + PH}"/><text x="${X(v)}" y="${T + PH + 18}" text-anchor="middle" fill="${C.muted}">${fx(v)}</text>`;
+    for (let v = (o.y0 || 0) + o.dy; v < o.y1 - 1e-9; v += o.dy) s += `<line class="gl" x1="${L}" y1="${Y(v)}" x2="${L + PW}" y2="${Y(v)}"/><text x="${L - 8}" y="${Y(v) + 4.5}" text-anchor="end" fill="${C.muted}">${fy(v)}</text>`;
+    s += `<line x1="${L}" y1="${T + PH}" x2="${L + PW}" y2="${T + PH}" stroke="${C.ink}" stroke-width="1.5"/><line x1="${L}" y1="${T}" x2="${L}" y2="${T + PH}" stroke="${C.ink}" stroke-width="1.5"/>`;
+    if (o.xl) s += `<text class="lbl" x="${L + PW}" y="${T + PH + 38}" text-anchor="end" fill="${C.ink}">${o.xl}</text>`;
+    if (o.yl) s += `<text class="lbl" x="${L - 8}" y="${T - 2}" text-anchor="end" fill="${C.ink}">${o.yl}</text>`;
+    const base = s;
+    const poly = pts => 'M' + pts.map(([a, b]) => `${X(a).toFixed(1)} ${Y(b).toFixed(1)}`).join('L') + 'Z';
+    const seg = (a, b, c, d, col, w = 2.5, ex = '') => `<line x1="${X(a)}" y1="${Y(b)}" x2="${X(c)}" y2="${Y(d)}" stroke="${col}" stroke-width="${w}" stroke-linecap="round" ${ex}/>`;
+    const dot = (a, b, col, r = 5.5, sk = '#fff') => `<circle cx="${X(a)}" cy="${Y(b)}" r="${r}" fill="${col}" stroke="${sk}" stroke-width="2"/>`;
+    const curve = (f, a, b, col, w = 2.6, ex = '', n = 80) => { let d = ''; for (let i = 0; i <= n; i++) { const x = a + (b - a) * i / n; d += (i ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(f(x)).toFixed(1); } return `<path d="${d}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linejoin="round" ${ex}/>`; };
+    const draw = (inner, over = '') => { svg.innerHTML = base + `<g clip-path="url(#${svg.id}cl)">${inner}</g>${over}`; };
+    const toData = e => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; const q = pt.matrixTransform(svg.getScreenCTM().inverse()); return { x: (o.x0 || 0) + (q.x - L) / PW * (o.x1 - (o.x0 || 0)), y: (o.y0 || 0) + (1 - (q.y - T) / PH) * (o.y1 - (o.y0 || 0)) }; };
+    return { X, Y, L, T, PW, PH, W, H, poly, seg, dot, curve, draw, toData, arrow: `url(#${svg.id}ar)` };
+  }
+  function drag(svg, F, cb) {
+    let on = false;
+    svg.addEventListener('pointerdown', e => { on = true; svg.setPointerCapture(e.pointerId); cb(F.toData(e)); e.preventDefault(); });
+    svg.addEventListener('pointermove', e => { if (on) cb(F.toData(e)); });
+    const off = () => on = false; svg.addEventListener('pointerup', off); svg.addEventListener('pointercancel', off);
+  }
+  const D = Defis(3);
+  const QM = 80, PB = 90;
+  const st = { a: 1, pe: 15, found: { 1: false, 2: false }, tc: 10 };
+  const g1 = q => PB - q, dm = q => 0.5 * q;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const P = { 1: [4200, 2550], 2: [1800, 4950] };
+
+  const F = Frame($('#ch'), { x1: 90, y1: 90, dx: 10, dy: 10, xl: 'q₁', yl: 'p', H: 430, fx: v => v, fy: v => v });
+  const base = Fr => Fr.curve(g1, 0, 90, C.navy, 2.8) + Fr.curve(dm, 0, 90, C.brick, 2.8) + Fr.seg(QM, 0, QM, 90, C.ink, 1.6, 'stroke-dasharray="6 5"');
+  const baseTxt = Fr => `<text class="tag" x="${Fr.X(QM) + 5}" y="${Fr.Y(86)}" fill="${C.ink}">q<tspan dy="-5" font-size="10">max</tspan></text><text class="tag" x="${Fr.X(9)}" y="${Fr.Y(g1(9)) + 20}" fill="${C.navy}">90 − q₁</text><text class="tag" x="${Fr.X(88)}" y="${Fr.Y(dm(88)) - 8}" text-anchor="end" fill="${C.brick}">0,5 q₁</text>`;
+
+  function render() {
+    const pe = st.pe, a = st.a;
+    const q1w = clamp(PB - pe, 0, QM);      // usage voulu par la firme 1
+    const q1v = clamp(2 * pe, 0, QM);       // usage que la firme 2 est prête à tolérer
+    let off, dem, offL, demL;
+    if (a === 1) { off = Math.max(0, QM - q1w); dem = Math.max(0, QM - q1v); offL = 'Droits que la firme 1 vend'; demL = 'Droits que la firme 2 rachète'; }
+    else { off = q1v; dem = q1w; offL = 'Droits que la firme 2 vend'; demL = 'Droits que la firme 1 achète'; }
+    const ex = Math.abs(off - dem) < 0.6;
+    const q1 = ex ? 60 : (a === 1 ? QM - Math.min(off, dem) : Math.min(off, dem));
+    let g = '';
+    if (a === 1) g += `<path d="${F.poly([[q1, 0], [QM, 0], [QM, pe], [q1, pe]])}" fill="${C.forest}" fill-opacity=".22"/>`;
+    else g += `<path d="${F.poly([[0, 0], [q1, 0], [q1, pe], [0, pe]])}" fill="${C.forest}" fill-opacity=".22"/>`;
+    g += base(F) + F.seg(0, pe, 90, pe, C.ink, 1.6);
+    let o = baseTxt(F) + `<text class="tag" x="${F.X(1)}" y="${F.Y(pe) - 7}" fill="${C.ink}">p<tspan dy="4" font-size="10">E</tspan><tspan dy="-4"> = ${fr(pe, 1)}</tspan></text>`;
+    o += F.dot(q1w, pe, C.navy, 5.5) + F.dot(q1v, pe, C.brick, 5.5);
+    if (!ex) o += `<line x1="${F.X(Math.min(q1w, q1v)) + 7}" y1="${F.Y(pe) + 14}" x2="${F.X(Math.max(q1w, q1v)) - 7}" y2="${F.Y(pe) + 14}" stroke="${C.ink}" stroke-width="1.4" marker-start="${F.arrow}" marker-end="${F.arrow}"/>`;
+    else o += F.dot(60, 30, C.forest, 8);
+    F.draw(g, o);
+    $('#pev').textContent = fr(pe, 1);
+    $('#oh').textContent = offL; $('#ov').textContent = fr(off, 1);
+    $('#dh').textContent = demL; $('#dv').textContent = fr(dem, 1);
+    const pay = a === 1 ? pe * (QM - q1) : pe * q1;
+    if (ex) $('#mtxt').innerHTML = `<b>Le marché est équilibré.</b> La firme 1 produit <span class="m">q̄<sub>1</sub> = 60</span>. ${a === 1 ? 'La firme 2 verse' : 'La firme 1 verse'} <span class="m">30 × ${a === 1 ? 20 : 60} = ${fr(pay, 0)}</span> pour les droits.`;
+    else if (off > dem) $('#mtxt').innerHTML = `Offre excédentaire de ${fr(off - dem, 1)} droits : à ce prix, plus personne ne veut ${a === 1 ? 'racheter' : 'acheter'} les droits proposés. Le prix doit <b>baisser</b>.`;
+    else $('#mtxt').innerHTML = `Demande excédentaire de ${fr(dem - off, 1)} droits : à ce prix, on veut ${a === 1 ? 'racheter' : 'acheter'} plus de droits qu'il n'en est offert. Le prix doit <b>monter</b>.`;
+    $('#cap').textContent = 'Le point bleu montre combien de droits la firme 1 veut utiliser ; le point rouge, combien la firme 2 est prête à en tolérer. L\'aire verte est le paiement.';
+    if (ex && !st.found[a]) { st.found[a] = true; D.win(0); }
+    if (st.found[1] && st.found[2]) D.win(1);
+    $('#s0').textContent = `Écart entre offre et demande de droits : ${fr(Math.abs(off - dem), 1)}.`;
+    $('#s1').textContent = st.found[a] ? `Équilibre trouvé avec les droits à la firme ${a}. Essaie l'autre attribution.` : 'Trouve d\'abord l\'équilibre, puis change d\'attribution.';
+    const cell = (k, i) => st.found[k] ? fr(P[k][i], 0) : '?';
+    const tot = k => st.found[k] ? fr(P[k][0] + P[k][1], 0) : '?';
+    $('#tb').innerHTML = `<tr><td>Firme 1</td><td class="v">3 200</td><td class="v ${st.found[1] ? '' : 'hid'}">${cell(1, 0)}</td><td class="v ${st.found[2] ? '' : 'hid'}">${cell(2, 0)}</td></tr>
+      <tr><td>Firme 2</td><td class="v">1 600</td><td class="v ${st.found[1] ? '' : 'hid'}">${cell(1, 1)}</td><td class="v ${st.found[2] ? '' : 'hid'}">${cell(2, 1)}</td></tr>
+      <tr class="tot"><td>Total</td><td class="v">4 800</td><td class="v">${tot(1)}</td><td class="v">${tot(2)}</td></tr>`;
+  }
+  function setA(a) {
+    st.a = a;
+    document.querySelectorAll('[data-a]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.a === a)));
+    $('#atxt').innerHTML = a === 1
+      ? 'La firme 1 possède les 80 droits. Elle peut les utiliser tous, ou en vendre à la firme 2, qui les rachète pour les retirer : <span class="m">π<sub>1</sub> = pq<sub>1</sub> − CT<sub>1</sub> + p<sub>E</sub>(q<sup>max</sup> − q<sub>1</sub>)</span>.'
+      : 'La firme 2 possède les 80 droits. La firme 1 doit lui acheter chaque droit qu\'elle utilise : <span class="m">π<sub>1</sub> = pq<sub>1</sub> − CT<sub>1</sub> − p<sub>E</sub>q<sub>1</sub></span>.';
+    render();
+  }
+  document.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => setA(+b.dataset.a)));
+  $('#spe').value = st.pe; $('#spe').addEventListener('input', e => { st.pe = +e.target.value; render(); });
+
+  /* Coûts de transaction */
+  const F2 = Frame($('#ch2'), { x1: 90, y1: 90, dx: 10, dy: 10, xl: 'q₁', yl: 'p', H: 400, fx: v => v, fy: v => v });
+  function renderTC() {
+    const c = st.tc, q1a = Math.min(QM, (PB + c) / 1.5), q1b = Math.max(0, (PB - c) / 1.5);
+    let g = '';
+    const lens = (a, b) => { if (b - a < 0.05) return ''; const pts = []; for (let i = 0; i <= 30; i++) { const x = a + (b - a) * i / 30; pts.push([x, g1(x)]); } for (let i = 30; i >= 0; i--) { const x = a + (b - a) * i / 30; pts.push([x, dm(x)]); } return `<path d="${F2.poly(pts)}" fill="${C.brick}" fill-opacity=".28"/>`; };
+    g += lens(60, q1a) + lens(q1b, 60);
+    g += base(F2);
+    let o = baseTxt(F2) + F2.dot(60, 30, '#fff', 5, C.forest);
+    o += F2.seg(q1a, 0, q1a, 88, C.navy, 2, 'stroke-dasharray="3 3"') + `<text class="tag" x="${F2.X(q1a) - 4}" y="${F2.Y(78)}" text-anchor="end" fill="${C.ink}">Droits à 1</text>`;
+    o += F2.seg(q1b, 0, q1b, 88, C.brick, 2, 'stroke-dasharray="3 3"') + `<text class="tag" x="${F2.X(q1b) + 4}" y="${F2.Y(66)}" fill="${C.ink}">Droits à 2</text>`;
+    F2.draw(g, o);
+    $('#tcv').textContent = fr(c, 1); $('#t1').textContent = fr(q1a, 1); $('#t2').textContent = fr(q1b, 1);
+    $('#ttxt').innerHTML = c < 0.25 ? 'Sans coût de transaction, la négociation mène à <span class="m">q<sub>1</sub> = 60</span> dans les deux cas.'
+      : `Avec les droits à la firme 1, la firme 2 ne rachète que les droits dont le dommage évité dépasse le gain de la firme 1 d'au moins ${fr(c, 1)} : la production s'arrête à ${fr(q1a, 1)}. Avec les droits à la firme 2, la firme 1 n'achète que si son gain dépasse le dommage d'au moins ${fr(c, 1)} : elle produit ${fr(q1b, 1)}. <b>L'attribution change désormais l'allocation.</b>`;
+    $('#s2').textContent = q1a >= QM ? 'Plus aucun échange. Est-ce le plus petit coût pour lequel c\'est le cas ?' : `Droits échangés : ${fr(QM - q1a, 1)}.`;
+    if (Math.abs(c - 30) < 0.3) D.win(2);
+  }
+  $('#stc').value = st.tc; $('#stc').addEventListener('input', e => { st.tc = +e.target.value; renderTC(); });
+
+  setA(1); renderTC();
+})();
+</script>
+<script data-goatcounter="https://micro-lso2.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
