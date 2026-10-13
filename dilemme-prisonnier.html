@@ -5,65 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dilemme du prisonnier – Outils interactifs, microéconomie LSO2</title>
 <meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="stylesheet" href="style.css">
+<script src="commun.js"></script>
 <style>
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-BoldItalic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBoldItalic.ttf') format('truetype');font-weight:600;font-style:italic;font-display:swap}
-:root{
-  color-scheme:light;
-  --navy:#006EB8; --navy-soft:#E8F1F9; --brick:#B6321C; --brick-soft:#F9ECE9;
-  --forest:#009B55; --forest-soft:#E6F5ED; --forest-ink:#00703D;
-  --ink:#1A2130; --muted:#5B6372; --faint:#A3A9B3; --line:#E2E5EA; --soft:#F5F6F8; --paper:#fff;
-  --serif:'STIX Two Text','Cambria Math','Times New Roman',serif;
-  --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-}
-html{scroll-padding-top:env(safe-area-inset-top,0px);background:#fff}
-*,*::before,*::after{box-sizing:inherit}
-[hidden]{display:none!important}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,40px)}
-:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
-.m{font-family:var(--serif);font-style:italic;font-size:1.07em;white-space:nowrap}
 .us{color:var(--navy);font-weight:600}.su{color:var(--brick);font-weight:600}
-.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:12px}
-.site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
-.site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
-.site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
-.site .home:hover b{text-decoration:underline;text-underline-offset:3px}
-.site .chs{display:flex;gap:4px;padding:4px;background:var(--soft);border-radius:99px}
-.site .chs a{padding:6px 14px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:700;font-size:.86rem;white-space:nowrap}
-.site .chs a:hover{color:var(--ink)}
-.site .chs a[aria-current="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(26,33,48,.12)}
-.sub{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:26px}
-.sub .chl{font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:8px}
-.sub a{padding:6px 12px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.86rem;transition:background .2s,color .2s}
-.sub a:hover{background:var(--soft);color:var(--ink)}
-.sub a[aria-current="page"]{background:var(--ink);color:#fff}
-.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:44px}
-.pager a{display:block;border:1px solid var(--line);border-radius:16px;padding:12px 16px;text-decoration:none;color:var(--ink);transition:border-color .2s}
-.pager a:hover{border-color:var(--ink)}
-.pager a small{display:block;font-size:.78rem;font-weight:700;color:var(--muted)}
-.pager a b{font-family:var(--serif);font-weight:600;font-size:1.08rem}
-.pager a.next{text-align:right;grid-column:2}
 
 header.top{padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:34px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px 40px;align-items:end}
-h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem);line-height:1;letter-spacing:-.015em;margin:0 0 12px}
 .sub{font-family:var(--serif);font-style:italic;font-size:1.3rem;margin:0 0 12px;color:var(--muted)}
-.lede{color:var(--muted);margin:0;max-width:62ch}
 .strats{display:grid;gap:10px}
 .strat{border-left:3px solid var(--forest);padding:2px 0 2px 14px}
 .strat.t{border-left-color:var(--ink)}
 .strat b{display:block;font-family:var(--serif);font-size:1.12rem}
 .strat span{font-size:.92rem;color:var(--muted)}
-h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,2.8vw,2.1rem);line-height:1.15;margin:0 0 6px}
-.intro{color:var(--muted);margin:0 0 20px;max-width:66ch}
-section.block{margin-bottom:60px}
 .grid2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
 .mcard{border:1px solid var(--line);border-radius:20px;padding:10px}
 svg.mx{display:block;width:100%;height:auto;user-select:none}
@@ -82,19 +35,9 @@ svg.mx .cell:focus-visible rect.bg{stroke:var(--navy);stroke-width:3}
 .sdots i{width:22px;height:5px;border-radius:99px;background:var(--line)}
 .sdots i.on{background:var(--forest)}.sdots i.cur{background:var(--ink)}
 .qtext{font-family:var(--serif);font-size:1.35rem;line-height:1.3;margin:0 0 16px}
-.opts{display:grid;gap:8px}
 .opt{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 14px;font:inherit;font-weight:600;text-align:left;cursor:pointer;transition:border-color .2s,background .2s}
-.opt:hover:not(:disabled){border-color:var(--ink)}
-.opt:disabled{cursor:default}
-.opt.right{border-color:var(--forest);background:var(--forest-soft);color:var(--forest-ink)}
-.opt.wrong{border-color:var(--brick);background:var(--brick-soft);color:var(--brick)}
 .fb{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:.95rem;background:var(--soft)}
 .fb.ok{background:var(--forest-soft)}.fb.ko{background:var(--brick-soft)}
-.btn{appearance:none;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:11px;padding:9px 15px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer;transition:background .2s}
-.btn:hover{background:#2E3748}
-.btn:disabled{opacity:.45;cursor:default}
-.btn.ghost{background:#fff;color:var(--ink)}
-.btn.ghost:hover{background:var(--soft)}
 .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .concl{margin-top:16px;padding:16px 18px;border-radius:16px;background:var(--ink);color:#fff}
 .concl b{color:#fff}
@@ -134,7 +77,6 @@ svg.mx .cell:focus-visible rect.bg{stroke:var(--navy);stroke-width:3}
 .sl label{display:flex;justify-content:space-between;gap:10px;font-size:.92rem}
 .sl label b{font-family:var(--serif);font-size:1.1rem}
 .sl small{display:block;color:var(--muted);font-size:.8rem}
-input[type=range]{width:100%;accent-color:var(--ink);margin:4px 0 0}
 .presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
 .chip{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
 .chip:hover{border-color:var(--ink)}
@@ -144,35 +86,35 @@ input[type=range]{width:100%;accent-color:var(--ink);margin:4px 0 0}
 .verdict ul{margin:8px 0 0;padding-left:18px}
 .verdict li{margin:3px 0}
 .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.82rem;color:var(--muted);padding:6px 10px 2px}
-.legend span{display:inline-flex;align-items:center;gap:7px}
 .legend .ring{width:18px;height:12px;border-radius:50%;border:2.5px solid var(--forest)}
 .legend .box{width:18px;height:12px;border-radius:3px;border:2px dashed var(--ink)}
 .legend .ar{width:18px;height:0;border-top:2.5px solid}
-footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
-.pop{animation:pop .5s ease-out}
-@keyframes pop{40%{transform:scale(1.02)}}
-@media (prefers-reduced-motion:reduce){.pop{animation:none}}
 @media (max-width:880px){header.top,.grid2,.game{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <nav class="site" aria-label="Site">
-    <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
-    <div class="chs"><a href="index.html#ch1" aria-current="true">Chapitre 1</a><a href="index.html#ch2">Chapitre 2</a></div>
-  </nav>
-  <nav class="sub" aria-label="Outils du chapitre 1"><span class="chl">Chapitre 1 · Équilibres et optimalités</span><a href="surplus.html">Surplus et perte sèche</a><a href="edgeworth.html">Boîte d'Edgeworth</a><a href="pareto.html">Optimum de Pareto</a><a href="fiscalite.html">Incidence fiscale</a><a href="dilemme-prisonnier.html" aria-current="page">Dilemme du prisonnier</a></nav>
+  <div id="site-nav"></div>
   <header class="top">
     <div>
       <h1>Le dilemme du prisonnier</h1>
       <p class="sub">La course aux armements nucléaires</p>
       <p class="lede">Pendant la Guerre froide, les <span class="us">États-Unis</span> et l'<span class="su">Union soviétique</span> se sont lancés dans une course aux armements. Chaque pays choisissait, schématiquement, entre deux stratégies, sans connaître le choix de l'autre.</p>
+      <div class="score" style="margin-top:14px"><span id="scoreTxt"></span><span class="dots" id="dots"></span></div>
     </div>
     <div class="strats">
       <div class="strat"><b>Coopération</b><span>Négocier un désarmement : économies importantes et baisse des tensions.</span></div>
       <div class="strat t"><b>Trahison</b><span>Accumuler un arsenal nucléaire : domination potentielle de l'adversaire.</span></div>
     </div>
   </header>
+  <details class="fiche">
+    <summary>Fiche de cours <small>Définition, formule, piège</small></summary>
+    <div class="fiche-grid">
+      <div class="fbox"><div class="ft">Définition</div><div class="fc"><p>Un <b>équilibre de Nash</b> est une situation où aucun joueur n'a intérêt à changer seul de stratégie.</p><p>Une <b>stratégie dominante</b> est la meilleure réponse d'un joueur, quelle que soit la stratégie de l'autre.</p></div></div>
+      <div class="fbox form"><div class="ft">Formule</div><div class="fc"><p>Dilemme du prisonnier : <span class="m">T > R > P > S</span>, soit domination, puis coopération mutuelle, puis course aux armements, puis vulnérabilité.</p><p>Trahir est dominant ; l'équilibre de Nash <span class="m">(P ; P)</span> est Pareto-dominé par <span class="m">(R ; R)</span>.</p></div></div>
+      <div class="fbox warn"><div class="ft">Piège</div><div class="fc"><ul><li>La coopération mutuelle n'est pas le seul optimum de Pareto : les issues où un seul pays trahit le sont aussi.</li><li>La bonne formulation : l'issue coopérative Pareto-domine l'équilibre de Nash.</li></ul></div></div>
+    </div>
+  </details>
 
   <!-- Raisonnement guidé -->
   <section class="block">
@@ -195,6 +137,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
         <div class="btns" id="cellbtns" hidden><button class="btn" id="checkPareto">Vérifier</button></div>
         <div class="fb" id="sfb" hidden aria-live="polite"></div>
         <div class="btns"><button class="btn" id="snext" hidden>Question suivante</button></div>
+        <div class="defi" id="d0" style="margin-top:14px"><div class="lab"><span class="ic"></span>Défi 1</div><div>Termine le raisonnement guidé jusqu'aux optima de Pareto.</div><div class="fb"><b>Défi réussi.</b></div></div>
         <div class="concl" id="concl" hidden>
           <p><b>Le dilemme.</b> En suivant chacun son intérêt, les deux pays aboutissent à la course aux armements (1 ; 1), alors que le désarmement mutuel (3 ; 3) serait meilleur pour les deux : l'équilibre de Nash est Pareto-dominé.</p>
           <p>Les trois autres issues sont des optima de Pareto, y compris (4 ; 0) et (0 ; 4), pourtant très inégales. La rationalité individuelle ne conduit pas à l'efficacité collective.</p>
@@ -229,6 +172,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
         </div>
         <div class="reveal" id="reveal" hidden></div>
         <div class="btns"><button class="btn ghost" id="replay">Nouvelle partie, nouvel adversaire</button></div>
+        <div class="defi" id="d1" style="margin-top:12px"><div class="lab"><span class="ic"></span>Défi 2</div><div>Termine une partie avec une coopération mutuelle plus d'une année sur deux.</div><div class="fb"><b>Défi réussi.</b> Face à un adversaire réactif, coopérer peut être rationnel quand le jeu se répète.</div></div>
       </div>
     </div>
   </section>
@@ -261,16 +205,18 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
           <div class="sl"><label for="sP"><span>Course aux armements<small>les deux s'arment</small></span><b id="vP"></b></label><input type="range" id="sP" min="0" max="5" step="1"></div>
         </div>
         <div class="verdict" id="verdict" aria-live="polite"></div>
+        <div class="defi" id="d2" style="margin-top:12px"><div class="lab"><span class="ic"></span>Défi 3</div><div>Trouve des gains pour lesquels le désarmement mutuel devient un équilibre de Nash.</div><div class="fb"><b>Défi réussi.</b> Il faut que le désarmement mutuel rapporte au moins autant que la domination : plus personne n'a intérêt à trahir seul.</div></div>
       </div>
     </div>
   </section>
 
-  <nav class="pager" aria-label="Outil précédent ou suivant"><a class="prev" href="fiscalite.html"><small>← Précédent</small><b>Incidence fiscale</b></a><a class="next" href="ch2-externalites.html"><small>Chapitre 2 · Suivant →</small><b>Coût privé, coût social</b></a></nav>
+  <div id="site-pager"></div>
   <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
 </div>
 
 <script>
 (() => {
+  const D = Defis(3);
   const C = { navy:'#006EB8', brick:'#B6321C', forest:'#009B55', ink:'#1A2130', muted:'#5B6372', faint:'#A3A9B3', line:'#E2E5EA' };
   const $ = s => document.querySelector(s);
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -395,7 +341,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     $('#sdots').innerHTML = steps.map((_, i) => `<i class="${i <= si ? 'on' : ''}"></i>`).join('');
     const n = $('#snext'); n.hidden = false;
     n.textContent = si === steps.length - 1 ? 'Recommencer le raisonnement' : 'Question suivante';
-    if (si === steps.length - 1) { $('#concl').hidden = false; $('#cellbtns').hidden = true; }
+    if (si === steps.length - 1) { $('#concl').hidden = false; $('#cellbtns').hidden = true; D.win(0); }
     mx1();
   }
   $('#opts').addEventListener('click', e => {
@@ -480,6 +426,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     const r = $('#reveal');
     if (G.over) {
       const coop = 3 * y, mutual = G.h.filter(h => !h[0] && !h[1]).length;
+      if (mutual * 2 > y) D.win(1);
       r.hidden = false;
       r.innerHTML = `<h3>L'URSS jouait « ${G.s.name} »</h3><p>${G.s.desc}</p>
         <p>Tu as obtenu <b class="us">${G.us}</b>, l'URSS <b class="su">${G.su}</b>. Un désarmement mutuel chaque année aurait donné ${coop} à chacun. Années de coopération mutuelle : ${mutual} sur ${y}.</p>
@@ -496,6 +443,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
   function renderE() {
     ['R', 'T', 'S', 'P'].forEach(k => { $('#s' + k).value = E[k]; $('#v' + k).textContent = E[k]; });
     const { R, T, S, P } = E, M = [[[R, R], [S, T]], [[T, S], [P, P]]], A = analyse(M);
+    if (A.nash.has('00')) D.win(2);
     drawMatrix($('#mx2'), M, { arrows: A.arrows, nash: A.nash, pareto: A.pareto });
     document.querySelectorAll('#presets .chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.p === [R, T, S, P].join(','))));
     const name = k => k === '00' ? 'désarmement mutuel' : k === '11' ? 'course aux armements' : k === '01' ? 'États-Unis désarmés, URSS armée' : 'États-Unis armés, URSS désarmée';
@@ -521,6 +469,5 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
   showStep(); newGame(); renderE();
 })();
 </script>
-<script data-goatcounter="https://micro-lso2.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

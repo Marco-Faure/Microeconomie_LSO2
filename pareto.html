@@ -5,57 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Optimum de Pareto – Outils interactifs, microéconomie LSO2</title>
 <meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="stylesheet" href="style.css">
+<script src="commun.js"></script>
 <style>
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-BoldItalic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBoldItalic.ttf') format('truetype');font-weight:600;font-style:italic;font-display:swap}
-:root{
-  color-scheme:light;
-  --navy:#006EB8; --navy-soft:#E8F1F9; --brick:#B6321C; --brick-soft:#F9ECE9;
-  --forest:#009B55; --forest-soft:#E6F5ED; --forest-ink:#00703D;
-  --ink:#1A2130; --muted:#5B6372; --faint:#A3A9B3; --line:#E2E5EA; --soft:#F5F6F8; --paper:#fff;
-  --serif:'STIX Two Text','Cambria Math','Times New Roman',serif;
-  --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-}
-html{scroll-padding-top:env(safe-area-inset-top,0px);background:#fff}
-*,*::before,*::after{box-sizing:inherit}
-[hidden]{display:none!important}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1180px;margin:0 auto;padding:clamp(16px,3vw,40px)}
-:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
-.m{font-family:var(--serif);font-style:italic;font-size:1.07em;white-space:nowrap}
-.m sub,.m sup{font-size:.72em}
 .p1{color:var(--navy);font-weight:600}.p2{color:var(--brick);font-weight:600}
-.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:12px}
-.site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
-.site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
-.site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
-.site .home:hover b{text-decoration:underline;text-underline-offset:3px}
-.site .chs{display:flex;gap:4px;padding:4px;background:var(--soft);border-radius:99px}
-.site .chs a{padding:6px 14px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:700;font-size:.86rem;white-space:nowrap}
-.site .chs a:hover{color:var(--ink)}
-.site .chs a[aria-current="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(26,33,48,.12)}
-.sub{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:26px}
-.sub .chl{font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:8px}
-.sub a{padding:6px 12px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.86rem;transition:background .2s,color .2s}
-.sub a:hover{background:var(--soft);color:var(--ink)}
-.sub a[aria-current="page"]{background:var(--ink);color:#fff}
-.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:44px}
-.pager a{display:block;border:1px solid var(--line);border-radius:16px;padding:12px 16px;text-decoration:none;color:var(--ink);transition:border-color .2s}
-.pager a:hover{border-color:var(--ink)}
-.pager a small{display:block;font-size:.78rem;font-weight:700;color:var(--muted)}
-.pager a b{font-family:var(--serif);font-weight:600;font-size:1.08rem}
-.pager a.next{text-align:right;grid-column:2}
 
-header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px 32px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:28px}
-h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem);line-height:1;letter-spacing:-.015em;margin:0 0 12px}
-.lede{max-width:62ch;color:var(--muted);margin:0;font-size:1.03rem}
 .players{display:flex;gap:10px;flex-wrap:wrap}
 .pl{display:flex;align-items:center;gap:9px;padding:7px 14px 7px 7px;border-radius:99px;background:var(--navy-soft);font-weight:600;font-size:.92rem}
 .pl.b{background:var(--brick-soft)}
@@ -66,9 +20,6 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem)
 .def.g{border-left-color:var(--forest)}
 .def h3{font-family:var(--serif);font-weight:600;font-size:1.25rem;margin:0 0 6px}
 .def p{margin:0;max-width:60ch}
-h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,2.8vw,2.1rem);line-height:1.15;margin:0 0 6px}
-.intro{color:var(--muted);margin:0 0 20px;max-width:66ch}
-section.block{margin-bottom:56px}
 .grid2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
 .qcard{border:1px solid var(--line);border-radius:20px;padding:22px}
 .qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:.9rem;color:var(--muted)}
@@ -88,10 +39,6 @@ section.block{margin-bottom:56px}
 .choice.wrong{border-color:var(--brick);background:var(--brick-soft);color:var(--brick)}
 .fb{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--soft);font-size:.95rem}
 .fb.ok{background:var(--forest-soft)}.fb.ko{background:var(--brick-soft)}
-.btn{appearance:none;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:11px;padding:9px 15px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer;transition:background .2s}
-.btn:hover{background:#2E3748}
-.btn.ghost{background:#fff;color:var(--ink)}
-.btn.ghost:hover{background:var(--soft)}
 .btn.ghost[aria-pressed="true"]{background:var(--forest-soft);border-color:var(--forest);color:var(--forest-ink)}
 .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .planecard{border:1px solid var(--line);border-radius:20px;padding:10px}
@@ -123,42 +70,31 @@ svg .pt text.c{font-size:11.5px;fill:var(--muted);pointer-events:none}
 .keep div{border-top:2px solid var(--ink);padding-top:12px}
 .keep h3{font-family:var(--serif);font-weight:600;font-size:1.15rem;margin:0 0 6px}
 .keep p{margin:0;color:var(--ink)}
-.small{font-size:.84rem;color:var(--muted)}
-footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
-.pop{animation:pop .5s ease-out}
-@keyframes pop{40%{transform:scale(1.02)}}
-@media (prefers-reduced-motion:reduce){.pop{animation:none}}
 @media (max-width:880px){.grid2,.defs,.keep{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <nav class="site" aria-label="Site">
-    <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
-    <div class="chs"><a href="index.html#ch1" aria-current="true">Chapitre 1</a><a href="index.html#ch2">Chapitre 2</a></div>
-  </nav>
-  <nav class="sub" aria-label="Outils du chapitre 1"><span class="chl">Chapitre 1 · Équilibres et optimalités</span><a href="surplus.html">Surplus et perte sèche</a><a href="edgeworth.html">Boîte d'Edgeworth</a><a href="pareto.html" aria-current="page">Optimum de Pareto</a><a href="fiscalite.html">Incidence fiscale</a><a href="dilemme-prisonnier.html">Dilemme du prisonnier</a></nav>
+  <div id="site-nav"></div>
   <header class="top">
     <div>
       <h1>Optimum de Pareto</h1>
       <p class="lede">Une issue est efficace au sens de Pareto quand on ne peut plus améliorer le sort de quelqu'un sans détériorer celui d'un autre. Compare des issues, puis repère celles qui sont des optima.</p>
+      <div class="score" style="margin-top:14px"><span id="scoreTxt"></span><span class="dots" id="dots"></span></div>
     </div>
     <div class="players">
       <span class="pl"><i>1</i>Joueur 1</span>
       <span class="pl b"><i>2</i>Joueur 2</span>
     </div>
   </header>
-
-  <div class="defs">
-    <div class="def">
-      <h3>Pareto-dominer</h3>
-      <p>Une issue <span class="m">X</span> Pareto-domine une issue <span class="m">Y</span> si <b>personne</b> n'est moins bien en <span class="m">X</span> qu'en <span class="m">Y</span>, et si <b>au moins un</b> joueur y est strictement mieux.</p>
+  <details class="fiche" open>
+    <summary>Fiche de cours <small>Définition, formule, piège</small></summary>
+    <div class="fiche-grid">
+      <div class="fbox"><div class="ft">Définition</div><div class="fc"><p><span class="m">X</span> <b>Pareto-domine</b> <span class="m">Y</span> si personne n'est moins bien en <span class="m">X</span> qu'en <span class="m">Y</span> et si au moins un joueur y est strictement mieux.</p><p>Une issue est un <b>optimum de Pareto</b> si aucune autre issue possible ne la Pareto-domine.</p></div></div>
+      <div class="fbox form"><div class="ft">Formule</div><div class="fc"><p><span class="m">X</span> Pareto-domine <span class="m">Y</span> si <span class="m">u<sub>i</sub>(X) ≥ u<sub>i</sub>(Y)</span> pour tous les joueurs, et <span class="m">u<sub>j</sub>(X) > u<sub>j</sub>(Y)</span> pour au moins un.</p></div></div>
+      <div class="fbox warn"><div class="ft">Piège</div><div class="fc"><ul><li>Il existe en général plusieurs optima de Pareto.</li><li>Deux issues peuvent n'être comparables dans aucun sens.</li><li>Efficace ne veut pas dire juste : une situation où un seul agent possède tout est un optimum de Pareto.</li></ul></div></div>
     </div>
-    <div class="def g">
-      <h3>Optimum de Pareto</h3>
-      <p>Une issue est un optimum de Pareto si <b>aucune</b> autre issue possible ne la Pareto-domine. Les gains sont notés <span class="m">(<span class="p1">u<sub>1</sub></span> ; <span class="p2">u<sub>2</sub></span>)</span>.</p>
-    </div>
-  </div>
+  </details>
 
   <!-- Bloc 1 -->
   <section class="block" id="b1">
@@ -184,6 +120,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
         <svg class="plane" id="mini" aria-label="Position des deux issues"></svg>
         <div class="caption" id="minicap">Chaque issue est un point : gain du joueur 1 en abscisse, gain du joueur 2 en ordonnée.</div>
       </div>
+      <div class="defi" id="d0" style="grid-column:1"><div class="lab"><span class="ic"></span>Défi 1</div><div>Termine une série de duels avec au moins 7 bonnes réponses sur 8.</div><div class="fb"><b>Défi réussi.</b> Le réflexe à garder : comparer les gains joueur par joueur, et ne conclure à la dominance que si personne n'y perd.</div></div>
     </div>
   </section>
 
@@ -205,6 +142,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
         </div>
         <div class="result" id="result" hidden aria-live="polite"></div>
         <p class="small" id="streak" style="margin-top:12px"></p>
+        <div class="defi" id="d1"><div class="lab"><span class="ic"></span>Défi 2</div><div>Trouve tous les optima de Pareto d'une série, sans erreur.</div><div class="fb"><b>Défi réussi.</b> Une issue est un optimum dès qu'aucune autre ne donne au moins autant à chacun, avec un gain strict pour l'un.</div></div>
       </div>
     </div>
   </section>
@@ -218,12 +156,13 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     </div>
   </section>
 
-  <nav class="pager" aria-label="Outil précédent ou suivant"><a class="prev" href="edgeworth.html"><small>← Précédent</small><b>Boîte d'Edgeworth</b></a><a class="next" href="fiscalite.html"><small>Suivant →</small><b>Incidence fiscale</b></a></nav>
+  <div id="site-pager"></div>
   <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
 </div>
 
 <script>
 (() => {
+  const D = Defis(2);
   const C = { navy:'#006EB8', brick:'#B6321C', forest:'#009B55', ink:'#1A2130', muted:'#5B6372', faint:'#A3A9B3' };
   const $ = s => document.querySelector(s);
   const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
@@ -296,6 +235,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     const nx = $('#qnext'); nx.hidden = false;
     if (qi === Q.length - 1) {
       const n = qAns.filter(Boolean).length;
+      if (n >= 7) D.win(0);
       fb.innerHTML += `<div style="margin-top:8px"><b>Score : ${n} sur ${Q.length}.</b> ${n === Q.length ? 'Sans faute.' : n >= 6 ? 'Très bien.' : 'Relis la définition et retente une série.'}</div>`;
       nx.textContent = 'Nouvelle série de duels';
     } else nx.textContent = 'Duel suivant';
@@ -417,7 +357,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     const opt = set.filter(isOpt), missed = opt.filter(p => !sel.has(p.id)), wrong = set.filter(p => !isOpt(p) && sel.has(p.id));
     const r = $('#result'); r.hidden = false;
     if (!missed.length && !wrong.length) {
-      wins++; r.className = 'result ok';
+      wins++; r.className = 'result ok'; D.win(1);
       r.innerHTML = `<b>Parfait.</b> Les ${opt.length} optima de Pareto sont ${opt.map(p => p.id).join(', ')}. Ils forment la frontière en pointillés verts ; toutes les autres issues sont dominées.`;
       pop(r);
     } else {
@@ -434,6 +374,5 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
   newSet(makeSet(first));
 })();
 </script>
-<script data-goatcounter="https://micro-lso2.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

@@ -5,60 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>La boîte d'Edgeworth – Outils interactifs, microéconomie LSO2</title>
 <meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="stylesheet" href="style.css">
+<script src="commun.js"></script>
 <style>
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:'Instrument Sans';src:url('InstrumentSans-BoldItalic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-Italic.ttf') format('truetype');font-weight:400;font-style:italic;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
-@font-face{font-family:'STIX Two Text';src:url('STIXTwoText-SemiBoldItalic.ttf') format('truetype');font-weight:600;font-style:italic;font-display:swap}
-:root{
   color-scheme: light;
   --navy:#006EB8; --navy-soft:#E8F1F9;
   --brick:#B6321C; --brick-soft:#F9ECE9;
-  --forest:#009B55; --forest-soft:#E6F5ED; --forest-ink:#00703D;
   --ink:#1A2130; --muted:#5B6372; --faint:#A3A9B3; --line:#E2E5EA; --soft:#F5F6F8; --paper:#FFFFFF;
-  --serif:'STIX Two Text','Cambria Math','Times New Roman',serif;
-  --sans:'Instrument Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-}
-html{scroll-padding-top:env(safe-area-inset-top,0px);background:#fff}
-*,*::before,*::after{box-sizing:inherit}
-[hidden]{display:none!important}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1260px;margin:0 auto;padding:clamp(16px,3vw,40px)}
-.m{font-family:var(--serif);font-style:italic;font-size:1.07em;white-space:nowrap}
-.m sub,.m sup{font-size:.72em}
 b{font-weight:600}
-
 /* En-tête */
 header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px 32px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:26px}
-.site{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:12px}
-.site .home{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:1px}
-.site .home b{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.2}
-.site .home span{font-size:.84rem;font-weight:600;color:var(--navy)}
-.site .home:hover b{text-decoration:underline;text-underline-offset:3px}
-.site .chs{display:flex;gap:4px;padding:4px;background:var(--soft);border-radius:99px}
-.site .chs a{padding:6px 14px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:700;font-size:.86rem;white-space:nowrap}
-.site .chs a:hover{color:var(--ink)}
-.site .chs a[aria-current="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(26,33,48,.12)}
-.sub{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:26px}
-.sub .chl{font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:8px}
-.sub a{padding:6px 12px;border-radius:99px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.86rem;transition:background .2s,color .2s}
-.sub a:hover{background:var(--soft);color:var(--ink)}
-.sub a[aria-current="page"]{background:var(--ink);color:#fff}
-.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:44px}
-.pager a{display:block;border:1px solid var(--line);border-radius:16px;padding:12px 16px;text-decoration:none;color:var(--ink);transition:border-color .2s}
-.pager a:hover{border-color:var(--ink)}
-.pager a small{display:block;font-size:.78rem;font-weight:700;color:var(--muted)}
-.pager a b{font-family:var(--serif);font-weight:600;font-size:1.08rem}
-.pager a.next{text-align:right;grid-column:2}
-h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem);line-height:1;letter-spacing:-.015em;margin:0 0 12px}
-.lede{max-width:60ch;color:var(--muted);margin:0;font-size:1.03rem}
 .side{display:flex;flex-direction:column;gap:12px;align-items:flex-end}
 .agents{display:flex;gap:10px;flex-wrap:wrap}
 .agent{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:999px;background:var(--navy-soft)}
@@ -66,10 +26,6 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem)
 .agent .tag{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.15rem}
 .agent.b .tag{background:var(--brick)}
 .agent .fx{font-family:var(--serif);font-size:1.05rem}
-.score{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--muted)}
-.dots{display:flex;gap:5px}
-.dots i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--faint);transition:background .3s,border-color .3s}
-.dots i.on{background:var(--forest);border-color:var(--forest)}
 
 /* Scène */
 .stage{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(320px,1fr);gap:clamp(20px,3vw,40px);align-items:start}
@@ -88,7 +44,6 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem)
 .handle .ring{fill:none;stroke:var(--navy);stroke-width:3;opacity:0}
 .handle:focus-visible .ring{opacity:1}
 .legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:8px 14px 0;font-size:.83rem;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:7px}
 .legend .ln{width:22px;height:0;border-top:2.5px solid}
 .legend .dash{border-top-style:dashed}
 .legend .fill{width:16px;height:12px;border-radius:3px;background:rgba(0,155,85,.2)}
@@ -102,20 +57,9 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem)
 .tab .n{width:25px;height:25px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;font-size:.78rem;transition:background .3s,border-color .3s,color .3s}
 .tab[aria-selected="true"]{border-color:var(--ink);color:var(--ink);box-shadow:inset 0 -3px 0 var(--ink)}
 .tab.done .n{background:var(--forest);border-color:var(--forest);color:#fff}
-:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
 .step h2{font-family:var(--serif);font-weight:600;font-size:1.7rem;line-height:1.15;margin:0 0 12px;letter-spacing:-.005em}
 .step p{margin:0 0 11px;max-width:62ch}
-.defi{border-radius:16px;padding:14px 16px;background:var(--soft);margin:16px 0;border:1px solid var(--line);transition:background .35s,border-color .35s}
-.defi .lab{font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px;margin-bottom:4px}
-.defi .ic{width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--faint);display:grid;place-items:center;font-size:.72rem;color:#fff;flex:none}
 .defi .status{margin-top:8px;font-size:.92rem;color:var(--muted)}
-.defi .fb{display:none;margin-top:10px;font-size:.94rem;padding-top:10px;border-top:1px solid #BfE3CF}
-.defi.ok{background:var(--forest-soft);border-color:#A9DCC0}
-.defi.ok .ic{border:none;background:var(--forest)}
-.defi.ok .ic::after{content:"✓"}
-.defi.ok .fb{display:block}
-.defi.pop{animation:pop .5s ease-out}
-@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.025)}100%{transform:scale(1)}}
 .read{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
 .card{border:1px solid var(--line);border-radius:14px;padding:10px 12px;min-width:0}
 .card.a{border-top:3px solid var(--navy)}
@@ -135,7 +79,6 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,4.8vw,3.6rem)
 .meter .val{font-family:var(--serif);text-align:right}
 .price{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:14px 0 4px}
 .price .big{font-family:var(--serif);font-size:1.6rem}
-input[type=range]{width:100%;accent-color:var(--ink);margin:6px 0 2px}
 .scale{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
 .z{display:grid;grid-template-columns:52px 1fr 64px;align-items:center;gap:10px;margin:8px 0;font-size:.88rem}
 .z .track{position:relative;height:12px;background:var(--soft);border-radius:99px}
@@ -143,20 +86,13 @@ input[type=range]{width:100%;accent-color:var(--ink);margin:6px 0 2px}
 .z .track i{position:absolute;top:0;bottom:0;background:var(--ink);border-radius:99px;transition:background .2s}
 .z .track i.zero{background:var(--forest)}
 .z .zv{font-family:var(--serif);text-align:right}
-.small{font-size:.84rem;color:var(--muted)}
 .btns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
-.btn{appearance:none;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:11px;padding:8px 14px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s,color .2s}
-.btn:hover{background:#2E3748}
-.btn.ghost{background:#fff;color:var(--ink)}
-.btn.ghost:hover{background:var(--soft)}
 .btn.ghost[aria-pressed="true"]{background:var(--forest-soft);border-color:var(--forest);color:var(--forest-ink)}
-.btn:disabled{opacity:.5;cursor:default}
 details.settings{margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
 details.settings summary{cursor:pointer;font-weight:600;font-size:.92rem}
 .sl{margin:12px 0}
 .sl label{display:flex;justify-content:space-between;gap:8px;font-size:.88rem}
 .sl label .m{font-size:1rem}
-footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
 
 /* Effets */
 .pulse{transform-box:fill-box;transform-origin:center;animation:pulse 1s ease-out forwards}
@@ -179,11 +115,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 </head>
 <body>
 <div class="wrap">
-  <nav class="site" aria-label="Site">
-    <a class="home" href="index.html"><b>Outils interactifs, microéconomie LSO2</b><span>© 2026 Marc-Antoine Faure Colonna d'Istria</span></a>
-    <div class="chs"><a href="index.html#ch1" aria-current="true">Chapitre 1</a><a href="index.html#ch2">Chapitre 2</a></div>
-  </nav>
-  <nav class="sub" aria-label="Outils du chapitre 1"><span class="chl">Chapitre 1 · Équilibres et optimalités</span><a href="surplus.html">Surplus et perte sèche</a><a href="edgeworth.html" aria-current="page">Boîte d'Edgeworth</a><a href="pareto.html">Optimum de Pareto</a><a href="fiscalite.html">Incidence fiscale</a><a href="dilemme-prisonnier.html">Dilemme du prisonnier</a></nav>
+  <div id="site-nav"></div>
   <header class="top">
     <div>
       <h1>La boîte d'Edgeworth</h1>
@@ -197,6 +129,14 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
       <div class="score"><span id="scoreTxt">0 défi réussi sur 4</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
     </div>
   </header>
+  <details class="fiche">
+    <summary>Fiche de cours <small>Définition, formule, piège</small></summary>
+    <div class="fiche-grid">
+      <div class="fbox"><div class="ft">Définition</div><div class="fc"><p>Une allocation est un <b>optimum de Pareto</b> si l'on ne peut améliorer la situation d'un agent sans détériorer celle de l'autre. Dans la boîte, ce sont les points où les courbes d'indifférence sont tangentes : la <b>courbe des contrats</b>.</p></div></div>
+      <div class="fbox form"><div class="ft">Formule</div><div class="fc"><p>Optimum : <span class="m">TMS<sup>A</sup><sub>2→1</sub> = TMS<sup>B</sup><sub>2→1</sub></span>, avec <span class="m">TMS<sub>2→1</sub> = Um<sub>1</sub> / Um<sub>2</sub></span>.</p><p>Équilibre concurrentiel : chaque TMS est égal au rapport inverse des prix, <span class="m">p<sub>1</sub> / p<sub>2</sub></span>.</p><p>1<sup>er</sup> théorème : équilibre ⇒ optimum. 2<sup>nd</sup> théorème : tout optimum est atteignable après redistribution forfaitaire des dotations.</p></div></div>
+      <div class="fbox warn"><div class="ft">Piège</div><div class="fc"><ul><li><span class="m">TMS<sup>A</sup> = TMS<sup>B</sup></span> n'implique pas que ce TMS commun soit le rapport des prix d'équilibre issu de <span class="m">ω</span> : il faut redistribuer les dotations.</li><li>Un optimum de Pareto peut être très inégal.</li></ul></div></div>
+    </div>
+  </details>
 
   <main class="stage">
     <div class="boxcol">
@@ -246,17 +186,17 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
       <!-- Étape 2 -->
       <section class="step" data-step="1" role="tabpanel" hidden>
         <h2>Jusqu'où échanger ?</h2>
-        <p>Le taux marginal de substitution mesure ce que chacun est prêt à céder : c'est la quantité de bien 2 qu'un agent accepte d'abandonner pour une unité de bien 1 supplémentaire, <span class="m">TMS = Um<sub>1</sub> / Um<sub>2</sub></span>.</p>
+        <p>Le taux marginal de substitution mesure ce que chacun est prêt à céder : c'est la quantité de bien 2 qu'un agent accepte d'abandonner pour une unité de bien 1 supplémentaire, <span class="m">TMS<sub>2→1</sub> = Um<sub>1</sub> / Um<sub>2</sub></span>.</p>
         <p>Tant que A et B n'évaluent pas le bien 1 de la même façon, un nouvel échange peut profiter aux deux. Les deux petits segments posés sur <span class="m">P</span> sont les tangentes à leurs courbes d'indifférence.</p>
         <div class="meter">
-          <div class="row"><span class="m">TMS<sub>A</sub></span><div class="bar"><i id="tA" style="background:var(--navy)"></i></div><span class="val" id="tAv"></span></div>
-          <div class="row"><span class="m">TMS<sub>B</sub></span><div class="bar"><i id="tB" style="background:var(--brick)"></i></div><span class="val" id="tBv"></span></div>
+          <div class="row"><span class="m">TMS<sup>A</sup><sub>2→1</sub></span><div class="bar"><i id="tA" style="background:var(--navy)"></i></div><span class="val" id="tAv"></span></div>
+          <div class="row"><span class="m">TMS<sup>B</sup><sub>2→1</sub></span><div class="bar"><i id="tB" style="background:var(--brick)"></i></div><span class="val" id="tBv"></span></div>
         </div>
         <div class="defi" id="d1">
           <div class="lab"><span class="ic"></span>Défi 2</div>
           <div>Place <span class="m">P</span> sur un <b>optimum de Pareto</b> que A et B préfèrent tous les deux à <span class="m">ω</span>.</div>
           <div class="status" id="st1" aria-live="polite"></div>
-          <div class="fb"><b>Optimum atteint.</b> Les courbes d'indifférence sont tangentes : <span class="m">TMS<sub>A</sub> = TMS<sub>B</sub></span>. On ne peut plus améliorer la situation de l'un sans dégrader celle de l'autre. Ces points forment la <b>courbe des contrats</b> ; sa portion en vert épais, dans la lentille, est le <b>noyau</b>.</div>
+          <div class="fb"><b>Optimum atteint.</b> Les courbes d'indifférence sont tangentes : <span class="m">TMS<sup>A</sup><sub>2→1</sub> = TMS<sup>B</sup><sub>2→1</sub></span>. On ne peut plus améliorer la situation de l'un sans dégrader celle de l'autre. Ces points forment la <b>courbe des contrats</b> ; sa portion en vert épais, dans la lentille, est le <b>noyau</b>.</div>
         </div>
         <p class="small">Près de la courbe des contrats, <span class="m">P</span> s'y aimante.</p>
       </section>
@@ -278,7 +218,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
           <div class="lab"><span class="ic"></span>Défi 3</div>
           <div>Trouve <b>à la main</b> le prix qui équilibre les deux marchés à la fois.</div>
           <div class="status" id="st2" aria-live="polite"></div>
-          <div class="fb"><b>Équilibre général.</b> Les deux paniers coïncident en <span class="m">x<sup>M</sup></span>, qui se trouve sur la courbe des contrats : <span class="m">TMS<sub>A</sub> = TMS<sub>B</sub> = p<sub>1</sub>/p<sub>2</sub></span>. C'est le <b>premier théorème du bien-être</b> : l'équilibre concurrentiel est un optimum de Pareto.</div>
+          <div class="fb"><b>Équilibre général.</b> Les deux paniers coïncident en <span class="m">x<sup>M</sup></span>, qui se trouve sur la courbe des contrats : chaque TMS est égal au rapport inverse des prix, <span class="m">TMS<sup>A</sup><sub>2→1</sub> = TMS<sup>B</sup><sub>2→1</sub> = p<sub>1</sub>/p<sub>2</sub></span>. C'est le <b>premier théorème du bien-être</b> : l'équilibre concurrentiel est un optimum de Pareto.</div>
         </div>
         <div class="btns"><button class="btn ghost" id="tatoBtn">Voir le tâtonnement</button></div>
         <p class="small" id="walras">Loi de Walras : <span class="m">p·z<sub>1</sub> + z<sub>2</sub> = 0</span>. Quand un marché est équilibré, l'autre l'est aussi.</p>
@@ -316,8 +256,8 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     </aside>
   </main>
 
-  <nav class="pager" aria-label="Outil précédent ou suivant"><a class="prev" href="surplus.html"><small>← Précédent</small><b>Surplus et perte sèche</b></a><a class="next" href="pareto.html"><small>Suivant →</small><b>Optimum de Pareto</b></a></nav>
-  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Microéconomie, deuxième année de licence. Économie d'échange à deux agents et deux biens, préférences Cobb-Douglas. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
+  <div id="site-pager"></div>
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
 </div>
 
 <script>
@@ -808,6 +748,5 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
   syncPrefs(); syncDone(); syncSlider(); setStep(0);
 })();
 </script>
-<script data-goatcounter="https://micro-lso2.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

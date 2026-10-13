@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cartes et QCM – Outils interactifs, microéconomie LSO2</title>
+<meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="stylesheet" href="style.css">
+<script src="commun.js"></script>
+<style>
+.bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;margin-bottom:22px}
+.bar .seg{margin:0;min-width:260px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;font:inherit;font-size:.86rem;font-weight:600;cursor:pointer}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.zone{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
+/* Cartes */
+.deckwrap{perspective:1400px}
+.fcard{position:relative;width:100%;min-height:330px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.7,.3,1);outline:none}
+.fcard.flip{transform:rotateY(180deg)}
+.fcard .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;padding:26px 28px;display:flex;flex-direction:column;gap:14px;border:1.5px solid var(--ink);background:#fff;box-shadow:0 10px 0 -4px var(--soft),0 10px 0 -2.5px var(--line)}
+.fcard .back{transform:rotateY(180deg);background:var(--forest-soft);border-color:var(--forest)}
+.fcard:focus-visible .face{outline:3px solid var(--navy);outline-offset:3px}
+.fcard .tag{align-self:flex-start;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--navy-soft);color:var(--navy)}
+.fcard .tag.c2{background:var(--brick-soft);color:var(--brick)}
+.fcard .qq{font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,1.65rem);line-height:1.3;margin:auto 0}
+.fcard .hint{font-size:.84rem;color:var(--muted)}
+.fcard .ans{font-family:var(--serif);font-size:1.3rem;line-height:1.3;font-weight:600;color:var(--forest-ink);margin:0}
+.fcard .ex{margin:0}
+.fcard .ex{font-size:.95rem}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.btn.know{background:var(--forest);border-color:var(--forest)}
+.btn.know:hover{background:var(--forest-ink)}
+.stats{display:grid;gap:10px}
+.stat{border-radius:14px;padding:12px 14px;background:var(--soft)}
+.stat .h{font-size:.8rem;font-weight:700;color:var(--muted)}
+.stat .v{font-family:var(--serif);font-size:1.7rem;line-height:1.1}
+.pbar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:8px;display:flex}
+.pbar i{display:block;height:100%;transition:width .3s}
+/* QCM */
+.qcm .qhead{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;color:var(--muted);margin-bottom:12px}
+.qcm .qtext{font-family:var(--serif);font-size:clamp(1.25rem,2.2vw,1.5rem);line-height:1.3;margin:0 0 16px}
+.prog{display:flex;gap:4px}
+.prog i{width:18px;height:5px;border-radius:99px;background:var(--line)}
+.prog i.ok{background:var(--forest)}.prog i.ko{background:var(--brick)}.prog i.cur{background:var(--ink)}
+.res h3{font-family:var(--serif);font-size:1.6rem;margin:0 0 6px}
+.res .big{font-family:var(--serif);font-size:3.2rem;line-height:1;margin:6px 0 10px}
+.res ol{padding-left:20px;margin:10px 0 0}.res li{margin:8px 0}
+.res li small{display:block;color:var(--muted)}
+@media (max-width:880px){.zone{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.fcard{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="site-nav"></div>
+  <header class="top">
+    <div>
+      <h1>Cartes et QCM</h1>
+      <p class="lede">Tire des cartes pour réviser les notions des deux chapitres, ou lance un QCM de dix questions pour te tester. Les questions et l'ordre des réponses changent à chaque tirage.</p>
+    </div>
+  </header>
+
+  <div class="bar">
+    <div class="seg" role="group" aria-label="Mode">
+      <button data-mode="cartes" aria-pressed="true">Cartes</button>
+      <button data-mode="qcm" aria-pressed="false">QCM noté</button>
+    </div>
+    <div class="chips" role="group" aria-label="Chapitre">
+      <button class="chip" data-ch="0" aria-pressed="true">Tout le programme</button>
+      <button class="chip" data-ch="1" aria-pressed="false">Chapitre 1</button>
+      <button class="chip" data-ch="2" aria-pressed="false">Chapitre 2</button>
+    </div>
+  </div>
+
+  <section id="cartes" class="zone">
+    <div>
+      <div class="deckwrap">
+        <div class="fcard" id="fcard" tabindex="0" role="button" aria-label="Retourner la carte">
+          <div class="face front"><span class="tag" id="ftag"></span><p class="qq" id="fq"></p><span class="hint">Clique ou appuie sur Espace pour retourner la carte.</span></div>
+          <div class="face back"><span class="tag" id="btag"></span><p class="hint" id="bq" style="margin:0"></p><p class="ans" id="ba"></p><p class="ex" id="bx"></p></div>
+        </div>
+      </div>
+      <div class="ctrl" id="cbtns">
+        <button class="btn ghost" id="flip">Retourner</button>
+        <button class="btn know" id="know" hidden>Je savais</button>
+        <button class="btn ghost" id="again" hidden>À revoir</button>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="h">Cartes du paquet</div><div class="v" id="sLeft"></div>
+        <div class="pbar" aria-hidden="true"><i id="pKnow" style="background:var(--forest)"></i><i id="pAgain" style="background:var(--brick)"></i></div></div>
+      <div class="stat"><div class="h">Je savais</div><div class="v" id="sKnow" style="color:var(--forest-ink)"></div></div>
+      <div class="stat"><div class="h">À revoir</div><div class="v" id="sAgain" style="color:var(--brick)"></div><p class="small" style="margin:6px 0 0">Les cartes à revoir reviennent à la fin du paquet.</p></div>
+      <button class="btn ghost" id="reshuffle">Mélanger un nouveau paquet</button>
+    </div>
+  </section>
+
+  <section id="qcm" class="zone" hidden>
+    <div class="card pad qcm" id="qbox"></div>
+    <div class="stats">
+      <div class="stat"><div class="h">Score</div><div class="v" id="qScore">0</div></div>
+      <div class="stat"><div class="h">Meilleur score de la session</div><div class="v" id="qBest">–</div></div>
+      <button class="btn ghost" id="qnew">Nouveau QCM</button>
+    </div>
+  </section>
+
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
+</div>
+
+<script>
+/* Banque de questions : [chapitre, question, [bonne réponse, distracteurs...], explication] */
+const Q = [
+[1, "Que mesure le surplus du consommateur ?", ["L'écart entre le prix maximum que les acheteurs sont prêts à payer et le prix qu'ils paient", "Le profit des entreprises sur le marché", "La différence entre le prix et le coût marginal", "La quantité achetée au-delà de l'équilibre"], "C'est l'évaluation monétaire de la satisfaction que les acheteurs retirent de l'échange."],
+[1, "Le surplus du producteur et le profit diffèrent…", ["des coûts fixes : SP = π + CF", "des coûts variables", "de la recette fiscale", "du surplus du consommateur"], "Le surplus du producteur ne retranche que les coûts variables ; le profit retranche aussi les coûts fixes."],
+[1, "Un prix plafond fixé au-dessus du prix d'équilibre…", ["n'a aucun effet sur le marché", "crée une pénurie", "crée un excédent d'offre", "augmente la perte sèche"], "Le prix d'équilibre respecte déjà le plafond : la contrainte n'est pas contraignante."],
+[1, "Un prix plancher contraignant provoque…", ["un excédent d'offre et une perte sèche", "une pénurie et une perte sèche", "une hausse de la quantité échangée", "un transfert sans perte sèche"], "Au prix plancher, les consommateurs achètent moins : la quantité échangée baisse, des échanges avantageux disparaissent."],
+[1, "À quoi correspond une perte sèche ?", ["Au surplus perdu parce que des échanges avantageux n'ont plus lieu", "À la recette fiscale perçue par l'État", "Au surplus transféré des consommateurs aux producteurs", "Aux coûts fixes des entreprises"], "Elle mesure la baisse du surplus total : les unités qui ne sont plus échangées rapportaient plus qu'elles ne coûtaient."],
+[1, "Dans la boîte d'Edgeworth, la courbe des contrats est…", ["l'ensemble des allocations où les courbes d'indifférence des deux agents sont tangentes", "l'ensemble des paniers que l'agent A peut acheter", "la droite de budget qui passe par la dotation", "l'ensemble des allocations que les deux agents préfèrent à leur dotation"], "Ce sont les optima de Pareto. La partie que les deux agents préfèrent à la dotation s'appelle le noyau."],
+[1, "À un optimum de Pareto d'une économie d'échange…", ["TMS^A = TMS^B", "les deux agents ont la même utilité", "chaque agent détient la moitié de chaque bien", "TMS^A = 1"], "Si les TMS diffèrent, un échange peut améliorer la situation des deux agents."],
+[1, "Le premier théorème du bien-être énonce que…", ["tout équilibre concurrentiel est un optimum de Pareto", "tout optimum de Pareto est un équilibre concurrentiel", "l'équilibre concurrentiel est équitable", "il existe un unique optimum de Pareto"], "La réciproque, avec redistribution des dotations, est le second théorème."],
+[1, "Selon le second théorème, comment atteindre un optimum de Pareto choisi ?", ["Redistribuer les dotations par des transferts forfaitaires, puis laisser le marché fonctionner", "Fixer les prix au niveau voulu", "Taxer chaque unité échangée", "Imposer les quantités consommées"], "Le planificateur ne touche ni aux prix ni aux quantités : il déplace la dotation initiale."],
+[1, "Pourquoi TMS^A = TMS^B ne suffit-il pas pour que le marché atteigne un optimum donné ?", ["La droite de budget qui soutient cet optimum doit aussi passer par la dotation", "Les TMS ne sont jamais égaux à l'équilibre", "Le marché ne peut atteindre que le centre de la boîte", "Il faut que les deux agents aient les mêmes préférences"], "Chaque agent doit pouvoir financer son panier avec la valeur de sa dotation."],
+[1, "Comparez les issues (4 ; 8) et (4 ; 6).", ["(4 ; 8) Pareto-domine (4 ; 6)", "(4 ; 6) Pareto-domine (4 ; 8)", "Aucune ne domine l'autre", "Elles sont équivalentes"], "Le joueur 1 est indifférent et le joueur 2 strictement mieux : c'est une dominance, malgré l'égalité."],
+[1, "Comparez les issues (10 ; 0) et (5 ; 5).", ["Aucune ne Pareto-domine l'autre", "(5 ; 5) Pareto-domine (10 ; 0)", "(10 ; 0) Pareto-domine (5 ; 5)", "Elles ont la même efficacité, donc (5 ; 5) domine"], "Chaque issue est meilleure pour l'un des joueurs : elles ne sont pas comparables au sens de Pareto."],
+[1, "Une situation où un seul agent possède tous les biens peut-elle être un optimum de Pareto ?", ["Oui, on ne peut améliorer le sort de l'autre sans réduire le sien", "Non, elle est inéquitable", "Non, les TMS ne sont pas définis", "Seulement si l'autre agent est d'accord"], "Le critère de Pareto ne dit rien de la répartition."],
+[1, "Une taxe unitaire pèse surtout sur les consommateurs quand…", ["la demande est moins élastique que l'offre", "la taxe est versée par les consommateurs", "l'offre est moins élastique que la demande", "la taxe est ad valorem"], "La charge retombe sur le côté du marché qui peut le moins renoncer à l'échange."],
+[1, "Que change le fait que la taxe soit versée par les consommateurs plutôt que par les producteurs ?", ["Rien : prix payés, prix reçus et quantité sont les mêmes", "Les consommateurs supportent toute la taxe", "La perte sèche disparaît", "La recette fiscale double"], "L'incidence ne dépend pas de qui verse la taxe à l'État, mais des élasticités."],
+[1, "La recette fiscale d'une taxe unitaire vaut…", ["t × q_t, la quantité échangée avec la taxe", "t × q*, la quantité d'équilibre sans taxe", "t × (q* − q_t)", "(p_c − p*) × q_t"], "La taxe ne s'applique qu'aux unités effectivement échangées."],
+[1, "Qu'est-ce qu'un équilibre de Nash ?", ["Une situation où aucun joueur n'a intérêt à changer seul de stratégie", "L'issue qui maximise la somme des gains", "Une issue où les deux joueurs coopèrent", "Une situation où chaque joueur gagne au moins autant que l'autre"], "Chaque stratégie est une meilleure réponse à celle de l'autre."],
+[1, "Une stratégie dominante est…", ["la meilleure réponse d'un joueur, quelle que soit la stratégie de l'autre", "la stratégie qui donne le gain le plus élevé de la matrice", "la stratégie choisie par le joueur le plus puissant", "la stratégie qui mène à l'optimum de Pareto"], "Dans le dilemme du prisonnier, trahir est dominant pour chaque joueur."],
+[1, "Dans le dilemme du prisonnier, l'équilibre de Nash est…", ["Pareto-dominé par la coopération mutuelle", "le seul optimum de Pareto", "la coopération mutuelle", "impossible à atteindre"], "Chaque joueur suit son intérêt, et tous deux aboutissent à une issue qu'ils jugent moins bonne."],
+[2, "Qu'est-ce qu'une externalité ?", ["L'impact de l'activité d'un agent sur un autre agent, sans compensation", "Un coût supporté par l'entreprise elle-même", "Un effet qui passe par les prix du marché", "Une taxe imposée par l'État"], "La définition du cours : production ou consommation, effet positif ou négatif, sans compensation."],
+[2, "Face à une externalité négative comme la pollution, le marché…", ["surproduit, et le prix est trop bas", "sous-produit, et le prix est trop élevé", "produit la quantité optimale", "cesse de produire"], "Le producteur égalise le prix et son coût privé, inférieur au coût social."],
+[2, "Face à une externalité positive comme la R&D, le marché…", ["sous-produit", "surproduit", "produit la quantité optimale", "fixe un prix trop bas"], "Le coût privé dépasse le coût pour la société : la firme s'arrête trop tôt."],
+[2, "Le coût marginal social d'une activité polluante vaut…", ["Cm^p + Cm^e", "Cm^p − Cm^e", "Cm^e seul", "le prix de marché"], "On ajoute au coût privé le coût imposé aux tiers pour la dernière unité."],
+[2, "Une fête bruyante jusqu'à trois heures du matin est une externalité…", ["de consommation, négative", "de production, négative", "de consommation, positive", "de production, positive"], "Le bruit vient d'une consommation, et les voisins le subissent sans compensation."],
+[2, "Se faire vacciner est une externalité…", ["de consommation, positive", "de consommation, négative", "de production, positive", "Ce n'est pas une externalité"], "En se protégeant, on réduit aussi le risque de contagion pour les autres."],
+[2, "Les abeilles d'un apiculteur pollinisent le verger voisin : c'est une externalité…", ["de production, positive", "de production, négative", "de consommation, positive", "Ce n'est pas une externalité"], "La production de l'apiculteur augmente la récolte du voisin, qui ne le paie pas."],
+[2, "À quel niveau fixer la taxe pigouvienne ?", ["t = Cm^e(q̄), le coût externe marginal évalué à l'optimum", "t = Cm^e(q*), évalué à l'équilibre privé", "t = Cm^p(q̄)", "t égale au prix d'équilibre"], "La firme égalise alors p = Cm^p + t = Cm^s."],
+[2, "Taxe pigouvienne et subvention à la réduction…", ["mènent à la même allocation, avec une répartition différente", "mènent à des quantités différentes", "coûtent la même chose à l'État", "ne corrigent pas l'externalité"], "Renoncer à une unité rapporte s, comme produire coûtait t. Seuls les transferts diffèrent."],
+[2, "Quelle est la principale limite de la taxe pigouvienne ?", ["L'État doit connaître le coût externe marginal", "Elle ne modifie pas les quantités", "Elle supprime le marché", "Elle est toujours plus coûteuse qu'une subvention"], "C'est le problème d'information ; s'y ajoute celui de l'acceptabilité."],
+[2, "À quoi servent les transferts forfaitaires après une taxe pigouvienne ?", ["À compenser les perdants sans modifier les décisions", "À rembourser la taxe aux firmes par unité produite", "À financer une subvention à la production", "À réduire la perte sèche"], "Ils ne dépendent pas des quantités : l'optimum est préservé et la réforme devient acceptable."],
+[2, "Après une fusion, comment la firme 1 fixe-t-elle sa production ?", ["p = Cm1^p + Cm^e = Cm1^s", "p = Cm1^p", "p = Cm^e", "Elle produit comme avant"], "L'entité fusionnée supporte le dommage causé à son usine 2 : elle en tient compte."],
+[2, "Deux firmes acceptent de fusionner si…", ["chacune reçoit au moins son profit de l'équilibre privé", "le profit joint est partagé à parts égales", "l'État compense la firme victime", "le prix baisse après la fusion"], "C'est la contrainte de participation : αΠ̄_J ≥ π1* et (1 − α)Π̄_J ≥ π2*."],
+[2, "Un intervalle d'accord sur le partage α existe si…", ["le profit joint dépasse la somme des profits privés", "les deux firmes ont le même profit privé", "α = 0,5", "l'externalité est positive"], "Il faut Π̄_J ≥ π1* + π2* : la fusion doit créer un gain à partager."],
+[2, "Que dit le théorème de Coase ?", ["Sans coûts de transaction, l'attribution des droits de propriété est sans effet sur l'allocation", "L'État doit toujours taxer les pollueurs", "Les droits doivent être attribués à la victime", "La négociation aboutit toujours à zéro pollution"], "Seule la répartition des gains dépend de l'attribution des droits."],
+[2, "À l'équilibre d'un marché de droits à polluer, le prix d'un droit vaut…", ["Cm^e(q̄1), le dommage marginal à l'optimum", "le coût marginal privé du pollueur", "zéro", "le prix du bien"], "La victime paie un droit au plus le dommage qu'elle évite."],
+[2, "Changer le propriétaire des droits à polluer modifie…", ["la répartition des profits", "la quantité produite par le pollueur", "le niveau de pollution", "le prix du bien"], "Dans l'exemple du cours, le profit total reste 6 750 dans les deux cas."],
+[2, "Avec des coûts de transaction élevés…", ["l'attribution des droits peut déterminer l'allocation finale", "le théorème de Coase s'applique toujours", "la pollution disparaît", "les droits n'ont plus de valeur"], "Des échanges avantageux n'ont plus lieu, car négocier coûte plus qu'il ne rapporte."],
+[2, "À Vittel, qui détenait de fait le droit de polluer ?", ["Les agriculteurs : c'est la victime, Nestlé, qui a payé", "Nestlé", "L'État", "Personne : la pollution était interdite"], "Nestlé a financé des contrats avec une quarantaine d'exploitations ; leur petit nombre limitait les coûts de transaction."],
+[2, "Quel instrument relève de la logique transformatrice ?", ["Créer des droits de propriété échangeables", "La taxe pigouvienne", "La subvention à la réduction", "Un prix plafond"], "La fusion et les droits de propriété changent le statut de l'externalité, sans que l'État fixe de prix."],
+[2, "Le gel de la taxe carbone en 2018 illustre…", ["le problème d'acceptabilité d'une taxe pigouvienne", "l'efficacité du théorème de Coase", "une externalité positive", "l'absence de perte sèche"], "La hausse a été gelée après le mouvement des gilets jaunes."],
+];
+
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const fmt = s => s.replace(/(TMS|Cm1|Cm|Bm)\^([A-Za-z]+)/g, (_, b, e) => `${b}<sup>${e}</sup>`).replace(/Cm(\d)<sup>/g, 'Cm<sub>$1</sub><sup>').replace(/_(J|t|c|p)\b/g, '<sub>$1</sub>').replace(/π(\d)\*/g, 'π<sub>$1</sub>*').replace(/q(\u0304?)(\d)\b/g, 'q$1<sub>$2</sub>');
+const tag = c => `Chapitre ${c} · ${c === 1 ? 'Équilibres et optimalités' : 'Les effets externes'}`;
+const st = { mode: 'cartes', ch: 0 };
+const pool = () => Q.filter(q => !st.ch || q[0] === st.ch);
+
+/* ---------- Cartes ---------- */
+let deck, know, again, total;
+function newDeck() { deck = shuffle(pool()); know = 0; again = 0; total = deck.length; showCard(); }
+function showCard() {
+  const fc = $('#fcard'); fc.classList.remove('flip');
+  $('#know').hidden = true; $('#again').hidden = true; $('#flip').hidden = false;
+  if (!deck.length) {
+    $('#ftag').textContent = 'Paquet terminé'; $('#ftag').className = 'tag';
+    $('#fq').innerHTML = `Tu connaissais ${know} carte${know > 1 ? 's' : ''} du premier coup sur ${total}.`;
+    $('#flip').hidden = true; stats(); return;
+  }
+  const c = deck[0];
+  $('#ftag').textContent = tag(c[0]); $('#ftag').className = 'tag' + (c[0] === 2 ? ' c2' : '');
+  $('#btag').textContent = 'Réponse'; $('#btag').className = 'tag';
+  $('#fq').innerHTML = fmt(c[1]); $('#bq').innerHTML = fmt(c[1]); $('#ba').innerHTML = fmt(c[2][0]).replace(/^./, x => x.toUpperCase()); $('#bx').innerHTML = fmt(c[3]);
+  stats();
+}
+function flip() {
+  if (!deck.length) return;
+  const fc = $('#fcard'), f = fc.classList.toggle('flip');
+  $('#know').hidden = !f; $('#again').hidden = !f; $('#flip').textContent = f ? 'Voir la question' : 'Retourner';
+}
+function grade(ok) {
+  const c = deck.shift();
+  if (ok) { if (!c.seen) know++; } else { if (!c.seen) again++; c.seen = true; deck.push(c); }
+  $('#flip').textContent = 'Retourner';
+  showCard();
+}
+function stats() {
+  $('#sLeft').textContent = `${deck.length} sur ${total}`;
+  $('#sKnow').textContent = know; $('#sAgain').textContent = again;
+  $('#pKnow').style.width = (100 * know / total) + '%'; $('#pAgain').style.width = (100 * again / total) + '%';
+}
+$('#fcard').addEventListener('click', flip);
+$('#fcard').addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); } });
+$('#flip').addEventListener('click', flip);
+$('#know').addEventListener('click', () => grade(true));
+$('#again').addEventListener('click', () => grade(false));
+$('#reshuffle').addEventListener('click', () => { Q.forEach(q => delete q.seen); newDeck(); });
+
+/* ---------- QCM ---------- */
+let qs, qi, qres, best = null;
+function newQcm() {
+  qs = shuffle(pool()).slice(0, 10).map(q => ({ q, opts: shuffle(q[2].map((t, i) => ({ t, ok: i === 0 }))) }));
+  qi = 0; qres = []; showQ();
+}
+function prog() { return `<span class="prog">${qs.map((_, i) => `<i class="${i < qres.length ? (qres[i] ? 'ok' : 'ko') : i === qi ? 'cur' : ''}"></i>`).join('')}</span>`; }
+function showQ() {
+  const x = qs[qi];
+  $('#qbox').innerHTML = `<div class="qhead"><span>Question ${qi + 1} sur ${qs.length} · Chapitre ${x.q[0]}</span>${prog()}</div>
+    <p class="qtext">${fmt(x.q[1])}</p>
+    <div class="opts">${x.opts.map((o, i) => `<button class="opt" data-i="${i}">${fmt(o.t)}</button>`).join('')}</div>
+    <div class="fbk" hidden aria-live="polite"></div>
+    <div class="row"><button class="btn" id="qnext" hidden>${qi === qs.length - 1 ? 'Voir le résultat' : 'Question suivante'}</button></div>`;
+  $('#qScore').textContent = `${qres.filter(Boolean).length} sur ${qres.length}`;
+}
+$('#qbox').addEventListener('click', e => {
+  const b = e.target.closest('.opt');
+  if (b && !b.disabled) {
+    const x = qs[qi], o = x.opts[+b.dataset.i];
+    qres.push(o.ok); x.ok = o.ok; x.chosen = o.t;
+    document.querySelectorAll('#qbox .opt').forEach((el, i) => { el.disabled = true; if (x.opts[i].ok) el.classList.add('right'); });
+    if (!o.ok) b.classList.add('wrong');
+    const f = $('#qbox .fbk'); f.hidden = false; f.className = 'fbk ' + (o.ok ? 'ok' : 'ko');
+    f.innerHTML = `<b>${o.ok ? 'Exact.' : 'Non.'}</b> ${fmt(x.q[3])}`;
+    $('#qnext').hidden = false; $('#qnext').focus();
+    $('#qbox .qhead').innerHTML = `<span>Question ${qi + 1} sur ${qs.length} · Chapitre ${x.q[0]}</span>${prog()}`;
+    $('#qScore').textContent = `${qres.filter(Boolean).length} sur ${qres.length}`;
+    if (o.ok) pop(f);
+    return;
+  }
+  if (e.target.closest('#qnext')) { if (qi < qs.length - 1) { qi++; showQ(); } else result(); }
+  if (e.target.closest('#qagain')) newQcm();
+});
+function result() {
+  const n = qres.filter(Boolean).length, errs = qs.filter(x => !x.ok);
+  best = best == null ? n : Math.max(best, n);
+  $('#qBest').textContent = `${best} sur ${qs.length}`;
+  const msg = n === qs.length ? 'Sans faute.' : n >= 8 ? 'Très bien.' : n >= 5 ? 'C\'est un début : relis les explications des erreurs.' : 'Repasse par les cartes avant de recommencer.';
+  $('#qbox').innerHTML = `<div class="res"><h3>Résultat</h3><div class="big">${n} / ${qs.length}</div><p>${msg}</p>
+    ${errs.length ? `<h4 style="margin:16px 0 0">À revoir</h4><ol>${errs.map(x => `<li><b>${fmt(x.q[1])}</b><small>Ta réponse : ${fmt(x.chosen)}</small>Bonne réponse : ${fmt(x.q[2][0])}</li>`).join('')}</ol>` : ''}
+    <div class="row" style="margin-top:16px"><button class="btn" id="qagain">Nouveau QCM</button></div></div>`;
+  if (n >= 8) pop($('#qbox .big'));
+}
+$('#qnew').addEventListener('click', newQcm);
+
+/* ---------- Mode et filtre ---------- */
+function setMode(md) {
+  st.mode = md;
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === md)));
+  $('#cartes').hidden = md !== 'cartes'; $('#qcm').hidden = md !== 'qcm';
+}
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+document.querySelectorAll('[data-ch]').forEach(b => b.addEventListener('click', () => {
+  st.ch = +b.dataset.ch;
+  document.querySelectorAll('[data-ch]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  Q.forEach(q => delete q.seen); newDeck(); newQcm();
+}));
+newDeck(); newQcm();
+</script>
+</body>
+</html>
