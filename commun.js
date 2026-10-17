@@ -8,20 +8,22 @@ const SITE = {
   auteur: "© 2026 Marc-Antoine Faure Colonna d'Istria",
   chapitres: [
     { id: 'ch1', n: 1, titre: 'Équilibres et optimalités', pages: [
-      ['surplus.html', 'Surplus et perte sèche'],
-      ['edgeworth.html', "Boîte d'Edgeworth"],
-      ['pareto.html', 'Optimum de Pareto'],
-      ['fiscalite.html', 'Incidence fiscale'],
-      ['dilemme-prisonnier.html', 'Dilemme du prisonnier'] ] },
+      // [fichier, titre court, notion du cours, durée en minutes]
+      ['surplus.html', 'Surplus et perte sèche', 'Les surplus et la perte sèche', 15],
+      ['edgeworth.html', "Boîte d'Edgeworth", "L'équilibre général et les théorèmes du bien-être", 20],
+      ['pareto.html', 'Optimum de Pareto', "L'optimum de Pareto", 10],
+      ['fiscalite.html', 'Incidence fiscale', 'La fiscalité et son incidence', 15],
+      ['dilemme-prisonnier.html', 'Dilemme du prisonnier', 'Théorie des jeux : le dilemme du prisonnier', 15] ] },
     { id: 'ch2', n: 2, titre: 'Les effets externes', pages: [
-      ['ch2-externalites.html', 'Coût privé, coût social'],
-      ['ch2-pigou.html', 'Taxe et subvention'],
-      ['ch2-fusion.html', 'Fusion et profit joint'],
-      ['ch2-coase.html', 'Droits de propriété'] ] }
+      ['ch2-externalites.html', 'Coût privé, coût social', 'Effet externe, coût privé et coût social', 10],
+      ['ch2-pigou.html', 'Taxe et subvention', 'Logique interventionniste : taxe pigouvienne, subvention, transferts forfaitaires', 15],
+      ['ch2-fusion.html', 'Fusion et profit joint', 'Logique transformatrice : fusion et internalisation', 15],
+      ['ch2-coase.html', 'Droits de propriété', 'Logique transformatrice : droits de propriété et théorème de Coase', 15] ] }
   ],
   reviser: { id: 'reviser', titre: 'Réviser', pages: [
       ['cartes.html', 'Cartes et QCM'],
-      ['exercices.html', "Générateur d'exercices"] ] }
+      ['exercices.html', "Générateur d'exercices"],
+      ['lexique.html', 'Lexique'] ] }
 };
 
 /* ---------- Mesure d'audience anonyme ---------- */
@@ -57,6 +59,15 @@ function sitePager() {
 function siteFill() {
   const n = document.getElementById('site-nav'); if (n) n.outerHTML = siteNav();
   const p = document.getElementById('site-pager'); if (p) p.outerHTML = sitePager();
+  const all = SITE.chapitres.flatMap(c => c.pages);
+  // En-tête d'un outil : notion du cours et durée
+  const me = all.find(x => x[0] === PAGE), h = document.querySelector('header.top > div');
+  if (me && h && !h.querySelector('.kicker')) h.insertAdjacentHTML('afterbegin', `<p class="kicker"><span>Notion du cours : ${me[2]}</span><span>Environ ${me[3]} min</span></p>`);
+  // Accueil : durée de chaque outil
+  document.querySelectorAll('.tool a[href]').forEach(a => {
+    const x = all.find(y => y[0] === a.getAttribute('href')), i = a.querySelector('.idx');
+    if (x && i && !i.dataset.d) { i.dataset.d = 1; i.textContent += ` · ${x[3]} min`; }
+  });
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', siteFill); else siteFill();
 
@@ -134,8 +145,10 @@ function Exercice(sel, gen, o = {}) {
     ex = gen(); k++;
     q('.exo-n').textContent = o.titre || (`Exercice n° ${k}` + (reussis ? ` · ${reussis} réussi${reussis > 1 ? 's' : ''} sans faute` : ''));
     q('.exo-enonce').innerHTML = ex.enonce;
-    q('.exo-q').innerHTML = ex.q.map((x, i) => `<li><label for="${uid}${i}">${x.label}</label><input id="${uid}${i}" inputmode="decimal" autocomplete="off"><span class="mk" aria-live="polite"></span></li>`).join('');
-    q('.fbk').hidden = true; const so = q('.exo-sol'); so.hidden = true; so.innerHTML = `<h4>Correction</h4>${ex.sol}`;
+    q('.exo-q').innerHTML = ex.q.map((x, i) => `<li><label for="${uid}${i}">${x.label}</label><input id="${uid}${i}" inputmode="decimal" autocomplete="off"><span class="mk" aria-live="polite"></span><small class="dg" hidden></small></li>`).join('');
+    q('.fbk').hidden = true; const so = q('.exo-sol'); so.hidden = true;
+    so.innerHTML = `<h4>Correction</h4>${ex.sol}` + (ex.graph ? `<figure class="exo-fig"><svg class="ch" id="${uid}g${k}" aria-label="Graphique de l'exercice"></svg>${ex.legende ? `<figcaption>${ex.legende}</figcaption>` : ''}</figure>` : '');
+    if (ex.graph) ex.graph(so.querySelector('svg'));
     ex.done = false;
     q('[data-a="sol"]').textContent = 'Voir la correction';
   }
@@ -143,15 +156,17 @@ function Exercice(sel, gen, o = {}) {
     let n = 0, vide = 0;
     ex.q.forEach((x, i) => {
       const li = q('.exo-q').children[i], v = lireNombre(li.querySelector('input').value);
-      li.classList.remove('ok', 'ko'); const mk = li.querySelector('.mk');
+      li.classList.remove('ok', 'ko'); const mk = li.querySelector('.mk'), dg = li.querySelector('.dg'); dg.hidden = true;
       if (isNaN(v)) { vide++; mk.textContent = ''; return; }
-      const ok = Math.abs(v - x.ans) <= (x.tol != null ? x.tol : Math.max(0.011, 0.002 * Math.abs(x.ans)));
+      const near = (u, w) => Math.abs(u - w) <= (x.tol != null ? x.tol : Math.max(0.011, 0.002 * Math.abs(w)));
+      const ok = near(v, x.ans);
       li.classList.add(ok ? 'ok' : 'ko'); mk.textContent = ok ? '✓' : '✗'; if (ok) n++;
+      if (!ok && x.diag) { const d = x.diag.find(([w]) => isFinite(w) && !near(w, x.ans) && near(v, w)); if (d) { dg.innerHTML = d[1]; dg.hidden = false; } }
     });
     const f = q('.fbk'); f.hidden = false;
     const tot = ex.q.length;
     if (n === tot) {
-      f.className = 'fbk ok'; f.innerHTML = '<b>Tout est juste.</b> Tire un nouvel exercice pour t\'entraîner encore.';
+      f.className = 'fbk ok'; f.innerHTML = '<b>Tout est juste.</b> ' + (ex.graph ? 'Affiche la correction pour voir le graphique de l\'exercice, ou tire-en un nouveau.' : 'Tire un nouvel exercice pour t\'entraîner encore.');
       if (!ex.done) { ex.done = true; reussis++; if (!o.titre) q('.exo-n').textContent = `Exercice n° ${k} · ${reussis} réussi${reussis > 1 ? 's' : ''} sans faute`; if (o.onWin) o.onWin(); }
       pop(f);
     } else {

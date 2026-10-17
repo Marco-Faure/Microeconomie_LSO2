@@ -194,8 +194,8 @@ details.set summary{cursor:pointer;font-weight:600;font-size:.92rem}
     g += FS.seg(0, M.p1, 1, M.p1, C.navy, 1.5, 'stroke-dasharray="6 5"') + FS.seg(0, Math.max(M.p2, 0), 1, Math.max(M.p2, 0), C.brick, 1.5, 'stroke-dasharray="6 5"');
     g += FS.seg(0, 0, 1, P, C.navy, 3) + FS.seg(0, P, 1, 0, C.brick, 3) + FS.seg(a, 0, a, ym, C.ink, 1.4);
     let o = FS.dot(a, a * P, C.navy) + FS.dot(a, (1 - a) * P, C.brick);
-    o += `<text class="tag" x="${FS.X(1) - 4}" y="${FS.Y(M.p1) - 6}" text-anchor="end" fill="${C.navy}">π₁* = ${f0(M.p1)}</text>`;
-    if (M.p2 > 0) o += `<text class="tag" x="${FS.X(1) - 4}" y="${FS.Y(M.p2) - 6}" text-anchor="end" fill="${C.brick}">π₂* = ${f0(M.p2)}</text>`;
+    o += `<text class="tag mt" x="${FS.X(1) - 4}" y="${FS.Y(M.p1) - 6}" text-anchor="end" fill="${C.navy}">π<tspan dy="4" font-size="11">1</tspan><tspan dy="-4">*</tspan> = ${f0(M.p1)}</text>`;
+    if (M.p2 > 0) o += `<text class="tag mt" x="${FS.X(1) - 4}" y="${FS.Y(M.p2) - 6}" text-anchor="end" fill="${C.brick}">π<tspan dy="4" font-size="11">2</tspan><tspan dy="-4">*</tspan> = ${f0(M.p2)}</text>`;
     if (hi >= lo) o += `<text class="tag" x="${FS.X((lo + hi) / 2)}" y="${FS.Y(ym) + 16}" text-anchor="middle" fill="${C.forest}">Zone d'accord</text>`;
     FS.draw(g, o);
     $('#av').textContent = fr(a, 3);

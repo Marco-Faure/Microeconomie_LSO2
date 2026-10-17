@@ -159,6 +159,9 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-si
 .exo-sol{margin-top:14px;padding:14px 18px;border-radius:12px;border:1.5px solid var(--forest);background:#fff}
 .exo-sol h4{margin:0 0 6px;font-size:.9rem}
 .exo-sol ol{margin:0;padding-left:20px}.exo-sol li{margin:5px 0}
+.exo-q .dg{grid-column:2 / -1;font-size:.86rem;color:var(--brick);line-height:1.4}
+.exo-fig{margin:14px 0 0;max-width:620px}
+.exo-fig figcaption{font-size:.84rem;color:var(--muted);margin-top:4px}
 @media (max-width:880px){.fiche-grid{grid-template-columns:1fr}}
 @media (max-width:560px){.exo-q li{grid-template-columns:24px minmax(0,1fr) 92px 18px;gap:7px}}
 
@@ -178,3 +181,24 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-si
   .corrige{break-before:page}
   .corrige .exo-sol{display:block!important;border:none;padding:0;margin:0 0 14px}
 }
+
+/* Formules dans les graphiques */
+svg.ch .tag.mt{font-family:var(--serif);font-style:italic;font-weight:600;font-size:15px}
+/* Notion du cours et durée, en tête des outils */
+.kicker{display:flex;flex-wrap:wrap;gap:2px 18px;margin:0 0 6px;font-size:.86rem;color:var(--muted)}
+.kicker span:last-child{color:var(--ink);font-weight:600}
+/* Allègement : en-tête compact, encadrés en filet plutôt qu'en boîte */
+body header.top{padding-bottom:14px;margin-bottom:18px;align-items:flex-end}
+body h1{font-size:clamp(1.9rem,3.6vw,2.6rem);margin:0 0 8px}
+body .lede{font-size:.97rem;max-width:70ch}
+body .fn{font-size:.98rem;padding:3px 11px}
+body .fiche{margin:0 0 22px;border-radius:12px}
+body .fiche>summary{padding:8px 14px;font-size:.94rem}
+body .fiche:not([open]){background:var(--soft);border-color:transparent}
+body .defi{background:none;border:0;border-left:3px solid var(--line);border-radius:0;padding:4px 0 4px 16px}
+body .defi.ok{background:none;border-left-color:var(--forest)}
+body .num{background:none;border-radius:0;padding:2px 0 2px 12px;border-left-width:3px}
+body .note,body .stat,body .mk .c,body .cmp .c,body .reveal,body .verdict,body .result{background:none;border-radius:0;border-left:3px solid var(--line);padding:4px 0 4px 14px}
+body .cmp .c.f,body .result.ok{border-left-color:var(--forest)}
+body .result.ko{border-left-color:var(--brick)}
+@media print{.exo-q .dg{display:none!important}.exo-fig{break-inside:avoid}}

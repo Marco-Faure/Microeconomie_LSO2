@@ -138,7 +138,7 @@ table.t td.hid{color:var(--faint)}
 
   const F = Frame($('#ch'), { x1: 90, y1: 90, dx: 10, dy: 10, xl: 'q₁', yl: 'p', H: 430, fx: v => v, fy: v => v });
   const base = Fr => Fr.curve(g1, 0, 90, C.navy, 2.8) + Fr.curve(dm, 0, 90, C.brick, 2.8) + Fr.seg(QM, 0, QM, 90, C.ink, 1.6, 'stroke-dasharray="6 5"');
-  const baseTxt = Fr => `<text class="tag" x="${Fr.X(QM) + 5}" y="${Fr.Y(86)}" fill="${C.ink}">q<tspan dy="-5" font-size="10">max</tspan></text><text class="tag" x="${Fr.X(9)}" y="${Fr.Y(g1(9)) + 20}" fill="${C.navy}">90 − q₁</text><text class="tag" x="${Fr.X(88)}" y="${Fr.Y(dm(88)) - 8}" text-anchor="end" fill="${C.brick}">0,5 q₁</text>`;
+  const baseTxt = Fr => `<text class="tag mt" x="${Fr.X(QM) + 5}" y="${Fr.Y(86)}" fill="${C.ink}">q<tspan dy="-5" font-size="10">max</tspan></text><text class="tag mt" x="${Fr.X(9)}" y="${Fr.Y(g1(9)) + 20}" fill="${C.navy}">90 − q₁</text><text class="tag mt" x="${Fr.X(88)}" y="${Fr.Y(dm(88)) - 8}" text-anchor="end" fill="${C.brick}">0,5 q₁</text>`;
 
   function render() {
     const pe = st.pe, a = st.a;
@@ -153,7 +153,7 @@ table.t td.hid{color:var(--faint)}
     if (a === 1) g += `<path d="${F.poly([[q1, 0], [QM, 0], [QM, pe], [q1, pe]])}" fill="${C.forest}" fill-opacity=".22"/>`;
     else g += `<path d="${F.poly([[0, 0], [q1, 0], [q1, pe], [0, pe]])}" fill="${C.forest}" fill-opacity=".22"/>`;
     g += base(F) + F.seg(0, pe, 90, pe, C.ink, 1.6);
-    let o = baseTxt(F) + `<text class="tag" x="${F.X(1)}" y="${F.Y(pe) - 7}" fill="${C.ink}">p<tspan dy="4" font-size="10">E</tspan><tspan dy="-4"> = ${fr(pe, 1)}</tspan></text>`;
+    let o = baseTxt(F) + `<text class="tag mt" x="${F.X(1)}" y="${F.Y(pe) - 7}" fill="${C.ink}">p<tspan dy="4" font-size="10">E</tspan><tspan dy="-4"> = ${fr(pe, 1)}</tspan></text>`;
     o += F.dot(q1w, pe, C.navy, 5.5) + F.dot(q1v, pe, C.brick, 5.5);
     if (!ex) o += `<line x1="${F.X(Math.min(q1w, q1v)) + 7}" y1="${F.Y(pe) + 14}" x2="${F.X(Math.max(q1w, q1v)) - 7}" y2="${F.Y(pe) + 14}" stroke="${C.ink}" stroke-width="1.4" marker-start="${F.arrow}" marker-end="${F.arrow}"/>`;
     else o += F.dot(60, 30, C.forest, 8);

@@ -239,12 +239,12 @@ svg.ch .tag{font-weight:700;font-size:12.5px;paint-order:stroke;stroke:#fff;stro
     if (hasTax && q > 0) {
       t += dot(q, pc, C.ink) + dot(q, pp, C.ink);
       const xa = X(q) - 14;
-      if (Y(pp) - Y(pc) > 18) t += `<line x1="${xa}" y1="${Y(pc) + 4}" x2="${xa}" y2="${Y(pp) - 4}" stroke="${C.ink}" stroke-width="1.6" marker-start="url(#ar)" marker-end="url(#ar)"/><text class="tag" x="${xa - 6}" y="${(Y(pc) + Y(pp)) / 2 + 4}" text-anchor="end" fill="${C.ink}">${st.kind === 'unit' ? 't' : 'τ·pp'}</text>`;
-      t += `<text class="tag" x="${L + 6}" y="${Y(pc) - 6}" fill="${C.ink}">pc = ${fr(pc, 1)}</text><text class="tag" x="${L + 6}" y="${Y(pp) + 16}" fill="${C.ink}">pp = ${fr(pp, 1)}</text>`;
-      t += `<text class="tag" x="${X(q)}" y="${T + PH + 32}" text-anchor="middle" fill="${C.ink}">qt</text>`;
+      if (Y(pp) - Y(pc) > 18) t += `<line x1="${xa}" y1="${Y(pc) + 4}" x2="${xa}" y2="${Y(pp) - 4}" stroke="${C.ink}" stroke-width="1.6" marker-start="url(#ar)" marker-end="url(#ar)"/><text class="tag mt" x="${xa - 6}" y="${(Y(pc) + Y(pp)) / 2 + 4}" text-anchor="end" fill="${C.ink}">${st.kind === 'unit' ? 't' : 'τ·p<tspan dy="4" font-size="11">p</tspan>'}</text>`;
+      t += `<text class="tag mt" x="${L + 6}" y="${Y(pc) - 6}" fill="${C.ink}">p<tspan dy="4" font-size="11">c</tspan><tspan dy="-4"> = ${fr(pc, 1)}</tspan></text><text class="tag mt" x="${L + 6}" y="${Y(pp) + 16}" fill="${C.ink}">p<tspan dy="4" font-size="11">p</tspan><tspan dy="-4"> = ${fr(pp, 1)}</tspan></text>`;
+      t += `<text class="tag mt" x="${X(q)}" y="${T + PH + 32}" text-anchor="middle" fill="${C.ink}">q<tspan dy="4" font-size="11">t</tspan></text>`;
     }
-    t += `<text class="tag" x="${X(QS)}" y="${T + PH + 32}" text-anchor="middle" fill="${C.muted}">q*</text>`;
-    t += `<text class="tag" x="${X(QM) - 4}" y="${Y(PS) - 6}" text-anchor="end" fill="${C.muted}">p* = 42</text>`;
+    t += `<text class="tag mt" x="${X(QS)}" y="${T + PH + 32}" text-anchor="middle" fill="${C.muted}">q*</text>`;
+    t += `<text class="tag mt" x="${X(QM) - 4}" y="${Y(PS) - 6}" text-anchor="end" fill="${C.muted}">p* = 42</text>`;
     const qd = Math.max(4, QS - st.b * (PM - 12 - PS));
     t += `<text class="lbl" x="${X(qd) + 8}" y="${Y(pD(qd)) - 6}" fill="${C.brick}">D</text>`;
     const qo = Math.min(QM - 10, QS + st.c * (PM - 8 - PS));

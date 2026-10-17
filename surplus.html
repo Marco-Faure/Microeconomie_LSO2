@@ -151,8 +151,8 @@ svg.ch .tag{font-weight:700;font-size:12.5px;paint-order:stroke;stroke:#fff;stro
   const poly = pts => 'M' + pts.map(([q, p]) => `${X(q).toFixed(1)} ${Y(p).toFixed(1)}`).join('L') + 'Z';
   const seg = (q1, p1, q2, p2, col, w = 2.5, ex = '') => `<line x1="${X(q1)}" y1="${Y(p1)}" x2="${X(q2)}" y2="${Y(p2)}" stroke="${col}" stroke-width="${w}" stroke-linecap="round" ${ex}/>`;
   const dot = (q, p, col, r = 5.5) => `<circle cx="${X(q)}" cy="${Y(p)}" r="${r}" fill="${col}" stroke="#fff" stroke-width="2"/>`;
-  const axq = (q, txt, col = C.ink) => `<text class="tag" x="${X(q)}" y="${T + PH + 32}" text-anchor="middle" fill="${col}">${txt}</text>`;
-  const axp = (p, txt, col = C.ink) => `<text class="tag" x="${L + 6}" y="${Y(p) - 6}" fill="${col}">${txt}</text>`;
+  const axq = (q, txt, col = C.ink) => `<text class="tag mt" x="${X(q)}" y="${T + PH + 32}" text-anchor="middle" fill="${col}">${txt}</text>`;
+  const axp = (p, txt, col = C.ink) => `<text class="tag mt" x="${L + 6}" y="${Y(p) - 6}" fill="${col}">${txt}</text>`;
 
   /* État */
   const MODES = {

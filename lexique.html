@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lexique – Outils interactifs, microéconomie LSO2</title>
+<meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="stylesheet" href="style.css">
+<script src="commun.js"></script>
+<style>
+.tools-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:26px;position:sticky;top:0;background:var(--paper);padding:10px 0;z-index:3;border-bottom:1px solid var(--line)}
+.tools-bar input{font:inherit;flex:1 1 260px;min-width:0;padding:9px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff}
+.tools-bar input:focus{border-color:var(--ink);outline:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;font:inherit;font-size:.86rem;font-weight:600;cursor:pointer}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.letters{display:flex;flex-wrap:wrap;gap:2px;margin:-10px 0 24px}
+.letters a{font-family:var(--serif);font-weight:600;font-size:1.05rem;padding:2px 8px;border-radius:6px;color:var(--navy);text-decoration:none}
+.letters a:hover{background:var(--soft)}
+.letter{font-family:var(--serif);font-weight:600;font-size:2rem;color:var(--navy);margin:26px 0 6px;scroll-margin-top:80px}
+dl{margin:0}
+.entry{display:grid;grid-template-columns:minmax(180px,260px) minmax(0,1fr);gap:4px 28px;padding:14px 0;border-top:1px solid var(--line)}
+.entry dt{font-family:var(--serif);font-weight:600;font-size:1.12rem;line-height:1.3}
+.entry dt small{display:block;font-family:var(--sans);font-weight:600;font-size:.76rem;color:var(--muted);margin-top:4px}
+.entry dd{margin:0;max-width:72ch}
+.entry dd p{margin:0 0 6px}
+.entry dd a{font-size:.86rem;font-weight:600;color:var(--navy)}
+.empty{color:var(--muted);padding:20px 0}
+@media (max-width:680px){.entry{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="site-nav"></div>
+  <header class="top">
+    <div>
+      <h1>Lexique</h1>
+      <p class="lede">Les définitions des notions des deux chapitres, avec un lien vers l'outil qui les met en jeu.</p>
+    </div>
+  </header>
+
+  <div class="tools-bar">
+    <input type="search" id="q" placeholder="Chercher une notion" aria-label="Chercher une notion">
+    <div class="chips" role="group" aria-label="Chapitre">
+      <button class="chip" data-ch="0" aria-pressed="true">Tout</button>
+      <button class="chip" data-ch="1" aria-pressed="false">Chapitre 1</button>
+      <button class="chip" data-ch="2" aria-pressed="false">Chapitre 2</button>
+    </div>
+  </div>
+  <nav class="letters" id="letters" aria-label="Lettres"></nav>
+  <div id="list"></div>
+
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
+</div>
+
+<script>
+/* [terme, chapitre, définition (HTML), outil] */
+const LEX = [
+['Surplus du consommateur', 1, `Évaluation monétaire de la satisfaction que les acheteurs retirent de l'échange : l'écart entre le prix maximum qu'ils sont prêts à payer et le prix de marché. Avec une demande linéaire, ${m('S<sub>cons</sub> = (p<sub>max</sub> − p*) × q* / 2')}.`, 'surplus.html'],
+['Surplus du producteur', 1, `Écart entre le prix de marché et le prix minimum auquel les vendeurs acceptent de vendre : ${m('S<sub>prod</sub> = (p* − p<sub>min</sub>) × q* / 2')}. Il diffère du profit des coûts fixes : ${m('SP = π + CF')}.`, 'surplus.html'],
+['Surplus total', 1, `Somme du surplus du consommateur, du surplus du producteur et, s'il y en a une, de la recette fiscale. Il mesure le bien-être collectif et il est maximal à l'équilibre concurrentiel, sans externalité.`, 'surplus.html'],
+['Perte sèche', 1, `Baisse du surplus total par rapport à la situation optimale : le gain des échanges avantageux qui n'ont plus lieu, ou le coût des unités produites en trop.`, 'surplus.html'],
+['Prix plafond', 1, `Prix maximum imposé par l'État. S'il est inférieur au prix d'équilibre, la quantité échangée est l'offre à ce prix : il crée une pénurie et une perte sèche.`, 'surplus.html'],
+['Prix plancher', 1, `Prix minimum imposé par l'État. S'il est supérieur au prix d'équilibre, la quantité échangée est la demande à ce prix : il crée un excédent d'offre et une perte sèche.`, 'surplus.html'],
+['Quota', 1, `Limite imposée à la quantité vendue. S'il est inférieur à ${m('q*')}, le prix monte jusqu'à ce que la demande égale le quota.`, 'surplus.html'],
+['Équilibre général', 1, `Situation où tous les marchés sont équilibrés simultanément : chaque agent maximise son utilité sous sa contrainte budgétaire, et l'offre totale de chaque bien égale la demande totale.`, 'edgeworth.html'],
+['Boîte d\'Edgeworth', 1, `Représentation d'une économie d'échange à deux agents et deux biens. Chaque point répartit les quantités totales : la part de A se lit depuis ${m('O<sub>A</sub>')}, celle de B depuis ${m('O<sub>B</sub>')}.`, 'edgeworth.html'],
+['Dotation initiale', 1, `Panier dont dispose chaque agent avant l'échange, noté ${m('ω')}. Sa valeur aux prix de marché constitue le revenu de l'agent.`, 'edgeworth.html'],
+['Taux marginal de substitution', 1, `Quantité de bien 2 qu'un agent accepte de céder pour une unité de bien 1 supplémentaire, à utilité constante : ${m('TMS<sub>2→1</sub> = Um<sub>1</sub> / Um<sub>2</sub>')}. À l'optimum du consommateur, il est égal au rapport inverse des prix, ${m('p<sub>1</sub> / p<sub>2</sub>')}.`, 'edgeworth.html'],
+['Courbe des contrats', 1, `Ensemble des allocations où les courbes d'indifférence des deux agents sont tangentes, ${m('TMS<sup>A</sup> = TMS<sup>B</sup>')} : ce sont les optima de Pareto de la boîte d'Edgeworth.`, 'edgeworth.html'],
+['Noyau', 1, `Partie de la courbe des contrats que les deux agents préfèrent à leur dotation initiale. Ce sont les allocations sur lesquelles ils peuvent s'accorder par l'échange.`, 'edgeworth.html'],
+['Loi de Walras', 1, `La valeur des demandes excédentaires est nulle. Quand tous les marchés sauf un sont équilibrés, le dernier l'est aussi.`, 'edgeworth.html'],
+['Premier théorème du bien-être', 1, `Dans une économie d'échange en concurrence pure et parfaite, tout équilibre général concurrentiel est un optimum de Pareto.`, 'edgeworth.html'],
+['Second théorème du bien-être', 1, `Si les préférences sont convexes, continues et localement non saturées, tout optimum de Pareto peut être atteint comme équilibre concurrentiel, moyennant une redistribution forfaitaire des dotations initiales.`, 'edgeworth.html'],
+['Optimum de Pareto', 1, `Situation où l'on ne peut améliorer la situation d'un agent sans détériorer celle d'un autre. Il en existe en général plusieurs, et un optimum peut être très inégal.`, 'pareto.html'],
+['Pareto-dominance', 1, `Une issue ${m('X')} Pareto-domine une issue ${m('Y')} si personne n'est moins bien en ${m('X')} qu'en ${m('Y')} et si au moins un agent y est strictement mieux. On parle aussi d'amélioration de Pareto.`, 'pareto.html'],
+['Taxe unitaire', 1, `Taxe d'un montant fixe par unité échangée. Elle crée un écart constant entre le prix payé et le prix reçu : ${m('p<sub>c</sub> = p<sub>p</sub> + t')}.`, 'fiscalite.html'],
+['Taxe ad valorem', 1, `Taxe proportionnelle au prix, comme la TVA. Elle fixe le rapport entre le prix payé et le prix reçu : ${m('p<sub>c</sub> = (1 + τ)p<sub>p</sub>')}.`, 'fiscalite.html'],
+['Incidence fiscale', 1, `Répartition réelle de la charge d'une taxe entre consommateurs et producteurs. Elle dépend des élasticités relatives de l'offre et de la demande, pas de celui qui verse la taxe à l'État.`, 'fiscalite.html'],
+['Recette fiscale', 1, `Montant perçu par l'État. Pour une taxe unitaire, ${m('RF = t × q<sub>t</sub>')}, calculée avec la quantité échangée après la taxe.`, 'fiscalite.html'],
+['Élasticité-prix', 1, `Variation relative de la quantité demandée ou offerte quand le prix varie de 1 %. Le côté le moins élastique du marché supporte la plus grande part d'une taxe.`, 'fiscalite.html'],
+['Équilibre de Nash', 1, `Situation où aucun joueur n'a intérêt à changer seul de stratégie : chaque stratégie est une meilleure réponse à celle de l'autre.`, 'dilemme-prisonnier.html'],
+['Stratégie dominante', 1, `Stratégie qui est la meilleure réponse d'un joueur quelle que soit la stratégie de l'autre.`, 'dilemme-prisonnier.html'],
+['Dilemme du prisonnier', 1, `Jeu où chaque joueur a une stratégie dominante, trahir, mais où l'équilibre de Nash qui en résulte est Pareto-dominé par la coopération mutuelle. La rationalité individuelle ne mène pas à l'efficacité collective.`, 'dilemme-prisonnier.html'],
+['Jeu répété', 1, `Jeu joué plusieurs fois par les mêmes joueurs. Quand la fin n'est pas connue à l'avance, la menace de représailles futures peut rendre la coopération rationnelle.`, 'dilemme-prisonnier.html'],
+['Externalité', 2, `Situation dans laquelle l'activité de production ou de consommation d'un agent a un impact sur la fonction (utilité, production) d'un autre agent, sans compensation. On parle aussi d'effet externe.`, 'ch2-externalites.html'],
+['Externalité négative', 2, `Externalité qui détériore la situation d'un autre agent, comme la pollution. Le marché surproduit et le prix est trop bas.`, 'ch2-externalites.html'],
+['Externalité positive', 2, `Externalité qui améliore la situation d'un autre agent, comme la recherche et développement. Le marché sous-produit.`, 'ch2-externalites.html'],
+['Défaillance de marché', 2, `Situation où les prix ne guident plus les agents vers l'optimum social : l'équilibre de marché n'est pas un optimum de Pareto. L'externalité en est un exemple.`, 'ch2-externalites.html'],
+['Coût marginal privé', 2, `Coût de la dernière unité produite, supporté uniquement par l'entreprise, noté ${m('Cm<sup>p</sup>')}. C'est lui qui guide sa décision de production.`, 'ch2-externalites.html'],
+['Coût marginal externe', 2, `Impact monétaire subi par les tiers pour la dernière unité produite, sans compensation : un coût ${m('Cm<sup>e</sup>')} si l'externalité est négative, un bénéfice ${m('Bm')} si elle est positive.`, 'ch2-externalites.html'],
+['Coût marginal social', 2, `Coût total de la dernière unité pour la collectivité : ${m('Cm<sup>s</sup> = Cm<sup>p</sup> + Cm<sup>e</sup>')}, ou ${m('Cm<sup>p</sup> − Bm')}. À l'optimum, ${m('p = Cm<sup>s</sup>')}.`, 'ch2-externalites.html'],
+['Logique interventionniste', 2, `Retour à l'optimum par l'imposition de prix parétiens par l'État : taxe pigouvienne ou subvention. Elle suppose que l'État connaisse le coût externe.`, 'ch2-pigou.html'],
+['Taxe pigouvienne', 2, `Taxe qui fait payer à la firme émettrice le coût marginal de l'externalité, évalué à l'optimum : ${m('t = Cm<sup>e</sup>(q̄)')}. La firme égalise alors ${m('p = Cm<sup>p</sup> + t = Cm<sup>s</sup>')}.`, 'ch2-pigou.html'],
+['Principe pollueur-payeur', 2, `Principe selon lequel celui qui génère une externalité négative en supporte le coût. La taxe pigouvienne en est l'application.`, 'ch2-pigou.html'],
+['Subvention à la réduction', 2, `Paiement versé à la firme pour chaque unité qu'elle ne produit pas : ${m('S = s(q<sup>max</sup> − q)')}. Avec ${m('s = Cm<sup>e</sup>(q̄)')}, l'allocation est la même qu'avec la taxe ; seule la répartition change.`, 'ch2-pigou.html'],
+['Transfert forfaitaire', 2, `Transfert d'un montant fixe, indépendant des quantités produites ou consommées. Il modifie la répartition sans modifier les décisions, ce qui permet de compenser les perdants d'une réforme : ${m('IF = π̄ − π*')}.`, 'ch2-pigou.html'],
+['Logique transformatrice', 2, `Retour à l'optimum en modifiant le statut de l'externalité, par la fusion des firmes ou la création de droits de propriété, sans que l'État ait à connaître le coût externe.`, 'ch2-fusion.html'],
+['Internalisation', 2, `Prise en compte d'une externalité par celui qui la cause. Après une fusion, le dommage causé à l'autre usine devient un coût interne.`, 'ch2-fusion.html'],
+['Profit joint', 2, `Profit total de l'entité issue de la fusion : ${m('Π<sub>J</sub> = pq<sub>1</sub> − CT<sub>1</sub>(q<sub>1</sub>) + pq<sub>2</sub> − CT<sub>2</sub>(q<sub>1</sub>, q<sub>2</sub>)')}. Sa maximisation donne ${m('p = Cm<sub>1</sub><sup>s</sup>')}.`, 'ch2-fusion.html'],
+['Contrainte de participation', 2, `Condition pour qu'un agent accepte un accord : gagner au moins autant qu'avant. Pour une fusion, ${m('π<sub>1</sub>* / Π̄<sub>J</sub> ≤ α ≤ 1 − π<sub>2</sub>* / Π̄<sub>J</sub>')}, ce qui suppose ${m('Π̄<sub>J</sub> ≥ π<sub>1</sub>* + π<sub>2</sub>*')}.`, 'ch2-fusion.html'],
+['Droits de propriété', 2, `Droits exclusifs et librement transférables sur une ressource. Une externalité naît souvent d'une ressource qui n'appartient à personne, comme l'eau d'une rivière.`, 'ch2-coase.html'],
+['Marché de droits à polluer', 2, `Marché où chaque unité polluante exige un droit, échangé au prix ${m('p<sub>E</sub>')}. À l'équilibre, ${m('p<sub>E</sub> = Cm<sup>e</sup>(q̄<sub>1</sub>)')} et le pollueur égalise ${m('p = Cm<sub>1</sub><sup>p</sup> + p<sub>E</sub>')}.`, 'ch2-coase.html'],
+['Théorème de Coase', 2, `L'attribution des droits de propriété et la nature du contrat entre les parties sont sans effet sur l'allocation optimale, sous l'hypothèse de coûts de transaction négligeables. Seule la répartition des gains dépend de l'attribution.`, 'ch2-coase.html'],
+['Coûts de transaction', 2, `Coûts de la négociation, de la rédaction des contrats et de leur contrôle. Quand ils sont élevés, des échanges avantageux n'ont pas lieu et l'attribution des droits détermine l'allocation.`, 'ch2-coase.html'],
+];
+(() => {
+  const titre = f => SITE.chapitres.flatMap(c => c.pages).find(p => p[0] === f)[1];
+  const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const strip = h => h.replace(/<[^>]+>/g, '');
+  const st = { ch: 0, q: '' };
+  const sorted = [...LEX].sort((a, b) => a[0].localeCompare(b[0], 'fr'));
+  function render() {
+    const q = norm(st.q.trim());
+    const items = sorted.filter(e => (!st.ch || e[1] === st.ch) && (!q || norm(e[0] + ' ' + strip(e[2])).includes(q)));
+    const groups = {};
+    items.forEach(e => { const L = norm(e[0])[0].toUpperCase(); (groups[L] = groups[L] || []).push(e); });
+    const Ls = Object.keys(groups);
+    $('#letters').innerHTML = Ls.map(L => `<a href="#l-${L}">${L}</a>`).join('');
+    $('#list').innerHTML = Ls.length ? Ls.map(L => `<h2 class="letter" id="l-${L}">${L}</h2><dl>${groups[L].map(e =>
+      `<div class="entry"><dt>${e[0]}<small>Chapitre ${e[1]}</small></dt><dd><p>${e[2]}</p><a href="${e[3]}">Outil : ${titre(e[3])}</a></dd></div>`).join('')}</dl>`).join('')
+      : '<p class="empty">Aucune notion ne correspond à cette recherche.</p>';
+  }
+  $('#q').addEventListener('input', e => { st.q = e.target.value; render(); });
+  document.querySelectorAll('[data-ch]').forEach(b => b.addEventListener('click', () => {
+    st.ch = +b.dataset.ch; document.querySelectorAll('[data-ch]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); render();
+  }));
+  render();
+})();
+</script>
+</body>
+</html>

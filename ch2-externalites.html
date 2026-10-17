@@ -160,8 +160,8 @@
     g += F.seg(q, 0, q, 16, C.ink, 1, 'opacity=".22"');
     g += F.seg(q, cs, q, v, gain >= 0 ? C.forest : C.brick, 6, 'opacity=".9"');
     let t = F.dot(QS, PS, C.ink) + F.dot(qb, pb, C.forest) + F.dot(q, v, C.brick, 4.5) + F.dot(q, cs, C.navy, 4.5);
-    t += `<text class="tag" x="${F.X(QS)}" y="${F.Y(0) + 32}" text-anchor="middle" fill="${C.ink}">q*</text>`;
-    t += `<text class="tag" x="${F.X(qb)}" y="${F.Y(0) + 32}" text-anchor="middle" fill="${C.forest}"><tspan style="text-decoration:overline">q</tspan></text>`;
+    t += `<text class="tag mt" x="${F.X(QS)}" y="${F.Y(0) + 32}" text-anchor="middle" fill="${C.ink}">q*</text>`;
+    t += `<text class="tag mt" x="${F.X(qb)}" y="${F.Y(0) + 32}" text-anchor="middle" fill="${C.forest}"><tspan style="text-decoration:overline">q</tspan></text>`;
     t += `<text class="lbl" x="${F.X(0.5)}" y="${F.Y(pD(0.5)) - 8}" fill="${C.brick}">D</text>`;
     t += `<text class="tag" x="${F.X(9.8)}" y="${F.Y(9.8) + 18}" text-anchor="end" fill="${C.gray}">Cm privé</text>`;
     const xs = Math.min(9.6, 15 / (1 + sgn() * K));

@@ -124,9 +124,10 @@
     return true;
   }
   function corrige() {
+    const titres = document.querySelectorAll('#sheet .exo-n'), sols = document.querySelectorAll('#sheet .exo-sol');
     $('#corrige').innerHTML = '<h2>Corrigé</h2>' + handles.map((h, i) => {
-      const ex = h.ex, t = h.ex && document.querySelectorAll('#sheet .exo-n')[i].textContent;
-      return `<div class="exo-sol"><h4>${t}</h4><p style="margin:0 0 6px">${ex.q.map((x, j) => `${j + 1}. <b>${fr(x.ans)}</b>`).join(' ; ')}</p>${ex.sol}</div>`;
+      const ex = h.ex, body = sols[i].innerHTML.replace(/^<h4>Correction<\/h4>/, '');
+      return `<div class="exo-sol"><h4>${titres[i].textContent}</h4><p style="margin:0 0 6px">${ex.q.map((x, j) => `${j + 1}. <b>${fr(x.ans)}</b>`).join(' ; ')}</p>${body}</div>`;
     }).join('');
   }
   function printSheet(withSol) {
