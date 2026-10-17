@@ -7,6 +7,7 @@
 <meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
 <link rel="stylesheet" href="style.css">
 <script src="commun.js"></script>
+<script src="exercices.js"></script>
 <style>
 .mk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
 .mk .c{border-radius:14px;padding:10px 12px;background:var(--soft)}
@@ -121,6 +122,7 @@ table.t td.hid{color:var(--faint)}
     <div class="note"><b>Application : Vittel.</b> Dans les années 1980, les nitrates issus de l'agriculture menacent l'eau minérale de Vittel. À partir de 1992, Nestlé et sa filiale Agrivair négocient directement avec une quarantaine d'exploitations : aides financières, matériel et terres rachetées, contre un cahier des charges environnemental. Les agriculteurs détiennent de fait le droit de polluer, et c'est la victime qui paie. Le petit nombre de parties maintient des coûts de transaction faibles, condition du théorème.</div>
   </section>
 
+  <section class="block" id="exo"></section>
   <div id="site-pager"></div>
   <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
 </div>
@@ -208,5 +210,6 @@ table.t td.hid{color:var(--faint)}
   setA(1); renderTC();
 })();
 </script>
+<script>Exercice('#exo', GEN.coase.gen);</script>
 </body>
 </html>

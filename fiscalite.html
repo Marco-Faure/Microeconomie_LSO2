@@ -7,6 +7,7 @@
 <meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
 <link rel="stylesheet" href="style.css">
 <script src="commun.js"></script>
+<script src="exercices.js"></script>
 <style>
 .stage{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,1fr);gap:clamp(20px,3vw,40px);align-items:start}
 .chartcol{position:sticky;top:20px;display:grid;gap:12px}
@@ -353,34 +354,6 @@ svg.ch .tag{font-weight:700;font-size:12.5px;paint-order:stroke;stroke:#fff;stro
   syncDone(); syncControls(); render();
 })();
 </script>
-<script>
-Exercice('#exo', () => {
-  const k1 = v => v === 1 ? '' : v;
-  let a, b, c, d, ps, qs, n, t, pp, pc, qt;
-  for (;;) {
-    c = rnd(1, 4); b = rnd(1, 4); ps = rnd(15, 40); if (c * ps < 40) continue; d = rnd(10, c * ps - 20); qs = c * ps - d; a = qs + b * ps;
-    n = rnd(1, 4); t = n * (b + c); pp = ps - b * n; pc = pp + t; qt = qs - b * c * n;
-    if (qt >= 5 && pp > d / c + 1) break;
-  }
-  const RF = t * qt, DW = 0.5 * t * (qs - qt), part = 100 * c / (b + c);
-  return {
-    enonce: `<p>Sur un marché concurrentiel, la demande est ${m(`D(p) = ${a} − ${k1(b)}p`)} et l'offre ${m(`O(p) = ${k1(c)}p − ${d}`)}. Sans taxe, l'équilibre est ${m(`p* = ${ps}`)}, ${m(`q* = ${qs}`)}.</p><p>L'État instaure une taxe unitaire ${m(`t = ${t}`)}, versée par les producteurs.</p>`,
-    q: [
-      { label: `Prix reçu par les producteurs ${m('p<sub>p</sub>')}`, ans: pp },
-      { label: `Prix payé par les consommateurs ${m('p<sub>c</sub>')}`, ans: pc },
-      { label: `Quantité échangée ${m('q<sub>t</sub>')}`, ans: qt },
-      { label: 'Recette fiscale', ans: RF },
-      { label: 'Perte sèche', ans: DW },
-      { label: 'Part de la taxe supportée par les consommateurs, en %', ans: part, tol: 0.6 }],
-    sol: `<ol>
-      <li>On pose ${m(`p<sub>c</sub> = p<sub>p</sub> + ${t}`)} et ${m(`O(p<sub>p</sub>) = D(p<sub>p</sub> + ${t})`)} : ${m(`${k1(c)}p<sub>p</sub> − ${d} = ${a} − ${k1(b)}(p<sub>p</sub> + ${t})`)}.</li>
-      <li>D'où ${m(`p<sub>p</sub> = (${a} + ${d} − ${b * t}) / ${b + c} = ${pp}`)} et ${m(`p<sub>c</sub> = ${pp} + ${t} = ${pc}`)}.</li>
-      <li>${m(`q<sub>t</sub> = O(${pp}) = ${qt}`)}. Vérification : ${m(`D(${pc}) = ${a - b * pc}`)}.</li>
-      <li>${m(`RF = t × q<sub>t</sub> = ${t} × ${qt} = ${RF}`)}, calculée avec ${m('q<sub>t</sub>')} et non ${m('q*')}.</li>
-      <li>${m(`PS = t × (q* − q<sub>t</sub>) / 2 = ${t} × ${qs - qt} / 2 = ${fr(DW)}`)}</li>
-      <li>Les consommateurs paient ${pc - ps} de plus qu'avant, sur une taxe de ${t} : ${m(`${pc - ps} / ${t} = ${fr(part, 1)} %`)}. C'est ${m(`${c} / (${b} + ${c})`)} : le côté le moins élastique supporte la plus grande part.</li></ol>`
-  };
-});
-</script>
+<script>Exercice('#exo', GEN.fiscalite.gen);</script>
 </body>
 </html>

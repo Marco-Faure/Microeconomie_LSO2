@@ -161,3 +161,20 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-si
 .exo-sol ol{margin:0;padding-left:20px}.exo-sol li{margin:5px 0}
 @media (max-width:880px){.fiche-grid{grid-template-columns:1fr}}
 @media (max-width:560px){.exo-q li{grid-template-columns:24px minmax(0,1fr) 92px 18px;gap:7px}}
+
+/* Impression des feuilles d'exercices */
+.print-only{display:none}
+@media print{
+  @page{margin:16mm 14mm}
+  body{font-size:10.5pt;background:#fff}
+  .wrap{max-width:none;padding:0}
+  nav.site,nav.subnav,.pager,footer,.no-print,.exo-head button,.exo .row,.exo .fbk,.exo .exo-sol,.exo-q .mk{display:none!important}
+  .print-only{display:block!important}
+  header.top{border-bottom:1.5px solid #000;margin-bottom:14px;padding-bottom:8px}
+  .card{border:none!important;padding:0!important;box-shadow:none}
+  .exo{break-inside:avoid;margin-bottom:18px}
+  .exo-q li{background:none!important;padding:3px 0;grid-template-columns:22px minmax(0,1fr) 120px}
+  .exo-q input{border:none;border-bottom:1px solid #000;border-radius:0;background:none}
+  .corrige{break-before:page}
+  .corrige .exo-sol{display:block!important;border:none;padding:0;margin:0 0 14px}
+}

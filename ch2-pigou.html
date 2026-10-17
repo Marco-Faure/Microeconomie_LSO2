@@ -7,6 +7,7 @@
 <meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
 <link rel="stylesheet" href="style.css">
 <script src="commun.js"></script>
+<script src="exercices.js"></script>
 <style>
 table.t input{font:inherit;font-family:var(--serif);font-size:1rem;width:110px;padding:5px 8px;border:1.5px solid var(--line);border-radius:9px;text-align:right;background:#fff}
 table.t td.up{color:var(--forest-ink)}table.t td.dn{color:var(--brick)}
@@ -210,30 +211,6 @@ table.t td.up{color:var(--forest-ink)}table.t td.dn{color:var(--brick)}
   setM('tax'); buildTF();
 })();
 </script>
-<script>
-Exercice('#exo', () => {
-  const k1 = v => v === 1 ? '' : v;
-  const gcd = (x, y) => y ? gcd(y, x % y) : x;
-  const al = pick([1, 2]), be = pick([1, 2]), ga = pick([1, 2, 3]), s1 = al + be, s2 = s1 + ga, L = s1 * s2 / gcd(s1, s2);
-  const kmin = Math.ceil(40 / L), kmax = Math.max(kmin, Math.floor(240 / L)), A = L * rnd(kmin, kmax);
-  const qs = A / s1, ps = A - al * qs, qb = A / s2, pb = A - al * qb, t = ga * qb, DW = 0.5 * (qs - qb) * ga * qs, RF = t * qb;
-  return {
-    enonce: `<p>La demande inverse d'un bien est ${m(`p = ${A} − ${k1(al)}q`)}. Le coût marginal privé des producteurs est ${m(`Cm<sup>p</sup> = ${k1(be)}q`)}, et la production impose aux riverains un coût externe marginal ${m(`Cm<sup>e</sup> = ${k1(ga)}q`)}.</p>`,
-    q: [
-      { label: `Quantité d'équilibre privé ${m('q*')}`, ans: qs },
-      { label: `Quantité optimale ${m('q̄')}`, ans: qb },
-      { label: `Prix à l'optimum ${m('p̄')}`, ans: pb },
-      { label: `Taxe pigouvienne ${m('t')}`, ans: t },
-      { label: 'Perte sèche sans intervention', ans: DW },
-      { label: 'Recette fiscale de la taxe pigouvienne', ans: RF }],
-    sol: `<ol>
-      <li>Équilibre privé, ${m('p = Cm<sup>p</sup>')} : ${m(`${A} − ${k1(al)}q = ${k1(be)}q`)}, d'où ${m(`q* = ${fr(qs)}`)} et ${m(`p* = ${fr(ps)}`)}.</li>
-      <li>Optimum, ${m('p = Cm<sup>s</sup> = Cm<sup>p</sup> + Cm<sup>e</sup> = ' + (be + ga) + 'q')} : ${m(`${A} − ${k1(al)}q = ${be + ga}q`)}, d'où ${m(`q̄ = ${fr(qb)}`)} et ${m(`p̄ = ${fr(pb)}`)}.</li>
-      <li>La taxe vaut le coût externe marginal évalué à l'optimum : ${m(`t = Cm<sup>e</sup>(q̄) = ${k1(ga)}×${fr(qb)} = ${fr(t)}`)}.</li>
-      <li>Sans intervention, chaque unité entre ${m('q̄')} et ${m('q*')} coûte plus à la société qu'elle ne rapporte. En ${m('q*')}, l'écart vaut ${m(`Cm<sup>s</sup>(q*) − p* = ${fr((be + ga) * qs)} − ${fr(ps)} = ${fr(ga * qs)}`)}. Perte sèche : ${m(`${fr(ga * qs)} × (${fr(qs)} − ${fr(qb)}) / 2 = ${fr(DW)}`)}.</li>
-      <li>${m(`RF = t × q̄ = ${fr(t)} × ${fr(qb)} = ${fr(RF)}`)}</li></ol>`
-  };
-});
-</script>
+<script>Exercice('#exo', GEN.pigou.gen);</script>
 </body>
 </html>

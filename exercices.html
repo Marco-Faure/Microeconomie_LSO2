@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Générateur d'exercices – Outils interactifs, microéconomie LSO2</title>
+<meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
+<link rel="stylesheet" href="style.css">
+<script src="commun.js"></script>
+<script src="exercices.js"></script>
+<style>
+.panel{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:20px 36px;border:1px solid var(--line);border-radius:20px;padding:22px 24px;margin-bottom:34px}
+.grp{margin-bottom:14px}
+.grp:last-child{margin-bottom:0}
+.grp .gh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
+.grp .gh b{font-family:var(--serif);font-weight:600;font-size:1.1rem}
+.grp .gh button{appearance:none;border:none;background:none;font:inherit;font-size:.84rem;font-weight:600;color:var(--navy);cursor:pointer;padding:0}
+.grp .gh button:hover{text-decoration:underline}
+.themes{display:flex;flex-wrap:wrap;gap:6px}
+.th{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 13px;font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.th::before{content:"";width:14px;height:14px;border-radius:4px;border:1.5px solid var(--faint);flex:none}
+.th:hover{border-color:var(--ink)}
+.th[aria-pressed="true"]{border-color:var(--ink);background:var(--soft)}
+.th[aria-pressed="true"]::before{background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.2 2.2 4.8-4.8' fill='none' stroke='%23fff' stroke-width='1.8'/%3E%3C/svg%3E") center/11px no-repeat;border-color:var(--ink)}
+.cfg h3{font-family:var(--serif);font-weight:600;font-size:1.1rem;margin:0 0 8px}
+.cfg .seg{margin-bottom:16px}
+.acts{display:grid;gap:8px}
+.acts .btn{width:100%}
+.warn{font-size:.86rem;color:var(--brick);min-height:1.2em;margin:8px 0 0}
+.sheet-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 20px;margin-bottom:16px}
+.sheet-head h2{margin:0}
+.sheet-head .score{font-size:.92rem}
+#sheet .exo-wrap{margin-bottom:18px}
+.print-head{font-size:10pt;margin:-6px 0 16px}
+.print-head span{display:inline-block;margin-right:28px}
+@media (max-width:820px){.panel{grid-template-columns:1fr}}
+@media print{
+  body:not(.avec-corrige) .corrige{display:none!important}
+  .exo-wrap{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="site-nav"></div>
+  <header class="top">
+    <div>
+      <h1>Générateur d'exercices</h1>
+      <p class="lede no-print">Compose une feuille d'exercices sur les thèmes de ton choix. Les valeurs changent à chaque tirage : réponds en ligne avec vérification et correction, ou imprime la feuille, avec ou sans le corrigé.</p>
+      <p class="print-head print-only"><span>Microéconomie LSO2</span><span>Nom : ..............................................</span><span id="pdate"></span></p>
+    </div>
+  </header>
+
+  <section class="panel no-print" aria-label="Composer la feuille">
+    <div id="groups"></div>
+    <div class="cfg">
+      <h3>Nombre d'exercices</h3>
+      <div class="seg" role="group" aria-label="Nombre d'exercices">
+        <button data-n="1" aria-pressed="false">1</button>
+        <button data-n="3" aria-pressed="true">3</button>
+        <button data-n="5" aria-pressed="false">5</button>
+        <button data-n="8" aria-pressed="false">8</button>
+      </div>
+      <div class="acts">
+        <button class="btn" id="gen">Générer une feuille</button>
+        <button class="btn ghost" id="pr">Imprimer la feuille</button>
+        <button class="btn ghost" id="prc">Imprimer avec le corrigé</button>
+      </div>
+      <p class="warn" id="warn" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section id="sheetsec" hidden>
+    <div class="sheet-head no-print"><h2>Ta feuille</h2><div class="score"><span id="scoreTxt"></span><span class="dots" id="dots"></span></div></div>
+    <p class="small no-print" style="margin:-8px 0 18px">Donne tes réponses arrondies à deux décimales ; une fraction comme 10/3 est acceptée. « Nouvelles valeurs » retire un seul exercice.</p>
+    <div id="sheet"></div>
+    <section class="corrige print-only" id="corrige"></section>
+  </section>
+
+  <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
+</div>
+
+<script>
+(() => {
+  const sel = new Set(GEN_ORDRE);
+  let n = 3, handles = [], wins = new Set();
+  const chs = [[1, 'Chapitre 1 · Équilibres et optimalités'], [2, 'Chapitre 2 · Les effets externes']];
+  function groups() {
+    $('#groups').innerHTML = chs.map(([c, t]) => {
+      const ks = GEN_ORDRE.filter(k => GEN[k].ch === c), all = ks.every(k => sel.has(k));
+      return `<div class="grp"><div class="gh"><b>${t}</b><button data-all="${c}">${all ? 'Tout retirer' : 'Tout choisir'}</button></div>
+        <div class="themes">${ks.map(k => `<button class="th" data-k="${k}" aria-pressed="${sel.has(k)}">${GEN[k].titre}</button>`).join('')}</div></div>`;
+    }).join('');
+  }
+  $('#groups').addEventListener('click', e => {
+    const b = e.target.closest('.th'), a = e.target.closest('[data-all]');
+    if (b) { sel.has(b.dataset.k) ? sel.delete(b.dataset.k) : sel.add(b.dataset.k); }
+    if (a) { const ks = GEN_ORDRE.filter(k => GEN[k].ch === +a.dataset.all), all = ks.every(k => sel.has(k)); ks.forEach(k => all ? sel.delete(k) : sel.add(k)); }
+    $('#warn').textContent = ''; groups();
+  });
+  document.querySelectorAll('[data-n]').forEach(b => b.addEventListener('click', () => {
+    n = +b.dataset.n; document.querySelectorAll('[data-n]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+
+  function score() {
+    const k = wins.size, t = handles.length;
+    $('#dots').innerHTML = handles.map((_, i) => `<i class="${wins.has(i) ? 'on' : ''}"></i>`).join('');
+    $('#scoreTxt').textContent = k === t ? `Les ${t} exercices sont réussis` : `${k} exercice${k > 1 ? 's' : ''} réussi${k > 1 ? 's' : ''} sur ${t}`;
+  }
+  function generate() {
+    const ks = GEN_ORDRE.filter(k => sel.has(k));
+    if (!ks.length) { $('#warn').textContent = 'Choisis au moins un thème.'; return false; }
+    // On répartit les thèmes le plus équitablement possible, dans un ordre aléatoire
+    let list = [];
+    while (list.length < n) list = list.concat([...ks].sort(() => Math.random() - .5));
+    list = list.slice(0, n).sort((a, b) => GEN_ORDRE.indexOf(a) - GEN_ORDRE.indexOf(b));
+    const sheet = $('#sheet'); sheet.innerHTML = ''; handles = []; wins = new Set();
+    list.forEach((k, i) => {
+      const d = document.createElement('div'); d.className = 'exo-wrap'; sheet.appendChild(d);
+      handles.push(Exercice(d, GEN[k].gen, { bare: true, titre: `Exercice ${i + 1} · ${GEN[k].titre}`, onWin: () => { wins.add(i); score(); } }));
+      d.addEventListener('click', e => { if (e.target.closest('[data-a="new"]')) { wins.delete(i); score(); } });
+    });
+    $('#sheetsec').hidden = false; score();
+    return true;
+  }
+  function corrige() {
+    $('#corrige').innerHTML = '<h2>Corrigé</h2>' + handles.map((h, i) => {
+      const ex = h.ex, t = h.ex && document.querySelectorAll('#sheet .exo-n')[i].textContent;
+      return `<div class="exo-sol"><h4>${t}</h4><p style="margin:0 0 6px">${ex.q.map((x, j) => `${j + 1}. <b>${fr(x.ans)}</b>`).join(' ; ')}</p>${ex.sol}</div>`;
+    }).join('');
+  }
+  function printSheet(withSol) {
+    if (!handles.length && !generate()) return;
+    corrige(); document.body.classList.toggle('avec-corrige', withSol);
+    $('#pdate').textContent = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    window.print();
+  }
+  $('#gen').addEventListener('click', () => { if (generate()) $('#sheetsec').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); });
+  $('#pr').addEventListener('click', () => printSheet(false));
+  $('#prc').addEventListener('click', () => printSheet(true));
+  groups();
+})();
+</script>
+</body>
+</html>

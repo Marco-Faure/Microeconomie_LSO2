@@ -19,7 +19,9 @@ const SITE = {
       ['ch2-fusion.html', 'Fusion et profit joint'],
       ['ch2-coase.html', 'Droits de propriété'] ] }
   ],
-  reviser: ['cartes.html', 'Réviser']
+  reviser: { id: 'reviser', titre: 'Réviser', pages: [
+      ['cartes.html', 'Cartes et QCM'],
+      ['exercices.html', "Générateur d'exercices"] ] }
 };
 
 /* ---------- Mesure d'audience anonyme ---------- */
@@ -34,12 +36,12 @@ const SITE = {
 /* ---------- Menu et navigation ---------- */
 const PAGE = (location.pathname.split('/').pop() || 'index.html');
 function siteNav() {
-  const ch = SITE.chapitres.find(c => c.pages.some(p => p[0] === PAGE));
-  const rev = PAGE === SITE.reviser[0];
+  const R = SITE.reviser, rev = R.pages.some(p => p[0] === PAGE);
+  const ch = rev ? R : SITE.chapitres.find(c => c.pages.some(p => p[0] === PAGE));
   const chs = SITE.chapitres.map(c => `<a href="index.html#${c.id}"${ch === c ? ' aria-current="true"' : ''}>Chapitre ${c.n}</a>`).join('')
-    + `<a href="${SITE.reviser[0]}"${rev ? ' aria-current="true"' : ''}>${SITE.reviser[1]}</a>`;
+    + `<a href="${R.pages[0][0]}"${rev ? ' aria-current="true"' : ''}>${R.titre}</a>`;
   let h = `<nav class="site" aria-label="Site"><a class="home" href="index.html"><b>${SITE.titre}</b><span>${SITE.auteur}</span></a><div class="chs">${chs}</div></nav>`;
-  if (ch) h += `<nav class="subnav" aria-label="Outils du chapitre ${ch.n}"><span class="chl">Chapitre ${ch.n} · ${ch.titre}</span>`
+  if (ch) h += `<nav class="subnav" aria-label="${ch.n ? 'Outils du chapitre ' + ch.n : ch.titre}"><span class="chl">${ch.n ? 'Chapitre ' + ch.n + ' · ' : ''}${ch.titre}</span>`
     + ch.pages.map(p => `<a href="${p[0]}"${p[0] === PAGE ? ' aria-current="page"' : ''}>${p[1]}</a>`).join('') + '</nav>';
   else h += '<div style="height:20px"></div>';
   return h;
@@ -117,10 +119,11 @@ function lireNombre(s) {
 function Exercice(sel, gen, o = {}) {
   const root = typeof sel === 'string' ? $(sel) : sel; if (!root) return;
   let ex, k = 0, reussis = 0;
-  root.innerHTML = `<h2>S'entraîner</h2>
-    <p class="intro">${o.intro || 'Un exercice avec de nouvelles valeurs à chaque tirage. Donne tes réponses arrondies à deux décimales ; une fraction comme 10/3 est acceptée.'}</p>
+  const uid = 'x' + Math.random().toString(36).slice(2, 7);
+  root.innerHTML = (o.bare ? '' : `<h2>S'entraîner</h2>
+    <p class="intro">${o.intro || 'Un exercice avec de nouvelles valeurs à chaque tirage. Donne tes réponses arrondies à deux décimales ; une fraction comme 10/3 est acceptée.'}</p>`) + `
     <div class="card pad exo">
-      <div class="exo-head"><span class="exo-n"></span><button class="btn ghost" data-a="new">Nouvel exercice</button></div>
+      <div class="exo-head"><span class="exo-n"></span><button class="btn ghost" data-a="new">${o.bare ? 'Nouvelles valeurs' : 'Nouvel exercice'}</button></div>
       <div class="exo-enonce"></div><ol class="exo-q"></ol>
       <div class="row"><button class="btn" data-a="check">Vérifier</button><button class="btn ghost" data-a="sol">Voir la correction</button></div>
       <div class="fbk" hidden aria-live="polite"></div>
@@ -129,9 +132,9 @@ function Exercice(sel, gen, o = {}) {
   const q = s => root.querySelector(s);
   function draw() {
     ex = gen(); k++;
-    q('.exo-n').textContent = `Exercice n° ${k}` + (reussis ? ` · ${reussis} réussi${reussis > 1 ? 's' : ''} sans faute` : '');
+    q('.exo-n').textContent = o.titre || (`Exercice n° ${k}` + (reussis ? ` · ${reussis} réussi${reussis > 1 ? 's' : ''} sans faute` : ''));
     q('.exo-enonce').innerHTML = ex.enonce;
-    q('.exo-q').innerHTML = ex.q.map((x, i) => `<li><label for="exo${i}">${x.label}</label><input id="exo${i}" inputmode="decimal" autocomplete="off"><span class="mk" aria-live="polite"></span></li>`).join('');
+    q('.exo-q').innerHTML = ex.q.map((x, i) => `<li><label for="${uid}${i}">${x.label}</label><input id="${uid}${i}" inputmode="decimal" autocomplete="off"><span class="mk" aria-live="polite"></span></li>`).join('');
     q('.fbk').hidden = true; const so = q('.exo-sol'); so.hidden = true; so.innerHTML = `<h4>Correction</h4>${ex.sol}`;
     ex.done = false;
     q('[data-a="sol"]').textContent = 'Voir la correction';
@@ -149,7 +152,7 @@ function Exercice(sel, gen, o = {}) {
     const tot = ex.q.length;
     if (n === tot) {
       f.className = 'fbk ok'; f.innerHTML = '<b>Tout est juste.</b> Tire un nouvel exercice pour t\'entraîner encore.';
-      if (!ex.done) { ex.done = true; reussis++; q('.exo-n').textContent = `Exercice n° ${k} · ${reussis} réussi${reussis > 1 ? 's' : ''} sans faute`; }
+      if (!ex.done) { ex.done = true; reussis++; if (!o.titre) q('.exo-n').textContent = `Exercice n° ${k} · ${reussis} réussi${reussis > 1 ? 's' : ''} sans faute`; if (o.onWin) o.onWin(); }
       pop(f);
     } else {
       f.className = 'fbk ko';
@@ -164,6 +167,7 @@ function Exercice(sel, gen, o = {}) {
   });
   root.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('.exo-q input')) check(); });
   draw();
+  return { get ex() { return ex; }, draw };
 }
 const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
 const pick = a => a[Math.floor(Math.random() * a.length)];

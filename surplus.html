@@ -7,6 +7,7 @@
 <meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
 <link rel="stylesheet" href="style.css">
 <script src="commun.js"></script>
+<script src="exercices.js"></script>
 <style>
 .fx{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 .fn{font-family:var(--serif);font-size:1.12rem;padding:6px 14px;border-radius:99px}
@@ -287,35 +288,6 @@ svg.ch .tag{font-weight:700;font-size:12.5px;paint-order:stroke;stroke:#fff;stro
   syncDone(); setMode('libre');
 })();
 </script>
-<script>
-Exercice('#exo', () => {
-  const k1 = v => v === 1 ? '' : v;
-  let a, b, c, d, ps, qs, k;
-  for (;;) {
-    c = rnd(1, 4); b = rnd(1, 4); ps = rnd(15, 40); if (c * ps < 40) continue; d = rnd(10, c * ps - 20); qs = c * ps - d; a = qs + b * ps;
-    const kmax = Math.min(Math.floor(ps - d / c) - 1, Math.floor((qs - 1) / c), 12);
-    if (kmax >= 2) { k = rnd(2, kmax); break; }
-  }
-  const pmax = a / b, pmin = d / c, SC = qs * qs / (2 * b), SP = qs * qs / (2 * c);
-  const pb = ps - k, qb = qs - c * k, pq = (a - qb) / b, DW = 0.5 * (pq - pb) * (qs - qb);
-  return {
-    enonce: `<p>Sur un marché concurrentiel, la demande est ${m(`D(p) = ${a} − ${k1(b)}p`)} et l'offre ${m(`O(p) = ${k1(c)}p − ${d}`)}.</p><p>L'État fixe ensuite un prix plafond ${m(`p̄ = ${pb}`)}.</p>`,
-    q: [
-      { label: `Prix d'équilibre ${m('p*')}`, ans: ps },
-      { label: `Quantité d'équilibre ${m('q*')}`, ans: qs },
-      { label: 'Surplus du consommateur à l\'équilibre', ans: SC },
-      { label: 'Surplus du producteur à l\'équilibre', ans: SP },
-      { label: 'Quantité échangée avec le prix plafond', ans: qb },
-      { label: 'Perte sèche due au prix plafond', ans: DW }],
-    sol: `<ol>
-      <li>À l'équilibre, ${m(`${a} − ${k1(b)}p = ${k1(c)}p − ${d}`)}, d'où ${m(`p* = ${ps}`)} et ${m(`q* = ${qs}`)}.</li>
-      <li>La demande s'annule en ${m(`p<sub>max</sub> = ${a}/${b} = ${fr(pmax)}`)}, l'offre en ${m(`p<sub>min</sub> = ${d}/${c} = ${fr(pmin)}`)}.</li>
-      <li>${m(`S<sub>cons</sub> = (p<sub>max</sub> − p*) × q* / 2 = (${fr(pmax)} − ${ps}) × ${qs} / 2 = ${fr(SC)}`)}</li>
-      <li>${m(`S<sub>prod</sub> = (p* − p<sub>min</sub>) × q* / 2 = (${ps} − ${fr(pmin)}) × ${qs} / 2 = ${fr(SP)}`)}</li>
-      <li>Au prix ${pb}, les producteurs n'offrent que ${m(`O(${pb}) = ${qb}`)} : c'est la quantité échangée, la demande ${m(`D(${pb}) = ${a - b * pb}`)} n'est pas servie en entier.</li>
-      <li>Pour ${qb} unités, les acheteurs paieraient jusqu'à ${m(`(${a} − ${qb}) / ${b} = ${fr(pq)}`)}. Perte sèche : ${m(`(${fr(pq)} − ${pb}) × (${qs} − ${qb}) / 2 = ${fr(DW)}`)}.</li></ol>`
-  };
-});
-</script>
+<script>Exercice('#exo', () => (Math.random() < 0.6 ? GEN.surplus : GEN.plancher).gen());</script>
 </body>
 </html>

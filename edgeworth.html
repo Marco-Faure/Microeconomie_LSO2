@@ -7,6 +7,7 @@
 <meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
 <link rel="stylesheet" href="style.css">
 <script src="commun.js"></script>
+<script src="exercices.js"></script>
 <style>
   color-scheme: light;
   --navy:#006EB8; --navy-soft:#E8F1F9;
@@ -256,6 +257,7 @@ details.settings summary{cursor:pointer;font-weight:600;font-size:.92rem}
     </aside>
   </main>
 
+  <section class="block" id="exo"></section>
   <div id="site-pager"></div>
   <footer>© 2026 Marc-Antoine Faure Colonna d'Istria. Outils interactifs, microéconomie LSO2. Mesure d'audience anonyme, sans cookies, avec GoatCounter.</footer>
 </div>
@@ -748,5 +750,6 @@ details.settings summary{cursor:pointer;font-weight:600;font-size:.92rem}
   syncPrefs(); syncDone(); syncSlider(); setStep(0);
 })();
 </script>
+<script>Exercice('#exo', GEN.edgeworth.gen);</script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 <meta name="author" content="Marc-Antoine Faure Colonna d'Istria">
 <link rel="stylesheet" href="style.css">
 <script src="commun.js"></script>
+<script src="exercices.js"></script>
 <style>
 .grid2{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:start}
 .cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
@@ -219,31 +220,6 @@ details.set summary{cursor:pointer;font-weight:600;font-size:.92rem}
   renderAll();
 })();
 </script>
-<script>
-Exercice('#exo', () => {
-  const c = pick([0.25, 0.25, 0.125]);
-  const A = c === 0.25 ? 24 * rnd(5, 15) : 42 * rnd(3, 8);
-  const k = 1 + 2 * c, ps = A / 3, p1 = ps * ps / 2, p2 = ps * ps * (0.5 - c);
-  const pb = A / (2 + 1 / k), q1 = pb / k, q2 = pb, PJ = pb * (q1 + q2) - 0.5 * q1 * q1 - 0.5 * q2 * q2 - c * q1 * q1;
-  const amin = p1 / PJ, amax = 1 - p2 / PJ;
-  return {
-    enonce: `<p>Deux firmes en concurrence pure et parfaite ont pour coûts ${m(`CT<sub>1</sub> = 0,5q<sub>1</sub><sup>2</sup>`)} et ${m(`CT<sub>2</sub> = 0,5q<sub>2</sub><sup>2</sup> + ${fr(c, 3)}q<sub>1</sub><sup>2</sup>`)}. La demande inverse du marché est ${m(`p = ${A} − q`)}.</p><p>Les firmes fusionnent ; la firme 1 reçoit la part ${m('α')} du profit joint.</p>`,
-    q: [
-      { label: `Prix de l'équilibre privé ${m('p*')}`, ans: ps },
-      { label: `Profit de la firme 2 à l'équilibre privé ${m('π<sub>2</sub>*')}`, ans: p2 },
-      { label: `Prix après la fusion ${m('p̄')}`, ans: pb },
-      { label: `Production de la firme 1 après la fusion ${m('q̄<sub>1</sub>')}`, ans: q1 },
-      { label: `Profit joint ${m('Π̄<sub>J</sub>')}`, ans: PJ, tol: Math.max(0.5, 0.001 * PJ) },
-      { label: `Part minimale acceptée par la firme 1, ${m('α<sub>min</sub>')}`, ans: amin, tol: 0.006 },
-      { label: `Part maximale cédée par la firme 2, ${m('α<sub>max</sub>')}`, ans: amax, tol: 0.006 }],
-    sol: `<ol>
-      <li>Équilibre privé : chaque firme pose ${m('p = Cm<sup>p</sup>')}, soit ${m('q<sub>1</sub> = q<sub>2</sub> = p')}. Offre ${m('2p = ' + A + ' − p')}, d'où ${m(`p* = ${fr(ps)}`)}, ${m(`q<sub>1</sub>* = q<sub>2</sub>* = ${fr(ps)}`)}.</li>
-      <li>${m(`π<sub>1</sub>* = ${fr(ps)}² / 2 = ${fr(p1)}`)} et ${m(`π<sub>2</sub>* = ${fr(ps)}² / 2 − ${fr(c, 3)} × ${fr(ps)}² = ${fr(p2)}`)}.</li>
-      <li>Après la fusion : ${m(`p = Cm<sub>1</sub><sup>p</sup> + Cm<sup>e</sup> = ${fr(k, 3)}q<sub>1</sub>`)} et ${m('p = q<sub>2</sub>')}. Offre ${m(`q = p/${fr(k, 3)} + p = ${A} − p`)}, d'où ${m(`p̄ = ${fr(pb)}`)}, ${m(`q̄<sub>1</sub> = ${fr(q1)}`)}, ${m(`q̄<sub>2</sub> = ${fr(q2)}`)}.</li>
-      <li>${m(`Π̄<sub>J</sub> = ${fr(pb)} × ${fr(q1 + q2)} − 0,5 × ${fr(q1)}² − 0,5 × ${fr(q2)}² − ${fr(c, 3)} × ${fr(q1)}² = ${fr(PJ)}`)}, contre ${fr(p1 + p2)} avant la fusion.</li>
-      <li>${m(`α ≥ π<sub>1</sub>* / Π̄<sub>J</sub> = ${fr(amin, 3)}`)} et ${m(`α ≤ 1 − π<sub>2</sub>* / Π̄<sub>J</sub> = ${fr(amax, 3)}`)}.</li></ol>`
-  };
-});
-</script>
+<script>Exercice('#exo', GEN.fusion.gen);</script>
 </body>
 </html>
